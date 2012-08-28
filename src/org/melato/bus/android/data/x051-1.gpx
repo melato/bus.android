@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="melato.org - http://melato.org" xmlns="http://www.topografix.com/GPX/1/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+<rte><rtept lat="37.983784" lon="23.725233"><name>ΑΦΕΤΗΡΙΑ</name>
+<sym>061605</sym>
+</rtept>
+<rtept lat="37.98383" lon="23.721556"><name>ΜΕΓ.ΑΛΕΞΑΝΔΡΟΥ</name>
+<sym>060203</sym>
+</rtept>
+<rtept lat="37.986095" lon="23.718893"><name>ΠΛΑΤΕΙΑ ΜΕΤΑΞΟΥΡΓΕΙΟΥ</name>
+<sym>060204</sym>
+</rtept>
+<rtept lat="37.988674" lon="23.716253"><name>ΑΛΑΜΑΝΑΣ</name>
+<sym>060220</sym>
+</rtept>
+<rtept lat="37.987534" lon="23.713068"><name>ΑΓ.ΓΕΩΡΓΙΟΥ</name>
+<sym>060221</sym>
+</rtept>
+<rtept lat="37.989647" lon="23.71183"><name>ΚΡΙΘΑΡΗ</name>
+<sym>060222</sym>
+</rtept>
+<rtept lat="37.99168" lon="23.710558"><name>ΜΑΥΡΟΜΑΤΗ</name>
+<sym>060223</sym>
+</rtept>
+<rtept lat="37.992424" lon="23.708858"><name>ΠΑΛΑΙΟ ΤΕΡΜΑ</name>
+<sym>060224</sym>
+</rtept>
+<rtept lat="37.99273" lon="23.708061"><name>ΚΡΑΤΥΛΟΥ</name>
+<sym>060225</sym>
+</rtept>
+<rtept lat="37.994152" lon="23.70384"><name>ΚΕΤΕ</name>
+<sym>060226</sym>
+</rtept>
+<rtept lat="37.99626" lon="23.701065"><name>ΑΝΤΙΓΟΝΗΣ</name>
+<sym>060227</sym>
+</rtept>
+<rtept lat="37.99736" lon="23.699877"><name>ΣΤΑΘ.ΥΠΕΡΑΣ.ΛΕΩΦ.ΚΗΦΙΣΟΥ</name>
+<sym>060228</sym>
+</rtept>
+</rte>
+</gpx>
