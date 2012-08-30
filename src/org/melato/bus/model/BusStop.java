@@ -1,4 +1,4 @@
-package org.melato.bus.util;
+package org.melato.bus.model;
 
 import java.text.DecimalFormat;
 import java.util.AbstractList;

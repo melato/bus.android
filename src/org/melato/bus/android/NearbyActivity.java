@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.melato.bus.util.BusStop;
+import org.melato.bus.model.BusStop;
 import org.melato.gpx.GPX;
 import org.melato.gpx.GPXParser;
 import org.melato.gpx.Point;
@@ -18,14 +18,13 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class BusActivity extends ListActivity implements LocationListener {
+public class NearbyActivity extends ListActivity implements LocationListener {
   List<BusStop> stops;
   int   closestStop = -1;
   private Point location;
@@ -42,8 +41,8 @@ public class BusActivity extends ListActivity implements LocationListener {
       throw new RuntimeException(e);
     }
   }
-  List<BusStop> createDemoStops() {
-    return readStops( new File( "/sdcard/bus/x409-1.gpx"));
+  List<BusStop> loadStops() {
+    return null;
   }
   
   List<BusStop> readStops(File file) {
@@ -55,14 +54,14 @@ public class BusActivity extends ListActivity implements LocationListener {
     }
   }
   
-  public BusActivity() {
+  public NearbyActivity() {
   }
   
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setStops(createDemoStops());
+      setStops(loadStops());
       LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
       locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 100f, this );
       locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 5f, this);
@@ -79,7 +78,7 @@ public class BusActivity extends ListActivity implements LocationListener {
 
   class BusListAdapter extends ArrayAdapter<BusStop> {
     public BusListAdapter() {
-      super(BusActivity.this, R.layout.bus_stop_item, stops);
+      super(NearbyActivity.this, R.layout.bus_stop_item, stops);
     }
 
     @Override
@@ -94,19 +93,6 @@ public class BusActivity extends ListActivity implements LocationListener {
       return view;
     }
 
-    /*
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-      TextView view = (TextView) convertView;
-      String text = stops.get(position).toString();
-      if ( closestStop == position ) {
-        text = "-> " + text;
-      }
-      view.setText(text);
-      return view;
-    }
-    */
-    
   }
   public void setStops(List<BusStop> stops) {
     this.stops = stops;

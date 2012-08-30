@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <string name="hello">Hello World, BusActivity!</string>
     <string name="app_name">melato.bus</string>
-
+    <string name="routes">Routes</string>
+    <string name="schedule">Schedule</string>
+    <string name="nearby_stops">Nearby Stops</string>
+    
 </resources>
