@@ -3,6 +3,7 @@
     <string name="app_name">melato.bus</string>
     <string name="routes">Routes</string>
     <string name="schedule">Schedule</string>
+    <string name="stops">Stops</string>
     <string name="nearby_stops">Nearby Stops</string>
     
 </resources>

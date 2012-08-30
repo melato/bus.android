@@ -15,8 +15,9 @@ public final class R {
         public static final int icon=0x7f020001;
     }
     public static final class id {
-        public static final int nearby=0x7f060001;
-        public static final int schedule=0x7f060000;
+        public static final int nearby=0x7f060000;
+        public static final int schedule=0x7f060002;
+        public static final int stops=0x7f060001;
     }
     public static final class layout {
         public static final int bus_stop_item=0x7f030000;
@@ -24,12 +25,15 @@ public final class R {
         public static final int route_item=0x7f030002;
     }
     public static final class menu {
-        public static final int bus_menu=0x7f050000;
+        public static final int routes_menu=0x7f050000;
+        public static final int schedule_menu=0x7f050001;
+        public static final int stops_menu=0x7f050002;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
-        public static final int nearby_stops=0x7f040003;
+        public static final int nearby_stops=0x7f040004;
         public static final int routes=0x7f040001;
         public static final int schedule=0x7f040002;
+        public static final int stops=0x7f040003;
     }
 }

@@ -2,9 +2,12 @@ package org.melato.bus.android;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.melato.bus.android.model.NearbyStop;
+import org.melato.bus.android.model.WaypointDistance;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
 import org.melato.gpx.Earth;
@@ -13,7 +16,6 @@ import org.melato.gpx.Waypoint;
 
 import android.app.ListActivity;
 import android.content.Context;
-import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -27,32 +29,30 @@ public class NearbyActivity extends ListActivity implements LocationListener {
   private NearbyStop[] stops = new NearbyStop[0];
   private boolean haveLocation;
   
-  private void sort( NearbyStop[] array, Point location ) {
-    for(NearbyStop stop: array ) {
-      stop.distance = Earth.distance(stop.getWaypoint(), location);          
-    }
-    Arrays.sort(array);    
-  }
-  
   void load(Point location) {
     long time = System.currentTimeMillis();
     RouteManager routeManager = Info.routeManager();
     Log.i( "melato.org", "nearby.load start" );
-    List<Waypoint> waypoints = routeManager.findNearbyStops(location, Info.NEARBY_TARGET_DISTANCE);
+    List<Waypoint> list = routeManager.findNearbyStops(location, Info.NEARBY_TARGET_DISTANCE);
+    Log.i( "melato.org", "nearby.load count=" + list.size() + " time=" + time );
+    Waypoint[] waypoints = WaypointDistance.sort( list, location );
     List<NearbyStop> nearby = new ArrayList<NearbyStop>();
+    Set<String> routeIds = new HashSet<String>();
     for( Waypoint p: waypoints ) {
       for( String link: p.getLinks() ) {
-        Route route = routeManager.getRoute(link);
-        if ( route != null ) {
-          NearbyStop stop = new NearbyStop(p, route);
-          nearby.add(stop);
+        if ( ! routeIds.contains( link )) {
+          routeIds.add(link);
+          Route route = routeManager.getRoute(link);
+          if ( route != null ) {
+            NearbyStop stop = new NearbyStop(p, route);
+            stop.setDistance(Earth.distance(p,  location));
+            nearby.add(stop);
+          }
         }
       }
     }
     time = (System.currentTimeMillis() - time)/1000;
-    Log.i( "melato.org", "nearby.load count=" + nearby.size() + " time=" + time );
     NearbyStop[] array = nearby.toArray(new NearbyStop[0]);
-    sort(array, location);
     this.stops = array;
   }
   
@@ -69,10 +69,10 @@ public class NearbyActivity extends ListActivity implements LocationListener {
       LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
       locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 100f, this );
       locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 5f, this);
-      Location last = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-      if ( last == null )
-        last = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-      setLocation(last);
+      Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+      if ( location == null )
+        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+      setLocation(location);
   }
 
   
@@ -83,17 +83,11 @@ public class NearbyActivity extends ListActivity implements LocationListener {
     super.onDestroy();
   }
 
-  public void showSchedule(Route route) {
-    Intent intent = new Intent(this, ScheduleActivity.class);
-    intent.putExtra(Info.KEY_ROUTE, route.qualifiedName());
-    startActivity(intent);
-   }
-
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
     NearbyStop p = stops[position];
-    showSchedule(p.getRoute());
+    Activities.showSchedule(this, p.getRoute());
  }
 
   class NearbyAdapter extends ArrayAdapter<NearbyStop> {
@@ -102,14 +96,17 @@ public class NearbyActivity extends ListActivity implements LocationListener {
     }
   }
   
-  public void setLocation(Point here) {
-    if ( haveLocation ) {
+  public void setLocation(Point point) {
+    if ( point == null )
       return;
-      //sort(stops, here);
+    if ( haveLocation ) {
+      WaypointDistance.setDistance(stops, point);
+      Arrays.sort(stops);
+      update();
     }
-    if ( here != null ) {
+    if ( point != null ) {
       haveLocation = true;
-      load(here);
+      load(point);
       update();
     }
   }

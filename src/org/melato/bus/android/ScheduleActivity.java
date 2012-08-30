@@ -8,6 +8,9 @@ import org.melato.bus.model.Schedule;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -76,7 +79,7 @@ public class ScheduleActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      String name = (String) getIntent().getSerializableExtra(Info.KEY_ROUTE);
+      String name = (String) getIntent().getSerializableExtra(Activities.KEY_ROUTE);
       route = Info.routeManager().loadRoute(name);
       schedule = route.getSchedule();
       TimeList times = new TimeList(schedule,currentTime);
@@ -97,5 +100,31 @@ public class ScheduleActivity extends ListActivity {
     public ScheduleAdapter(TimeList times) {
       super(ScheduleActivity.this, R.layout.list_item, times);
     }
-  }    
+  }
+  
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu)
+  {
+     MenuInflater inflater = getMenuInflater();
+     inflater.inflate(R.menu.schedule_menu, menu);
+     return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item)
+  {
+     boolean handled = false;
+
+     switch (item.getItemId())
+     {
+        case R.id.stops:
+          Activities.showStops(this, route);
+          handled = true;
+          break;
+        default:
+          break;
+     }
+     return handled;
+  }
+  
 }
