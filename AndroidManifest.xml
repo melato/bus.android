@@ -15,11 +15,6 @@
         <activity
             android:name=".RoutesActivity"
             android:label="@string/routes" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".ScheduleActivity"
@@ -28,6 +23,11 @@
         <activity
             android:name=".NearbyActivity"
             android:label="@string/nearby_stops" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>        
     </application>
 

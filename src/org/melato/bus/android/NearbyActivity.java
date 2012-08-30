@@ -1,135 +1,133 @@
 package org.melato.bus.android;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import org.melato.bus.model.BusStop;
-import org.melato.gpx.GPX;
-import org.melato.gpx.GPXParser;
+import org.melato.bus.android.model.NearbyStop;
+import org.melato.bus.model.Route;
+import org.melato.bus.model.RouteManager;
+import org.melato.gpx.Earth;
 import org.melato.gpx.Point;
-import org.melato.gpx.util.ProximityFinder;
+import org.melato.gpx.Waypoint;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class NearbyActivity extends ListActivity implements LocationListener {
-  List<BusStop> stops;
-  int   closestStop = -1;
-  private Point location;
+  private NearbyStop[] stops = new NearbyStop[0];
+  private boolean haveLocation;
   
-  List<BusStop> readStops(InputStream input) {
-    if ( input == null ) {
-      throw new RuntimeException( "Cannot find resource." );
+  private void sort( NearbyStop[] array, Point location ) {
+    for(NearbyStop stop: array ) {
+      stop.distance = Earth.distance(stop.getWaypoint(), location);          
     }
-    try {
-      GPXParser parser = new GPXParser();
-      GPX gpx = parser.parse( input );
-      return BusStop.listFromGPX(gpx);      
-    } catch(IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-  List<BusStop> loadStops() {
-    return null;
+    Arrays.sort(array);    
   }
   
-  List<BusStop> readStops(File file) {
-    try {
-      InputStream input = new FileInputStream(file);
-      return readStops(input);
-    } catch(IOException e) {
-      throw new RuntimeException(e);
+  void load(Point location) {
+    long time = System.currentTimeMillis();
+    RouteManager routeManager = Info.routeManager();
+    Log.i( "melato.org", "nearby.load start" );
+    List<Waypoint> waypoints = routeManager.findNearbyStops(location, Info.NEARBY_TARGET_DISTANCE);
+    List<NearbyStop> nearby = new ArrayList<NearbyStop>();
+    for( Waypoint p: waypoints ) {
+      for( String link: p.getLinks() ) {
+        Route route = routeManager.getRoute(link);
+        if ( route != null ) {
+          NearbyStop stop = new NearbyStop(p, route);
+          nearby.add(stop);
+        }
+      }
     }
+    time = (System.currentTimeMillis() - time)/1000;
+    Log.i( "melato.org", "nearby.load count=" + nearby.size() + " time=" + time );
+    NearbyStop[] array = nearby.toArray(new NearbyStop[0]);
+    sort(array, location);
+    this.stops = array;
   }
   
   public NearbyActivity() {
   }
-  
+
+  private void update() {
+    setListAdapter(new NearbyAdapter());    
+  }
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      setStops(loadStops());
       LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
       locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 100f, this );
       locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 5f, this);
       Location last = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
       if ( last == null )
         last = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-      setLocation(last);      
+      setLocation(last);
   }
+
+  
+  @Override
+  protected void onDestroy() {
+    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    locationManager.removeUpdates(this);
+    super.onDestroy();
+  }
+
+  public void showSchedule(Route route) {
+    Intent intent = new Intent(this, ScheduleActivity.class);
+    intent.putExtra(Info.KEY_ROUTE, route.qualifiedName());
+    startActivity(intent);
+   }
 
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
-  }
+    NearbyStop p = stops[position];
+    showSchedule(p.getRoute());
+ }
 
-  class BusListAdapter extends ArrayAdapter<BusStop> {
-    public BusListAdapter() {
-      super(NearbyActivity.this, R.layout.bus_stop_item, stops);
+  class NearbyAdapter extends ArrayAdapter<NearbyStop> {
+    public NearbyAdapter() {
+      super(NearbyActivity.this, R.layout.list_item, stops);
     }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-      convertView = super.getView(position, convertView, parent );
-      TextView view = (TextView) convertView;
-      String text = stops.get(position).toString();
-      if ( closestStop == position ) {
-        text = "-> " + text;
-      }
-      view.setText(text);
-      return view;
-    }
-
-  }
-  public void setStops(List<BusStop> stops) {
-    this.stops = stops;
-    setListAdapter(new BusListAdapter());
-    //setListAdapter( new ArrayAdapter<BusStop>(this, R.layout.bus_stop_item, stops));           
-    
   }
   
   public void setLocation(Point here) {
-    if ( here == null )
+    if ( haveLocation ) {
       return;
-    if ( here.equals(location)) {
-      return;
+      //sort(stops, here);
     }
-    location = here;
-    ProximityFinder proximity = new ProximityFinder();
-    proximity.setTargetDistance(1000f);
-    proximity.setSequence(BusStop.asWaypointList(stops));
-    int size = stops.size();
-    for( int i = 0; i < size; i++ ) {
-      stops.get(i).distanceFromStart = proximity.getPathLength(i);
+    if ( here != null ) {
+      haveLocation = true;
+      load(here);
+      update();
     }
-    closestStop = proximity.findClosestNearby(location);
-    setStops(stops);
   }
   
+  public static Point location2Point(Location loc) {
+    if ( loc == null )
+      return null;
+    Point p = new Point( (float) loc.getLatitude(), (float) loc.getLongitude());
+    return p;
+  }
   
   public void setLocation(Location loc) {
-    if ( loc == null )
-      return;
-    Point p = new Point( (float) loc.getLatitude(), (float) loc.getLongitude());
-    setLocation(p);
+    setLocation(location2Point(loc));
   }
-  
   
   @Override
   public void onLocationChanged(Location location) {
+    setLocation(location);
   }
   @Override
   public void onProviderDisabled(String provider) {

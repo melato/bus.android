@@ -45,7 +45,7 @@ public class RoutesActivity extends ListActivity {
 
   class RoutesAdapter extends ArrayAdapter<Route> {
     public RoutesAdapter() {
-      super(RoutesActivity.this, R.layout.route_item, routes);
+      super(RoutesActivity.this, R.layout.list_item, routes);
     }
   }  
 }
