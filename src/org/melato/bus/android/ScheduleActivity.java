@@ -9,9 +9,7 @@ import org.melato.bus.model.Schedule;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.ListView;
 
 /**
@@ -22,6 +20,7 @@ import android.widget.ListView;
 public class ScheduleActivity extends ListActivity {
   Route route;
   Schedule schedule;
+  Date  currentTime = new Date();
 
   static class Time {
     int time;
@@ -39,10 +38,14 @@ public class ScheduleActivity extends ListActivity {
   }
   
   static class TimeList extends AbstractList<Time> {
+    Schedule schedule;
     int[] times;
+    Date  currentTime;
 
-    public TimeList(Schedule schedule) {
-      times = schedule.getTimes(new Date());
+    public TimeList(Schedule schedule, Date currentTime) {
+      this.schedule = schedule;
+      times = schedule.getTimes(currentTime);
+      this.currentTime = currentTime;
     }
     @Override
     public Time get(int location) {
@@ -53,6 +56,16 @@ public class ScheduleActivity extends ListActivity {
     public int size() {
       return times.length;
     }
+    
+    public int getDefaultPosition() {
+      int time = Schedule.getTime(currentTime);
+      for( int i = 1; i < times.length; i++ ) {
+        if ( times[i] >= time )
+          return i - 1;
+      }
+      return times.length - 1;
+    }
+    
     
   }
   
@@ -66,7 +79,12 @@ public class ScheduleActivity extends ListActivity {
       String name = (String) getIntent().getSerializableExtra(Info.KEY_ROUTE);
       route = Info.routeManager().loadRoute(name);
       schedule = route.getSchedule();
-      setListAdapter(new ScheduleAdapter());
+      TimeList times = new TimeList(schedule,currentTime);
+      ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);
+      setListAdapter(scheduleAdapter);
+      int pos = times.getDefaultPosition();
+      if ( pos >= 0 )
+        this.setSelection(pos);
   }
 
   @Override
@@ -75,33 +93,9 @@ public class ScheduleActivity extends ListActivity {
   }
 
   class ScheduleAdapter extends ArrayAdapter<Time> {
-    public ScheduleAdapter() {
-      super(ScheduleActivity.this, R.layout.list_item, new TimeList(schedule));
+    TimeList times;
+    public ScheduleAdapter(TimeList times) {
+      super(ScheduleActivity.this, R.layout.list_item, times);
     }
-  }  
-  
-  class ScheduleAdapter2 extends BaseAdapter {
-    TimeList list = new TimeList(schedule);
-    
-    @Override
-    public int getCount() {
-      return list.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-      return list.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-      return list.times[position];
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-      return null;
-    }
-    
-  }  
+  }    
 }
