@@ -5,6 +5,7 @@ import java.util.List;
 import org.melato.bus.model.Route;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -21,6 +22,12 @@ public class RoutesActivity extends ListActivity {
   public RoutesActivity() {    
   }
   
+  public void showSchedule(Route route) {
+   Intent intent = new Intent(this, ScheduleActivity.class);
+   intent.putExtra(Info.KEY_ROUTE, route.qualifiedName());
+   startActivity(intent);
+  }
+       
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -32,6 +39,8 @@ public class RoutesActivity extends ListActivity {
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
+    Route route = routes.get(position);
+    showSchedule(route);
   }
 
   class RoutesAdapter extends ArrayAdapter<Route> {

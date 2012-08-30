@@ -22,9 +22,13 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".ScheduleActivity"
+            android:label="@string/schedule" >
+        </activity>
+        <activity
             android:name=".NearbyActivity"
             android:label="@string/nearby_stops" >
-        </activity>
+        </activity>        
     </application>
 
 </manifest>
