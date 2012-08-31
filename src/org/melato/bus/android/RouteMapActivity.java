@@ -2,6 +2,7 @@ package org.melato.bus.android;
 
 import java.util.List;
 
+import org.melato.bus.android.map.PathOverlay;
 import org.melato.bus.android.map.WaypointsOverlay;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
@@ -49,11 +50,15 @@ public class RouteMapActivity extends MapActivity {
       mapController.setCenter(createGeoPoint(center));
 
       Drawable drawable = this.getResources().getDrawable(R.drawable.marker);
-      WaypointsOverlay overlay = new WaypointsOverlay(drawable, this);
-      overlay.setWaypoints( path );
+      WaypointsOverlay stopsOverlay = new WaypointsOverlay(drawable, this);
+      stopsOverlay.setWaypoints( path );
+      
+      PathOverlay pathOverlay = new PathOverlay(path);
+      
       myLocation = new MyLocationOverlay(this, map);
       map.getOverlays().add(myLocation);
-      map.getOverlays().add(overlay);
+      //map.getOverlays().add(stopsOverlay);
+      map.getOverlays().add(pathOverlay);
   }
 
   
