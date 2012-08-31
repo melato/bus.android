@@ -2,4 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/nearby"
           android:title="@string/nearby" />
+    <item android:id="@+id/all_routes"
+          android:title="@string/all_routes" />
+    <item android:id="@+id/recent_routes"
+          android:title="@string/recent_routes" />
 </menu>

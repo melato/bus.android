@@ -7,7 +7,6 @@ import org.melato.bus.model.Route;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -23,11 +22,19 @@ public class RoutesActivity extends BusActivity {
   public RoutesActivity() {    
   }
   
+  protected List<Route> loadRoutes() {
+    List<Route> routes = activities.getRecentRoutes();
+    if ( routes.isEmpty() ) {
+      return Info.routeManager().getRoutes();
+    }
+    return routes;
+  }
+  
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      routes = Info.routeManager().getRoutes();
+      routes = loadRoutes();
       setListAdapter(new RoutesAdapter());
   }
 
@@ -52,21 +59,4 @@ public class RoutesActivity extends BusActivity {
      return true;
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item)
-  {
-     boolean handled = false;
-
-     switch (item.getItemId())
-     {
-        case R.id.nearby:
-          showNearby();
-          handled = true;
-          break;
-        default:
-          break;
-     }
-     return handled;
-  }
-   
-}
+ }

@@ -4,6 +4,7 @@ import java.util.AbstractList;
 import java.util.Date;
 
 import org.melato.bus.model.DaySchedule;
+import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 
 import android.os.Bundle;
@@ -102,8 +103,7 @@ public class ScheduleActivity extends BusActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      String name = (String) getIntent().getSerializableExtra(KEY_ROUTE);
-      route = Info.routeManager().loadRoute(name);
+      Route route = getRoute();
       schedule = route.getSchedule();
       String title = String.format( getResources().getString(R.string.schedule_title),
           route.qualifiedName(), getScheduleName() );

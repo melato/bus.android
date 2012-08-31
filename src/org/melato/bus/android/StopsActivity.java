@@ -3,6 +3,7 @@ package org.melato.bus.android;
 import java.util.List;
 
 import org.melato.bus.android.model.WaypointDistance;
+import org.melato.bus.model.Route;
 import org.melato.gpx.Earth;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
@@ -37,8 +38,7 @@ public class StopsActivity extends BusActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    String name = (String) getIntent().getSerializableExtra(KEY_ROUTE);
-    route = Info.routeManager().getRoute(name);
+    Route route = getRoute();
     String title = String.format( getResources().getString(R.string.stops_title),
         route.qualifiedName(), route.getTitle());
     setTitle(title);
@@ -111,7 +111,7 @@ public class StopsActivity extends BusActivity {
       WaypointDistance stop = stops[position];
       if ( position == closestStop ) {
         view.setText( "* " + stop + distanceSuffix(stop) );
-      } else if (position == closestStop + 1 ) {
+      } else if (position == closestStop + 1 || position == closestStop -1 ) {
         view.setText( stop + distanceSuffix(stop) );
       }
       return view;

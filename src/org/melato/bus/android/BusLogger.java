@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
 
-import org.melato.bus.log.Logger;
+import org.melato.log.Logger;
 
 import android.content.Context;
 

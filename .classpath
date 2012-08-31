@@ -7,5 +7,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/melato.gpx"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/melato.xml"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/melato.bus"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/melato.util"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
