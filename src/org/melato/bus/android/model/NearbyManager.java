@@ -19,6 +19,12 @@ import org.melato.gpx.GPXWriter;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
 
+/**
+ * Provides access to nearby stops.
+ * It caches the results to a file, so that subsequent calls from a nearby location are faster.
+ * @author Alex Athanasopoulos
+ *
+ */
 public class NearbyManager {
   static final float TARGET_DISTANCE = 1000f;
   /** Extra distance to cache. */

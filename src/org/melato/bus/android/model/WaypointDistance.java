@@ -31,7 +31,7 @@ public class WaypointDistance implements Comparable<WaypointDistance> {
     this.distance = distance;
   }
 
-  static String formatDistance(float distance) {
+  public static String formatDistance(float distance) {
     if ( distance < 1000 ) {
       return String.valueOf( Math.round(distance)) + " m";
     } else {
