@@ -60,11 +60,7 @@ public class WaypointDistance implements Comparable<WaypointDistance> {
    * @return
    */
   public static Waypoint[] sort(List<Waypoint> waypoints, Point target) {
-    WaypointDistance[] array = new WaypointDistance[waypoints.size()];
-    for( int i = 0; i < array.length; i++ ) {
-      Waypoint p = waypoints.get(i);
-      array[i] = new WaypointDistance(p, Earth.distance(p, target));
-    }
+    WaypointDistance[] array = createArray(waypoints, target );
     Arrays.sort(array);
     Waypoint[] result = new Waypoint[array.length];
     for( int i = 0; i < array.length; i++ ) {
