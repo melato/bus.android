@@ -31,7 +31,6 @@ public class StopsActivity extends LocationListActivity {
   GPX gpx;
   WaypointDistance[] stops;
   int closestStop = -1;
-  boolean isReady;
   boolean isSelected;
 
   public StopsActivity() {
@@ -62,7 +61,7 @@ public class StopsActivity extends LocationListActivity {
       previous = p;
     }
     setListAdapter(new StopsAdapter());
-    isReady = true;
+    setEnabledLocations(true);
   }
 
   private void findClosestStop(Point point) {
@@ -84,8 +83,6 @@ public class StopsActivity extends LocationListActivity {
 
   @Override
   public void setLocation(Point point) {
-    if ( ! isReady )
-      return;
     super.setLocation(point);
     findClosestStop(point);
     

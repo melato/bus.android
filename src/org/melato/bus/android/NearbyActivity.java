@@ -29,6 +29,7 @@ public class NearbyActivity extends LocationListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      setEnabledLocations(true);
       //Log.setLogger( new BusLogger(this));
   }
 

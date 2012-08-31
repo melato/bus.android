@@ -31,7 +31,7 @@
         </activity>
         <activity
             android:name=".NearbyActivity"
-            android:label="@string/nearby_stops" >
+            android:label="@string/nearby" >
         </activity>        
     </application>
 
