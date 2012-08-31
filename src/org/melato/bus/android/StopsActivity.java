@@ -44,6 +44,10 @@ public class StopsActivity extends LocationListActivity {
     String name = (String) getIntent().getSerializableExtra(
         Activities.KEY_ROUTE);
     route = Info.routeManager().getRoute(name);
+    String title = String.format( getResources().getString(R.string.stops_title),
+        route.qualifiedName(), route.getTitle());
+    setTitle(title);
+
     gpx = Info.routeManager().loadGPX(route);
     List<Waypoint> waypoints = gpx.getRoutes().get(0).path.getWaypoints();
     stops = new WaypointDistance[waypoints.size()];

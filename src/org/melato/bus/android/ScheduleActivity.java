@@ -3,6 +3,7 @@ package org.melato.bus.android;
 import java.util.AbstractList;
 import java.util.Date;
 
+import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 
@@ -75,6 +76,32 @@ public class ScheduleActivity extends ListActivity {
   public ScheduleActivity() {    
   }
     
+  private String getScheduleName() {
+    DaySchedule schedule = this.schedule.getSchedule(currentTime);
+    if ( schedule == null )
+      return "";
+    int days = schedule.getDays();
+    int resourceId = 0;
+    switch( days ) {
+      case DaySchedule.SUNDAY:
+        resourceId = R.string.days_Su;
+        break;
+      case DaySchedule.MONDAY_FRIDAY:
+        resourceId = R.string.days_M_F;
+        break;
+      case DaySchedule.SATURDAY:
+        resourceId = R.string.days_Sa;
+        break;
+      case DaySchedule.SATURDAY_SUNDAY:
+        resourceId = R.string.days_SaSu;
+        break;
+      default:
+        return "";
+    }
+    return getResources().getString(resourceId);
+
+    
+  }
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -82,6 +109,9 @@ public class ScheduleActivity extends ListActivity {
       String name = (String) getIntent().getSerializableExtra(Activities.KEY_ROUTE);
       route = Info.routeManager().loadRoute(name);
       schedule = route.getSchedule();
+      String title = String.format( getResources().getString(R.string.schedule_title),
+          route.qualifiedName(), getScheduleName() );
+      setTitle(title);
       TimeList times = new TimeList(schedule,currentTime);
       ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);
       setListAdapter(scheduleAdapter);
