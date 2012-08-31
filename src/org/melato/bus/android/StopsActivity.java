@@ -3,7 +3,6 @@ package org.melato.bus.android;
 import java.util.List;
 
 import org.melato.bus.android.model.WaypointDistance;
-import org.melato.bus.model.Route;
 import org.melato.gpx.Earth;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -26,8 +24,7 @@ import android.widget.TextView;
  * @author Alex Athanasopoulos
  * 
  */
-public class StopsActivity extends LocationListActivity {
-  Route route;
+public class StopsActivity extends BusActivity {
   GPX gpx;
   WaypointDistance[] stops;
   int closestStop = -1;
@@ -40,8 +37,7 @@ public class StopsActivity extends LocationListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    String name = (String) getIntent().getSerializableExtra(
-        Activities.KEY_ROUTE);
+    String name = (String) getIntent().getSerializableExtra(KEY_ROUTE);
     route = Info.routeManager().getRoute(name);
     String title = String.format( getResources().getString(R.string.stops_title),
         route.qualifiedName(), route.getTitle());
@@ -134,20 +130,4 @@ public class StopsActivity extends LocationListActivity {
     inflater.inflate(R.menu.stops_menu, menu);
     return true;
   }
-
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    boolean handled = false;
-
-    switch (item.getItemId()) {
-      case R.id.schedule:
-        Activities.showSchedule(this, route);
-        handled = true;
-        break;
-      default:
-        break;
-    }
-    return handled;
-  }
-
 }

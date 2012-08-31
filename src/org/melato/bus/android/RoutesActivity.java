@@ -18,7 +18,7 @@ import android.widget.ListView;
  * @author Alex Athanasopoulos
  *
  */
-public class RoutesActivity extends ListActivity {
+public class RoutesActivity extends BusActivity {
   List<Route> routes;
   
   public RoutesActivity() {    
@@ -36,7 +36,7 @@ public class RoutesActivity extends ListActivity {
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
     Route route = routes.get(position);
-    Activities.showSchedule(this, route);
+    showRoute(route);
   }
 
   class RoutesAdapter extends ArrayAdapter<Route> {
@@ -61,7 +61,7 @@ public class RoutesActivity extends ListActivity {
      switch (item.getItemId())
      {
         case R.id.nearby:
-          Activities.showNearby(this);
+          showNearby();
           handled = true;
           break;
         default:

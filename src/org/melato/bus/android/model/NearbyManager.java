@@ -45,7 +45,7 @@ public class NearbyManager {
     this.preferences = preferences;
   }
 
-  private Point getLastLocation() {
+  public Point getLastLocation() {
     float lat = preferences.getFloat(LAT, Float.NaN);
     float lon = preferences.getFloat(LON, Float.NaN);
     if ( Float.isNaN(lat) || Float.isNaN(lon)) {

@@ -11,7 +11,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class NearbyActivity extends LocationListActivity {
+public class NearbyActivity extends BusActivity {
   private NearbyStop[] stops = new NearbyStop[0];
   private boolean haveLocation;
   
@@ -38,7 +38,7 @@ public class NearbyActivity extends LocationListActivity {
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
     NearbyStop p = stops[position];
-    Activities.showSchedule(this, p.getRoute());
+    showRoute(p.getRoute());
  }
 
   class NearbyAdapter extends ArrayAdapter<NearbyStop> {
