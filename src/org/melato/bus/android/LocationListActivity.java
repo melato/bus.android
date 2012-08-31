@@ -16,14 +16,16 @@ import android.os.Bundle;
  */
 public class LocationListActivity extends ListActivity implements LocationListener {
   private Point   location;
+  private boolean enabledLocations;
   
   public LocationListActivity() {
   }
 
-/** Called when the activity is first created. */
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-      super.onCreate(savedInstanceState);
+  protected void setEnabledLocations(boolean enabled) {
+    if ( enabledLocations == enabled )
+      return;
+    if ( enabled ) {
+      this.enabledLocations = true;
       LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
       locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 100f, this );
       locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
@@ -31,13 +33,22 @@ public class LocationListActivity extends ListActivity implements LocationListen
       if ( location == null )
         location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
       onLocationChanged(location);
+    } else {
+      this.enabledLocations = false;
+      LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+      locationManager.removeUpdates(this);      
+    }
+  }
+/** Called when the activity is first created. */
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+      super.onCreate(savedInstanceState);
   }
 
   
   @Override
   protected void onDestroy() {
-    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-    locationManager.removeUpdates(this);
+    setEnabledLocations(false);
     super.onDestroy();
   }
 
