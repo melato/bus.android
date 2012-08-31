@@ -11,5 +11,6 @@
     <string name="stops">Bus Stops</string>
     <string name="stops_title">%1$s %2$s</string>
     <string name="nearby">Nearby Bus Lines</string>
+    <string name="map">Map</string>
     
 </resources>

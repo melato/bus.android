@@ -13,16 +13,20 @@ public final class R {
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
         public static final int icon=0x7f020001;
+        public static final int marker=0x7f020002;
     }
     public static final class id {
-        public static final int nearby=0x7f060000;
-        public static final int schedule=0x7f060002;
-        public static final int stops=0x7f060001;
+        public static final int map=0x7f060003;
+        public static final int mapview=0x7f060000;
+        public static final int nearby=0x7f060001;
+        public static final int schedule=0x7f060004;
+        public static final int stops=0x7f060002;
     }
     public static final class layout {
         public static final int bus_stop_item=0x7f030000;
         public static final int list_item=0x7f030001;
-        public static final int route_item=0x7f030002;
+        public static final int map=0x7f030002;
+        public static final int route_item=0x7f030003;
     }
     public static final class menu {
         public static final int routes_menu=0x7f050000;
@@ -35,6 +39,7 @@ public final class R {
         public static final int days_Sa=0x7f040006;
         public static final int days_SaSu=0x7f040007;
         public static final int days_Su=0x7f040004;
+        public static final int map=0x7f04000b;
         public static final int nearby=0x7f04000a;
         public static final int routes=0x7f040001;
         public static final int schedule=0x7f040002;

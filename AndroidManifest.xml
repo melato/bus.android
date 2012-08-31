@@ -12,6 +12,7 @@
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
+        <uses-library android:name="com.google.android.maps" />
         <activity
             android:name=".RoutesActivity"
             android:label="@string/routes" >
@@ -33,6 +34,10 @@
             android:name=".NearbyActivity"
             android:label="@string/nearby" >
         </activity>        
-    </application>
+        <activity
+            android:name=".RouteMapActivity"
+            android:label="@string/map" >
+        </activity>
+        </application>
 
 </manifest>

@@ -13,6 +13,7 @@ import android.view.MenuItem;
  * @author Alex Athanasopoulos
  */
 public class BusActivity extends LocationListActivity {
+  public static final String NAV_PREFERENCES = "nav";
   public static final String KEY_ROUTE = "org.melato.bus.android.route";
   
   public static final String VIEW = "view";
@@ -31,7 +32,7 @@ public class BusActivity extends LocationListActivity {
   }
 
   protected SharedPreferences getNavigationPreferences() {
-    return getSharedPreferences("nav", Context.MODE_PRIVATE);
+    return getSharedPreferences(NAV_PREFERENCES, Context.MODE_PRIVATE);
   }
   
   protected void showRoute(Route route, Class activity) {
@@ -74,6 +75,10 @@ public class BusActivity extends LocationListActivity {
     showRoute(route, StopsActivity.class);
    }
   
+  public void showMap(Route route) {
+    showRoute(route, RouteMapActivity.class);
+   }
+  
   public void showNearby() {
     startActivity(new Intent(this, NearbyActivity.class));
   }
@@ -90,6 +95,10 @@ public class BusActivity extends LocationListActivity {
         break;
       case R.id.stops:
         showStops(route);
+        handled = true;
+        break;
+      case R.id.map:
+        showMap(route);
         handled = true;
         break;
       default:

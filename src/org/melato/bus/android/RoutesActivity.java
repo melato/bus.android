@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.melato.bus.model.Route;
 
-import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
