@@ -125,6 +125,8 @@ public class NearbyManager {
       }
     }
     NearbyStop[] array = nearby.toArray(new NearbyStop[0]);
+    // sort them by distance and name.
+    Arrays.sort( array, new NearbyStop.Comparer() );
     return array;
   }
 

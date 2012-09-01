@@ -39,13 +39,17 @@ public class WaypointDistance implements Comparable<WaypointDistance> {
     }
   }
   
-  @Override
-  public int compareTo(WaypointDistance x) {
-    if ( distance < x.distance )
+  public static int compare(WaypointDistance x, WaypointDistance y) {
+    if ( x.distance < y.distance )
       return -1;
-    if ( distance > x.distance )
+    if ( x.distance > y.distance )
       return 1;
     return 0;
+  }
+
+  @Override
+  public int compareTo(WaypointDistance x) {
+    return compare(this, x);
   }
 
   @Override
