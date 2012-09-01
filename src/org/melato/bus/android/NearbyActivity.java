@@ -14,7 +14,8 @@ import android.widget.ListView;
 public class NearbyActivity extends BusActivity {
   private NearbyStop[] stops = new NearbyStop[0];
   private boolean haveLocation;
-  
+  NearbyAdapter adapter;
+
   void load(Point location) {
     stops = Info.nearbyManager(this).getNearby(location);
   }
@@ -22,15 +23,16 @@ public class NearbyActivity extends BusActivity {
   public NearbyActivity() {
   }
 
-  private void update() {
-    setListAdapter(new NearbyAdapter());    
-  }
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      Point p = Info.nearbyManager(this).getLastLocation();
+      if ( p != null ) {
+        setLocation(p);
+      }
+      haveLocation = false;
       setEnabledLocations(true);
-      //Log.setLogger( new BusLogger(this));
   }
 
   
@@ -55,11 +57,12 @@ public class NearbyActivity extends BusActivity {
     if ( haveLocation ) {
       WaypointDistance.setDistance(stops, point);
       Arrays.sort(stops);
-    } else {
+      adapter.notifyDataSetChanged();
+   } else {
       haveLocation = true;
       load(point);
+      setListAdapter(adapter = new NearbyAdapter());    
     }
-    update();
   }
   
 }

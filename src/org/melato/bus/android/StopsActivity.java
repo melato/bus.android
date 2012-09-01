@@ -30,6 +30,7 @@ public class StopsActivity extends BusActivity {
   WaypointDistance[] stops;
   int closestStop = -1;
   boolean isSelected;
+  StopsAdapter adapter;
 
   public StopsActivity() {
   }
@@ -56,7 +57,7 @@ public class StopsActivity extends BusActivity {
       stops[i] = new WaypointDistance(p, (float) pathLength);
       previous = p;
     }
-    setListAdapter(new StopsAdapter());
+    setListAdapter(adapter = new StopsAdapter());
     setEnabledLocations(true);
   }
 
@@ -81,7 +82,7 @@ public class StopsActivity extends BusActivity {
   public void setLocation(Point point) {
     super.setLocation(point);
     findClosestStop(point);
-    
+    adapter.notifyDataSetChanged();
     // scroll to the nearest stop, if we haven't done it yet.
     if ( ! isSelected && closestStop >= 0 ) {
       isSelected = true;
