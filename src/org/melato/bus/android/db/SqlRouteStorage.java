@@ -109,11 +109,6 @@ public class SqlRouteStorage implements RouteStorage {
   }
 
   @Override
-  public void iterateAllStops(Collection<Waypoint> collector) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public void iterateNearbyStops(Point point, float distance,
       Collection<Waypoint> collector) {
     float latDiff = Earth.latitudeForDistance(distance);
