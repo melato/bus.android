@@ -26,8 +26,9 @@ public class RoutesActivity extends BusActivity {
     List<Route> routes = activities.getRecentRoutes();
     if ( routes.isEmpty() ) {
       return Info.routeManager(this).getRoutes();
+    } else {
+      return RecentRoutesActivity.copyRoutes(routes);
     }
-    return routes;
   }
   
 /** Called when the activity is first created. */
