@@ -27,7 +27,7 @@ public class Info {
   public static NearbyManager nearbyManager(Context context) {
     File cacheDir = context.getCacheDir();
     SharedPreferences prefs = context.getSharedPreferences("nearby", Context.MODE_PRIVATE);
-    return new NearbyManager(routeManager(), cacheDir, new JPreferences(prefs)); 
+    return new NearbyManager(routeManager(context), cacheDir, new JPreferences(prefs)); 
   }
 
 }
