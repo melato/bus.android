@@ -10,14 +10,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 public class Info {
-  private static RouteManager routeManager;
-  
-  public static RouteManager routeManager() {
-    if ( routeManager ==  null ) {
-      routeManager = new RouteManager(new File("/sdcard/bus/"));
-    }
-    return routeManager;
-  }
+  public static final File DATA_DIR = new File("/sdcard/bus/");
   
   public static RouteManager routeManager(Context context) {
     return new RouteManager(new SqlRouteStorage(context));

@@ -43,7 +43,7 @@ public class BusActivities  {
     this.context = activity;
     String name = (String) activity.getIntent().getSerializableExtra(KEY_ROUTE);
     if ( name != null ) {
-      setRoute(Info.routeManager().getRoute(name));
+      setRoute(Info.routeManager(activity).getRoute(name));
     }
   }
   

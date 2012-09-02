@@ -6,13 +6,15 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.melato.bus.android.db.RoutesDatabase.Markers;
+import org.melato.bus.android.Info;
 import org.melato.bus.android.db.RoutesDatabase.Routes;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteStorage;
+import org.melato.bus.model.xml.XmlRouteStorage;
 import org.melato.gpx.Earth;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
+import org.melato.gpx.Sequence;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Log;
 
@@ -25,6 +27,7 @@ public class SqlRouteStorage implements RouteStorage {
     /data/data/org.melato.bus.android/databases/ROUTES.db
    */
   private String databaseFile;
+  private RouteStorage xmlStorage = new XmlRouteStorage(Info.DATA_DIR);
   public SqlRouteStorage(Context context) {
     //Log.setLogger( new BusLogger(context) );
     // I don't know how to get the databases directory officially, so we'll figure it out.
@@ -61,12 +64,48 @@ public class SqlRouteStorage implements RouteStorage {
 
   @Override
   public Route loadRoute(String qualifiedName) {
-    throw new UnsupportedOperationException();
+    return xmlStorage.loadRoute(qualifiedName);
   }
 
+  protected String quote(String s) {
+    if ( s.indexOf('\'') < 0 )
+      return s;
+    return s.replaceAll( "'", "''" );
+  }
+  
   @Override
-  public GPX loadGPX(String qualifiedName) {
-    throw new UnsupportedOperationException();
+  public GPX loadGPX(String qualifiedName) {    
+    String[] fields = qualifiedName.split("-");
+    String routeName = fields[0];
+    String direction = fields[1];
+    SQLiteDatabase db = getDatabase();
+    String sql = "select lat, lon, markers.symbol, markers.name, stops.seq from markers" +
+        "\njoin stops on markers._id = stops.marker" +
+        "\njoin routes on routes._id = stops.route" +
+        "\nwhere routes.name = '%s' and routes.direction = '%s'" +
+        "\norder by stops.seq";
+    Cursor cursor = db.rawQuery( String.format(sql, quote(routeName), quote(direction)), null);
+    //Cursor cursor = db.rawQuery( sql, new String[] { routeName, direction });
+    try {
+      List<Waypoint> waypoints = new ArrayList<Waypoint>();
+      if ( cursor.moveToFirst() ) {
+        do {
+          Waypoint p = new Waypoint(cursor.getFloat(0), cursor.getFloat(1));
+          p.setSym(cursor.getString(2));
+          p.setName(cursor.getString(3));
+          p.setLinks( Arrays.asList( new String[] { qualifiedName }));
+          waypoints.add(p);
+        } while ( cursor.moveToNext() );
+      }
+      GPX gpx = new GPX();
+      org.melato.gpx.Route rte = new org.melato.gpx.Route();
+      rte.path = new Sequence(waypoints);
+      gpx.getRoutes().add(rte);
+      return gpx;      
+    } finally {
+      cursor.close();
+      db.close();
+    }
   }
 
   @Override

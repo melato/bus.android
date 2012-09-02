@@ -44,7 +44,7 @@ public class StopsActivity extends BusActivity {
         route.qualifiedName(), route.getTitle());
     setTitle(title);
 
-    gpx = Info.routeManager().loadGPX(route);
+    gpx = Info.routeManager(this).loadGPX(route);
     List<Waypoint> waypoints = gpx.getRoutes().get(0).path.getWaypoints();
     stops = new WaypointDistance[waypoints.size()];
     double pathLength = 0;
