@@ -4,11 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.prefs.BackingStoreException;
-import java.util.prefs.Preferences;
 
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
@@ -29,41 +28,53 @@ public class NearbyManager {
   static final float TARGET_DISTANCE = 1000f;
   /** Extra distance to cache. */
   static final float CACHE_DISTANCE = 100f;
+  /** The cache file for the nearby waypoints (markers) */
   static final String NEARBY_FILE = "nearby.gpx";
+  /**
+   * The cache file for the location used for the nearby waypoints.
+   * It is a GPX file containing a single waypoint.
+   * */
+  static final String LOCATION_FILE = "location.gpx";
   static final String LAT = "lat";
   static final String LON = "lon";
   
   private RouteManager routeManager;
   private File          cacheDir;
-  private Preferences preferences;  
   
-  public NearbyManager(RouteManager routeManager, File cacheDir,
-      Preferences preferences) {
+  public NearbyManager(RouteManager routeManager, File cacheDir) {
     super();
     this.routeManager = routeManager;
     this.cacheDir = cacheDir;
-    this.preferences = preferences;
   }
 
   public Point getLastLocation() {
-    float lat = preferences.getFloat(LAT, Float.NaN);
-    float lon = preferences.getFloat(LON, Float.NaN);
-    if ( Float.isNaN(lat) || Float.isNaN(lon)) {
-      return null;
+    File file = new File(cacheDir, LOCATION_FILE );
+    if ( file.exists() ) {
+      try {
+        GPXParser parser = new GPXParser();
+        GPX gpx = parser.parse(file);
+        List<Waypoint> waypoints = gpx.getWaypoints();
+        if ( ! waypoints.isEmpty() ) {
+          return waypoints.get(0);
+        }
+      } catch( IOException e ) {
+        file.delete();
+      }
     }
-    return new Point(lat,lon);
+    return null;
   }
   
   private void setLastLocation(Point location) {
-    preferences.putFloat(LAT, location.getLat());
-    preferences.putFloat(LON, location.getLon());
+    GPX gpx = new GPX();
+    gpx.setWaypoints(Collections.singletonList(new Waypoint(location)));
+    GPXWriter writer = new GPXWriter();
+    File file = new File(cacheDir, LOCATION_FILE ); 
     try {
-      preferences.flush();
-    } catch (BackingStoreException e) {
-      throw new RuntimeException( e );
+      writer.write(gpx,  file);
+    } catch( IOException e ) {
     }
   }
-  
+      
   private Waypoint[] filterDistance(List<Waypoint> waypoints, Point target) {    
     WaypointDistance[] array = WaypointDistance.createArray(waypoints, target);
     Arrays.sort(array);

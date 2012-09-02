@@ -1,6 +1,5 @@
 package org.melato.bus.android.db;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,16 +23,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class SqlRouteStorage implements RouteStorage {
-  /**
-    /data/data/org.melato.bus.android/databases/ROUTES.db
-   */
   private String databaseFile;
   public SqlRouteStorage(Context context) {
-    //Log.setLogger( new BusLogger(context) );
-    // I don't know how to get the databases directory officially, so we'll figure it out.
-    File dir = context.getFilesDir();
-    dir = dir.getParentFile();
-    databaseFile = new File(dir, "databases/" + RoutesDatabase.DATABASE_NAME).toString();
+    databaseFile = context.getDatabasePath(RoutesDatabase.DATABASE_NAME).toString();
   }
 
   SQLiteDatabase getDatabase() {
