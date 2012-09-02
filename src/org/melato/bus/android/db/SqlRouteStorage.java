@@ -6,17 +6,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.melato.bus.android.Info;
 import org.melato.bus.android.db.RoutesDatabase.Routes;
+import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteStorage;
-import org.melato.bus.model.xml.XmlRouteStorage;
+import org.melato.bus.model.Schedule;
 import org.melato.gpx.Earth;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
 import org.melato.gpx.Sequence;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Log;
+import org.melato.util.IntArrays;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -27,7 +28,6 @@ public class SqlRouteStorage implements RouteStorage {
     /data/data/org.melato.bus.android/databases/ROUTES.db
    */
   private String databaseFile;
-  private RouteStorage xmlStorage = new XmlRouteStorage(Info.DATA_DIR);
   public SqlRouteStorage(Context context) {
     //Log.setLogger( new BusLogger(context) );
     // I don't know how to get the databases directory officially, so we'll figure it out.
@@ -62,11 +62,71 @@ public class SqlRouteStorage implements RouteStorage {
     return routes;
   }
 
+  private int loadBasic(SQLiteDatabase db, Route route) {    
+    String sql = "select _id, name, label, title from routes where name = '%s' and direction = '%s';";
+    Cursor cursor = db.rawQuery( String.format(sql, quote(route.getName()), quote(route.getDirection())), null);
+    try {
+      if ( cursor.moveToFirst() ) {
+        route.setTitle(cursor.getString(3));
+        return cursor.getInt(0);
+      }
+      return -1;
+    } finally {
+      cursor.close();
+    }
+  }
+  
+  private Schedule loadSchedule(SQLiteDatabase db, int routeId) {
+    String sql = "select days, minutes from schedule_times" +
+        "\njoin schedules on schedules._id = schedule_times.schedule" +
+        "\njoin routes on routes._id = schedules.route" +
+        "\nwhere routes._id = %d" +
+        "\norder by days";
+    Cursor cursor = db.rawQuery( String.format(sql, routeId), null);
+    List<DaySchedule> daySchedules = new ArrayList<DaySchedule>(); 
+    try {
+      if ( cursor.moveToFirst() ) {
+        int lastDays = 0;
+        List<Integer> times = new ArrayList<Integer>();
+        do {
+          int days = cursor.getInt(0);
+          int minutes = cursor.getInt(1);
+          if ( days != lastDays ) {
+            if ( ! times.isEmpty() ) {
+              daySchedules.add( new DaySchedule(IntArrays.toArray(times), lastDays));
+              times.clear();
+              lastDays = days;
+            }
+          }
+          times.add(minutes);
+        } while ( cursor.moveToNext() );
+        if ( ! times.isEmpty() ) {
+          daySchedules.add( new DaySchedule(IntArrays.toArray(times), lastDays));
+        }
+      }
+      return new Schedule(daySchedules.toArray(new DaySchedule[0]));
+    } finally {
+      cursor.close();
+    }    
+  }
   @Override
   public Route loadRoute(String qualifiedName) {
-    return xmlStorage.loadRoute(qualifiedName);
+    String[] fields = qualifiedName.split("-");
+    Route route = new Route();
+    route.setName(fields[0]);
+    route.setDirection(fields[1]);
+    SQLiteDatabase db = getDatabase();
+    try {
+      int routeId = loadBasic(db, route);
+      Schedule schedule = loadSchedule(db, routeId);
+      route.setSchedule(schedule);
+      return route;
+    } finally {
+      db.close();
+    }
   }
 
+  
   protected String quote(String s) {
     if ( s.indexOf('\'') < 0 )
       return s;
