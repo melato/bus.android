@@ -1,12 +1,11 @@
 package org.melato.bus.android.db;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.melato.bus.android.db.RoutesDatabase.Markers;
 import org.melato.bus.android.db.RoutesDatabase.Routes;
-import org.melato.bus.android.db.RoutesDatabase.Stops;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteStorage;
 import org.melato.gpx.GPX;
@@ -16,28 +15,22 @@ import org.melato.gpx.Waypoint;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 
-public class SqlRouteStorage extends SQLiteOpenHelper implements RouteStorage {
+public class SqlRouteStorage implements RouteStorage {
+  /**
+    /data/data/org.melato.bus.android/databases/ROUTES.db
+   */
+  private String databaseFile;
   public SqlRouteStorage(Context context) {
-    super(context, RoutesDatabase.DATABASE_NAME, null,
-        RoutesDatabase.DATABASE_VERSION);
-  }
-
-  @Override
-  public void onCreate(SQLiteDatabase db) {
-    db.execSQL(Routes.CREATE_STATEMENT);
-    db.execSQL(Markers.CREATE_STATEMENT);
-    db.execSQL(Stops.CREATE_STATEMENT);
+    // I don't know how to get the databases directory officially, so we'll figure it out.
+    File dir = context.getFilesDir();
+    dir = dir.getParentFile();
+    databaseFile = new File(dir, "databases/" + RoutesDatabase.DATABASE_NAME).toString();
   }
 
   SQLiteDatabase getDatabase() {
-    //return getReadableDatabase();
-    return SQLiteDatabase.openDatabase("/data/data/org.melato.bus.android/databases/ROUTES.db",
+    return SQLiteDatabase.openDatabase(databaseFile,
         null, SQLiteDatabase.OPEN_READONLY);
-  }
-  @Override
-  public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
   }
 
   @Override
