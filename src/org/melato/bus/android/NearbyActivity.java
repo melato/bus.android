@@ -7,6 +7,9 @@ import org.melato.bus.android.model.WaypointDistance;
 import org.melato.gpx.Point;
 
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -64,5 +67,13 @@ public class NearbyActivity extends BusActivity {
       setListAdapter(adapter = new NearbyAdapter());    
     }
   }
-  
+ 
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu)
+  {
+     MenuInflater inflater = getMenuInflater();
+     inflater.inflate(R.menu.routes_menu, menu);
+     return true;
+  }
+ 
 }
