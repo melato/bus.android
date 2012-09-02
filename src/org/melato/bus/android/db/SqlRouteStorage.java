@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.melato.bus.android.BusLogger;
 import org.melato.bus.android.db.RoutesDatabase.Markers;
 import org.melato.bus.android.db.RoutesDatabase.Routes;
 import org.melato.bus.model.Route;
@@ -27,7 +26,7 @@ public class SqlRouteStorage implements RouteStorage {
    */
   private String databaseFile;
   public SqlRouteStorage(Context context) {
-    Log.setLogger( new BusLogger(context) );
+    //Log.setLogger( new BusLogger(context) );
     // I don't know how to get the databases directory officially, so we'll figure it out.
     File dir = context.getFilesDir();
     dir = dir.getParentFile();
@@ -85,19 +84,44 @@ public class SqlRouteStorage implements RouteStorage {
     float lon1 = point.getLon() - lonDiff;
     float lon2 = point.getLon() + lonDiff;
     SQLiteDatabase db = getDatabase();
-    Cursor cursor = db.query(Markers.TABLE, new String[] {Markers.SYMBOL, Markers.NAME, Markers.LAT, Markers.LON},
-        String.format( "lat > %f and lat < %f and lon > %f and lon < %f", lat1, lat2, lon1, lon2), 
-        null, null, null, null);
+    String sql = "select lat, lon, markers.symbol, markers.name, routes.name, routes.direction, markers._id from markers" +
+        "\njoin stops on markers._id = stops.marker" +
+        "\njoin routes on routes._id = stops.route" +
+        "\nwhere lat > %f and lat < %f and lon > %f and lon < %f" +
+        "\norder by markers._id";
+    Cursor cursor = db.rawQuery(
+        String.format( sql, lat1, lat2, lon1, lon2),
+        null);
     long time = System.currentTimeMillis();
     if ( cursor.moveToFirst() ) {
+      int lastMarkerId = -1;
+      Waypoint p = null;
       do {
-        Waypoint p = new Waypoint(cursor.getFloat(2), cursor.getFloat(3));
-        p.setSym(cursor.getString(0));
-        p.setName(cursor.getString(1));
-        p.setLinks( Arrays.asList( new String[] { "409-1", "413-1" })); // dummy links, until we do the join to stops.
-        if ( Earth.distance(point,  p) <= distance )
-          collector.add(p);
-      } while( cursor.moveToNext() );
+        int markerId = cursor.getInt(6);
+        if ( markerId != lastMarkerId) {
+          lastMarkerId = markerId;
+          if ( p != null ) {
+            collector.add(p);
+            p = null;
+          }
+        }
+        if ( p == null ) {
+          p = new Waypoint(cursor.getFloat(0), cursor.getFloat(1));
+          if ( Earth.distance(point,  p) > distance ) {
+            p = null;
+            continue;
+          }          
+          p.setSym(cursor.getString(2));
+          p.setName(cursor.getString(3));
+          p.setLinks( new ArrayList<String>() );
+        }
+        String routeName = cursor.getString(4);
+        String direction = cursor.getString(5);
+        p.getLinks().add( Route.qualifiedName(routeName, direction));
+      } while ( cursor.moveToNext() );
+      if ( p != null ) {
+        collector.add(p);
+      }
     }
     cursor.close();
     db.close();
