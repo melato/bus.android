@@ -12,6 +12,6 @@ import org.melato.bus.model.Route;
 public class AllRoutesActivity extends RoutesActivity {
   @Override
   protected List<Route> loadRoutes() {
-    return Info.routeManager().getRoutes();
+    return Info.routeManager(this).getRoutes();
   }
  }

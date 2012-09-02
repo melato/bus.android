@@ -2,6 +2,7 @@ package org.melato.bus.android;
 
 import java.io.File;
 
+import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.android.model.NearbyManager;
 import org.melato.bus.model.RouteManager;
 
@@ -17,6 +18,11 @@ public class Info {
     }
     return routeManager;
   }
+  
+  public static RouteManager routeManager(Context context) {
+    return new RouteManager(new SqlRouteStorage(context));
+  }
+  
   
   public static NearbyManager nearbyManager(Context context) {
     File cacheDir = context.getCacheDir();
