@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.AllRoutesActivitysActivity"
+            android:name=".activity.AllRoutesActivity"
             android:label="@string/all_routes" >
         </activity>
         <activity
