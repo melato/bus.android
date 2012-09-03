@@ -25,18 +25,79 @@ import android.os.Bundle;
 public class StopActivity extends ItemsActivity {
   public static final String KEY_MARKER = "marker";
   public static final String KEY_INDEX = "index";
-  Item  markerPos;
-  Item  currentPos;
-  Item  straightDistance;
-  Item  routeDistance;
-  Item[] speedItems;
+  public static final float WALK_OVERHEAD = 1.25f;
+  public static final float WALK_SPEED = 5f;
+  public static final float BIKE_OVERHEAD = 1.35f;
+  public static final float BIKE_SPEED = 15f;
+  static int[] SPEEDS = new int[] { 20, 30, 40, 50 };
+  
   MarkerInfo markerInfo;
   Waypoint marker;
   Path path;
-  /** The path distance to the marker */
-  float markerPosition;
   int markerIndex;
-  int[] speeds = new int[] { 30, 40, 50 };
+  float markerPosition;
+  float straightDistance;
+  /** The path distance to the marker */  
+  float routeDistance;
+
+  class MarkerPosition {
+    public String toString() {
+      return formatProperty( R.string.marker_position, formatDistance(markerPosition));
+    }
+  }
+  
+  class StraightDistance {
+    public String toString() {
+      return formatProperty( R.string.straight_distance, formatDistance(straightDistance));
+    }
+  }
+  
+  class PathDistance {
+    public String toString() {
+      return formatProperty( R.string.route_distance, formatDistance(routeDistance));
+    }
+  }
+  
+  class PathETA {
+    float speed;
+    
+    public PathETA(float speed) {
+      this.speed = speed;
+    }
+
+    public String toString() {
+      String label = getResources().getString(R.string.ETA) + " @ " + Math.round(speed) + " Km/h";
+      float time = routeDistance / (speed *1000/3600);
+      return formatProperty( label, formatTime(time));
+    }
+  }
+  
+  class StraightETA {
+    int labelId;
+    float speed;
+    float overhead;
+    
+    public StraightETA(int labelId, float speed, float overhead) {
+      super();
+      this.labelId = labelId;
+      this.speed = speed;
+      this.overhead = overhead;
+    }
+
+    public String toString() {
+      String label = getResources().getString(labelId);
+      float time = straightDistance / (speed *1000/3600);
+      return formatProperty( label, formatTime(time));
+    }
+  }
+  
+  String formatTime( float secondsFromNow ) {
+    Date eta = new Date(System.currentTimeMillis() + (int) (secondsFromNow*1000));
+    int minutes = Math.round(secondsFromNow/60);
+    return Schedule.formatTime(Schedule.getTime(eta)) +
+        " (" + Schedule.formatTime(minutes) + ")";
+    
+  }
   
   public StopActivity() {
   }
@@ -64,17 +125,13 @@ public class StopActivity extends ItemsActivity {
     setTitle(marker.getName());
     
     markerPosition = path.getPathLength(markerIndex);    
-    markerPos = new Item("marker position", WaypointDistance.formatDistance(markerPosition));
-    currentPos = new Item("current position", null);
-    straightDistance = new Item(getResources().getString(R.string.straight_distance), null);
-    routeDistance = new Item(getResources().getString(R.string.route_distance), null);
-    addItem(straightDistance);
-    addItem(routeDistance);
-    speedItems = new Item[speeds.length];
-    for( int i = 0; i < speeds.length; i++ ) {
-      speedItems[i] = new Item(getResources().getString(R.string.ETA) + " @ " + speeds[i] + " Km/h", null);
-      addItem(speedItems[i]);
+    addItem(new StraightDistance());
+    addItem(new PathDistance());
+    for( float speed: SPEEDS ) {
+      addItem( new PathETA(speed));
     }
+    addItem(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
+    addItem(new StraightETA(R.string.bikeETA, BIKE_SPEED, BIKE_OVERHEAD));
     addItem(getResources().getString(R.string.routes));
     for( Route r: markerInfo.getRoutes() ) {
       addItem( r );
@@ -82,12 +139,6 @@ public class StopActivity extends ItemsActivity {
     setEnabledLocations(true);
   }
 
-  private String etaAtSpeed( long currentTime, float distance, float speed ) {
-    float time = distance / (speed *1000/3600);
-    Date date = new Date(currentTime + (int) (time*1000));
-    return Schedule.formatTime(Schedule.getTime(date));
-  }
-  
   private String formatDistance(float d) {
     return WaypointDistance.formatDistance(d);
   }
@@ -96,23 +147,9 @@ public class StopActivity extends ItemsActivity {
     super.setLocation(point);
     if ( point == null )
       return;
-    straightDistance.setValue( formatDistance(Earth.distance(point, marker)));
+    straightDistance = Earth.distance(point, marker);
     float pointPosition = path.getPathLength(point);
-    if ( ! Float.isNaN(pointPosition)) {
-      currentPos.setValue(formatDistance(pointPosition));
-    } else {
-      currentPos.setValue(null);
-    }
-    long time = System.currentTimeMillis();
-    float remainingDistance = markerPosition - pointPosition;
-    routeDistance.setValue(formatDistance(remainingDistance));
-    for( int i = 0; i < speeds.length; i++ ) {
-      if ( remainingDistance > 0 ) {
-        speedItems[i].setValue(etaAtSpeed(time, remainingDistance, speeds[i]));
-      } else {
-        speedItems[i].setValue(null);        
-      }
-    }
+    routeDistance = markerPosition - pointPosition;
     refresh();
   }
 

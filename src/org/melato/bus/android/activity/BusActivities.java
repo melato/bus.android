@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.R.id;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteHandler;
 import org.melato.bus.model.RouteWriter;
@@ -17,6 +16,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.view.MenuItem;
 
 
@@ -111,6 +111,12 @@ public class BusActivities  {
     showRoute(route, RouteMapActivity.class);
    }
   
+  public void showInBrowser(Route route) {
+    Uri uri = Uri.parse(Info.routeManager(context).getUri(route));
+    Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
+    context.startActivity(browserIntent);   
+   }
+  
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
     Route route = getRoute();
@@ -126,6 +132,10 @@ public class BusActivities  {
         break;
       case R.id.map:
         showMap(route);
+        handled = true;
+        break;
+      case R.id.browse:
+        showInBrowser(route);
         handled = true;
         break;
       case R.id.nearby:

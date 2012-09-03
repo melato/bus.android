@@ -16,10 +16,14 @@
     <string name="name">Name</string>
     <string name="speed">Speed</string>
     <string name="ETA">ETA</string>
+    <string name="walkETA">ETA by walking</string>
+    <string name="bikeETA">ETA by bike</string>
     <string name="stops_title">%1$s %2$s</string>
     <string name="nearby">Nearby</string>
     <string name="map">Map</string>
+    <string name="browse">Web</string>
     <string name="straight_distance">Straight Distance</string>
     <string name="route_distance">Route Distance</string>
+    <string name="marker_position">Position from start</string>
     
 </resources>

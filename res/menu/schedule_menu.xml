@@ -4,4 +4,6 @@
           android:title="@string/stops" />
     <item android:id="@+id/map"
           android:title="@string/map" />
+    <item android:id="@+id/browse"
+          android:title="@string/browse" />
 </menu>

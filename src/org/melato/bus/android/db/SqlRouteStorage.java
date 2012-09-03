@@ -1,11 +1,15 @@
 package org.melato.bus.android.db;
 
 import java.io.File;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.melato.bus.model.DaySchedule;
@@ -20,6 +24,7 @@ import org.melato.gpx.Sequence;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Log;
 import org.melato.util.IntArrays;
+import org.melato.util.VariableSubstitution;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -28,6 +33,29 @@ import android.database.sqlite.SQLiteDatabase;
 public class SqlRouteStorage implements RouteStorage {
   static final String DATABASE_NAME = "ROUTES.db";
   private String databaseFile;
+  
+  public String getProperty( String name) {
+    SQLiteDatabase db = getDatabase();
+    String sql = "select value from properties where name = '%s'";
+    Cursor cursor = db.rawQuery(String.format(sql, quote(name)), null);
+    if ( cursor.moveToFirst() ) {
+      return cursor.getString(0);
+    }
+    return null;
+  }
+  
+  @Override
+  public String getUri(Route route) {
+    String urlTemplate = getProperty( "route_url");
+    if ( urlTemplate != null ) {
+      VariableSubstitution sub = new VariableSubstitution(VariableSubstitution.ANT_PATTERN);
+      Map<String,String> vars = new HashMap<String,String>();
+      vars.put( "name", route.getName());
+      vars.put( "direction", route.getDirection());
+      return sub.substitute(urlTemplate, vars);
+    }
+    return null;
+  }
   public SqlRouteStorage(Context context) {
     databaseFile = context.getDatabasePath(DATABASE_NAME).toString();
   }

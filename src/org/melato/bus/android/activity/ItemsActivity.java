@@ -11,12 +11,22 @@ import android.widget.TextView;
 
 
 /**
- * Diaplays a list of labeled items.
+ * Displays a list of labeled items.
  * @author Alex Athanasopoulos
  */
 public class ItemsActivity extends BusActivity {
   protected List<Object> items = new ArrayList<Object>();
   private ItemAdapter adapter;
+  
+  public static String formatProperty( String label, Object value ) {
+    String s = (value == null) ? "" : value.toString();
+    return label + ": " + s;
+  }
+  
+  public String formatProperty( int labelResourceId, Object value ) {
+    return formatProperty( getResources().getString(labelResourceId), value);
+  }
+  
   static class Item {
     String label;
     Object value;
@@ -27,8 +37,7 @@ public class ItemsActivity extends BusActivity {
     }
     @Override
     public String toString() {
-      String s = (value == null) ? "" : value.toString();
-      return label + ": " + s;
+      return formatProperty(label, value);
     }
     public String getLabel() {
       return label;
