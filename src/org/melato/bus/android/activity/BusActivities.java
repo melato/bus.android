@@ -1,9 +1,12 @@
-package org.melato.bus.android;
+package org.melato.bus.android.activity;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.melato.bus.android.Info;
+import org.melato.bus.android.R;
+import org.melato.bus.android.R.id;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteHandler;
 import org.melato.bus.model.RouteWriter;

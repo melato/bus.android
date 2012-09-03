@@ -1,7 +1,8 @@
-package org.melato.bus.android;
+package org.melato.bus.android.activity;
 
 import java.util.List;
 
+import org.melato.bus.android.Info;
 import org.melato.bus.model.Route;
 
 /**

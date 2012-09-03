@@ -1,4 +1,4 @@
-package org.melato.bus.android;
+package org.melato.bus.android.activity;
 
 import java.util.ArrayList;
 import java.util.List;

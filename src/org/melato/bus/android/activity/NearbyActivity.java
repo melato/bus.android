@@ -1,7 +1,11 @@
-package org.melato.bus.android;
+package org.melato.bus.android.activity;
 
 import java.util.Arrays;
 
+import org.melato.bus.android.Info;
+import org.melato.bus.android.R;
+import org.melato.bus.android.R.layout;
+import org.melato.bus.android.R.menu;
 import org.melato.bus.android.model.NearbyStop;
 import org.melato.bus.android.model.WaypointDistance;
 import org.melato.gpx.Point;

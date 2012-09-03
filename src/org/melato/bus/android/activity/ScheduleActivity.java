@@ -1,8 +1,12 @@
-package org.melato.bus.android;
+package org.melato.bus.android.activity;
 
 import java.util.AbstractList;
 import java.util.Date;
 
+import org.melato.bus.android.R;
+import org.melato.bus.android.R.layout;
+import org.melato.bus.android.R.menu;
+import org.melato.bus.android.R.string;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;

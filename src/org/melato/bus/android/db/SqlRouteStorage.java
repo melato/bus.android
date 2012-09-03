@@ -1,11 +1,11 @@
 package org.melato.bus.android.db;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.melato.bus.android.db.RoutesDatabase.Routes;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteStorage;
@@ -23,9 +23,13 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class SqlRouteStorage implements RouteStorage {
+  static final String DATABASE_NAME = "ROUTES.db";
   private String databaseFile;
   public SqlRouteStorage(Context context) {
-    databaseFile = context.getDatabasePath(RoutesDatabase.DATABASE_NAME).toString();
+    databaseFile = context.getDatabasePath(DATABASE_NAME).toString();
+  }
+  public SqlRouteStorage(File databaseFile) {
+    this.databaseFile = databaseFile.toString();
   }
 
   SQLiteDatabase getDatabase() {
@@ -37,8 +41,8 @@ public class SqlRouteStorage implements RouteStorage {
   public List<Route> loadRoutes() {
     List<Route> routes = new ArrayList<Route>();
     SQLiteDatabase db = getDatabase();
-    Cursor cursor = db.query(Routes.TABLE, new String[] {Routes.NAME, Routes.LABEL, Routes.TITLE, Routes.DIRECTION},
-        null, null, null, null, null);
+    String sql = "select name, label, title, direction, _id from routes order by _id";
+    Cursor cursor = db.rawQuery(sql, null);
     if ( cursor.moveToFirst() ) {
       do {
         Route route = new Route();
