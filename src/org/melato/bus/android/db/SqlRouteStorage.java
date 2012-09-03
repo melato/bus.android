@@ -4,9 +4,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.melato.bus.model.DaySchedule;
+import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteStorage;
 import org.melato.bus.model.Schedule;
@@ -217,5 +220,72 @@ public class SqlRouteStorage implements RouteStorage {
     db.close();
     time = System.currentTimeMillis() - time;
     Log.info( "sql.nearby time=" + time );    
+  }
+
+  private Waypoint loadWaypoint(SQLiteDatabase db, String symbol) {
+    String sql = "select lat, lon, symbol, name, _id from markers" +
+        "\nwhere symbol = '%s'";
+    Cursor cursor = db.rawQuery(
+        String.format( sql, quote(symbol)), null);
+    try {
+      if ( cursor.moveToFirst() ) {
+        Waypoint p = new Waypoint(cursor.getFloat(0), cursor.getFloat(1));
+        p.setSym(cursor.getString(2));
+        p.setName(cursor.getString(3));
+        return p;
+      }
+      return null;
+    } finally {
+      cursor.close();
+    }
+  }
+  
+  private List<Route> loadRoutesForMarker(SQLiteDatabase db, String symbol) {    
+    List<Route> routes = new ArrayList<Route>();
+    String sql = "select routes.name, routes.label, routes.title, routes.direction, routes._id from routes" +
+        "\njoin stops on routes._id = stops.route" +
+        "\njoin markers on markers._id = stops.marker" +
+        "\nwhere markers.symbol = '%s'";
+    Cursor cursor = db.rawQuery(
+        String.format( sql, quote(symbol)),
+        null);
+    try {
+      Set<Integer> set = new HashSet<Integer>();
+      if ( cursor.moveToFirst() ) {
+        do {
+          int id = cursor.getInt(4);
+          if ( set.add(id)) { // skip duplicates.
+            Route route = new Route();
+            route.setName(cursor.getString(0));
+            route.setLabel(cursor.getString(1));
+            route.setTitle(cursor.getString(2));
+            route.setDirection(cursor.getString(3));
+            routes.add(route);
+          }
+        } while(cursor.moveToNext());      
+      }
+    } finally {
+      cursor.close();
+    }
+    return routes;
+  }
+  
+  @Override
+  public MarkerInfo loadMarker(String symbol) {
+    SQLiteDatabase db = getDatabase();
+    try {
+      Waypoint waypoint = loadWaypoint(db, symbol);
+      if ( waypoint == null )
+        return null;
+      List<Route> routes = loadRoutesForMarker(db, symbol);
+      String[] links = new String[routes.size()];
+          for(int i = 0; i < links.length; i++) {
+            links[i] = routes.get(i).qualifiedName();
+          }
+      waypoint.setLinks( Arrays.asList(links));
+      return new MarkerInfo(waypoint, routes);      
+    } finally {
+      db.close();
+    }
   }
 }

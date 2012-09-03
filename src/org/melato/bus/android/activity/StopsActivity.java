@@ -4,9 +4,6 @@ import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.R.layout;
-import org.melato.bus.android.R.menu;
-import org.melato.bus.android.R.string;
 import org.melato.bus.android.model.WaypointDistance;
 import org.melato.bus.model.Route;
 import org.melato.gpx.Earth;
@@ -14,6 +11,7 @@ import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -125,9 +123,18 @@ public class StopsActivity extends BusActivity {
 
   }
 
+  private void showStop(Waypoint p, int index) {
+    Intent intent = new Intent(this, StopActivity.class);
+    intent.putExtra(KEY_ROUTE, getRoute().qualifiedName());
+    intent.putExtra(StopActivity.KEY_MARKER, p.getSym() );
+    intent.putExtra(StopActivity.KEY_INDEX, index );
+    startActivity(intent);    
+  }
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
+    showStop( stops[position].getWaypoint(), position );
+    
   }
 
   @Override
