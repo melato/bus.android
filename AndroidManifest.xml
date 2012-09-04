@@ -28,7 +28,7 @@
             android:label="@string/all_routes" >
         </activity>
         <activity
-            android:name=".activity.RecentRoutesActivitysActivity"
+            android:name=".activity.RecentRoutesActivity"
             android:label="@string/recent_routes" >
         </activity>
         <activity
