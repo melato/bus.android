@@ -46,6 +46,8 @@ public final class R {
         public static final int days_Sa=0x7f040009;
         public static final int days_SaSu=0x7f04000a;
         public static final int days_Su=0x7f040007;
+        public static final int latitude=0x7f040019;
+        public static final int longitude=0x7f04001a;
         public static final int map=0x7f040014;
         public static final int map_title=0x7f040006;
         public static final int marker_position=0x7f040018;

@@ -58,6 +58,18 @@ public class StopActivity extends ItemsActivity {
     }
   }
   
+  class Latitude {
+    public String toString() {
+      return formatProperty( R.string.latitude, formatDegrees(marker.getLat()));
+    }
+  }
+  
+  class Longitude{
+    public String toString() {
+      return formatProperty( R.string.longitude, formatDegrees(marker.getLon()));
+    }
+  }
+  
   class PathETA {
     float speed;
     
@@ -127,6 +139,8 @@ public class StopActivity extends ItemsActivity {
     markerPosition = path.getPathLength(markerIndex);    
     addItem(new StraightDistance());
     addItem(new PathDistance());
+    addItem(new Latitude());
+    addItem(new Longitude());
     for( float speed: SPEEDS ) {
       addItem( new PathETA(speed));
     }
@@ -139,6 +153,10 @@ public class StopActivity extends ItemsActivity {
     setEnabledLocations(true);
   }
 
+  private String formatDegrees(float d) {
+    return String.valueOf(d);
+  }
+  
   private String formatDistance(float d) {
     return WaypointDistance.formatDistance(d);
   }

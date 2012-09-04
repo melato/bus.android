@@ -25,5 +25,7 @@
     <string name="straight_distance">Straight Distance</string>
     <string name="route_distance">Route Distance</string>
     <string name="marker_position">Position from start</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
     
 </resources>
