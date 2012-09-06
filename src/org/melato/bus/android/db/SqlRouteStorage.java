@@ -69,8 +69,7 @@ public class SqlRouteStorage implements RouteStorage {
         null, SQLiteDatabase.OPEN_READONLY);
   }
 
-  static private final String ROUTE_SELECT = "select name, label, title, direction, _id from routes";
-  static private final String ROUTE_SELECT2 = "select routes.name, routes.label, routes.title, routes.direction, _id from routes";
+  static private final String ROUTE_SELECT = "select routes.name, routes.label, routes.title, routes.direction, routes._id from routes";
   
   @Override
   public List<Route> loadRoutes() {
@@ -295,7 +294,7 @@ public class SqlRouteStorage implements RouteStorage {
   
   private List<Route> loadRoutesForMarker(SQLiteDatabase db, String symbol) {    
     List<Route> routes = new ArrayList<Route>();
-    String sql = ROUTE_SELECT2 +
+    String sql = ROUTE_SELECT +
         "\njoin stops on routes._id = stops.route" +
         "\njoin markers on markers._id = stops.marker" +
         "\nwhere markers.symbol = '%s'";
