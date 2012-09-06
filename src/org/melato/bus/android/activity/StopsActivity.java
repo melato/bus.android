@@ -43,9 +43,7 @@ public class StopsActivity extends BusActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     Route route = getRoute();
-    String title = String.format( getResources().getString(R.string.stops_title),
-        route.getQualifiedLabel(), route.getTitle());
-    setTitle(title);
+    setTitle(route.getFullTitle());
 
     gpx = Info.routeManager(this).loadGPX(route);
     List<Waypoint> waypoints = gpx.getRoutes().get(0).path.getWaypoints();

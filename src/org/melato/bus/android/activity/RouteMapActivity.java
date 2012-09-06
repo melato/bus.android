@@ -37,9 +37,7 @@ public class RouteMapActivity extends MapActivity {
       super.onCreate(savedInstanceState);
       activities = new BusActivities(this);
       Route route = activities.getRoute();
-      String title = String.format( getResources().getString(R.string.map_title),
-          route.getQualifiedLabel(), route.getTitle() );
-      setTitle(title);
+      setTitle(route.getFullTitle());
 
       setContentView(R.layout.map);
       map = (MapView) findViewById(R.id.mapview);

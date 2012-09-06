@@ -37,9 +37,7 @@ public class NearbyRoutesActivity extends MapActivity {
       super.onCreate(savedInstanceState);
       activities = new BusActivities(this);
       Route route = activities.getRoute();
-      String title = String.format( getResources().getString(R.string.map_title),
-          route.getLabel() + "-" + route.getDirection(), route.getTitle() );
-      setTitle(title);
+      //setTitle(title);
 
       setContentView(R.layout.map);
       map = (MapView) findViewById(R.id.mapview);

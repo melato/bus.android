@@ -4,9 +4,6 @@ import java.util.AbstractList;
 import java.util.Date;
 
 import org.melato.bus.android.R;
-import org.melato.bus.android.R.layout;
-import org.melato.bus.android.R.menu;
-import org.melato.bus.android.R.string;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
@@ -109,8 +106,7 @@ public class ScheduleActivity extends BusActivity {
       super.onCreate(savedInstanceState);
       Route route = getRoute();
       schedule = route.getSchedule();
-      String title = String.format( getResources().getString(R.string.schedule_title),
-          route.getQualifiedLabel(), getScheduleName() );
+      String title = route.getLabel() + "-" + route.getDirection() + " " + getScheduleName();
       setTitle(title);
       TimeList times = new TimeList(schedule,currentTime);
       ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);

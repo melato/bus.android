@@ -5,8 +5,6 @@
     <string name="all_routes">All</string>
     <string name="recent_routes">Recent</string>
     <string name="schedule">Schedule</string>
-    <string name="schedule_title">%1$s %2$s</string>
-    <string name="map_title">%1$s %2$s</string>
     <string name="days_Su">Sunday</string>
     <string name="days_M_F">Monday-Friday</string>
     <string name="days_Sa">Saturday</string>
@@ -18,7 +16,6 @@
     <string name="ETA">ETA</string>
     <string name="walkETA">ETA by walking</string>
     <string name="bikeETA">ETA by bike</string>
-    <string name="stops_title">%1$s %2$s</string>
     <string name="nearby">Nearby</string>
     <string name="map">Map</string>
     <string name="browse">Web</string>
