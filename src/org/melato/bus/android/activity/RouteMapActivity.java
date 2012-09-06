@@ -4,7 +4,6 @@ import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.map.GPXOverlay;
 import org.melato.bus.android.map.Maps;
-import org.melato.bus.model.Id;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
 import org.melato.gpx.GPX;
@@ -46,7 +45,7 @@ public class RouteMapActivity extends MapActivity {
       map = (MapView) findViewById(R.id.mapview);
       map.setBuiltInZoomControls(true);
       RouteManager routeManager = Info.routeManager(this);
-      GPX gpx = routeManager.loadGPX(route.getId());
+      GPX gpx = routeManager.loadGPX(route);
       
       Point center = AveragePoint.getCenter(gpx );
       MapController mapController = map.getController();

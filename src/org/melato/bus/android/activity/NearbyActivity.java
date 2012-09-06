@@ -2,18 +2,17 @@ package org.melato.bus.android.activity;
 
 import java.util.Arrays;
 
+import org.melato.bus.android.BusLogger;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.R.layout;
-import org.melato.bus.android.R.menu;
 import org.melato.bus.android.model.NearbyStop;
 import org.melato.bus.android.model.WaypointDistance;
 import org.melato.gpx.Point;
+import org.melato.log.Log;
 
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -34,6 +33,7 @@ public class NearbyActivity extends BusActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      Log.setLogger(new BusLogger(this));
       Point p = Info.nearbyManager(this).getLastLocation();
       if ( p != null ) {
         setLocation(p);

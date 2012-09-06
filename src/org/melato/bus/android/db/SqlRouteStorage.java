@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.melato.bus.model.DaySchedule;
-import org.melato.bus.model.Id;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
@@ -46,13 +45,13 @@ public class SqlRouteStorage implements RouteStorage {
   }
   
   @Override
-  public String getUri(Route route) {
+  public String getUri(RouteId routeId) {
     String urlTemplate = getProperty( "route_url");
     if ( urlTemplate != null ) {
       VariableSubstitution sub = new VariableSubstitution(VariableSubstitution.ANT_PATTERN);
       Map<String,String> vars = new HashMap<String,String>();
-      vars.put( "name", route.getRouteId().getName());
-      vars.put( "direction", route.getDirection());
+      vars.put( "name", routeId.getName());
+      vars.put( "direction", routeId.getDirection());
       return sub.substitute(urlTemplate, vars);
     }
     return null;
@@ -114,8 +113,8 @@ public class SqlRouteStorage implements RouteStorage {
   }
   
   private Route loadBasic(SQLiteDatabase db, RouteId routeId) {    
-    String sql = ROUTE_SELECT + " where name = '%s' and direction = '%s';";
-    Cursor cursor = db.rawQuery( String.format(sql, quote(routeId.getName()), quote(routeId.getDirection())), null);
+    String sql = ROUTE_SELECT + " where " + whereClause(routeId);
+    Cursor cursor = db.rawQuery( sql, null);
     return loadBasic(cursor);
   }  
   
@@ -153,8 +152,8 @@ public class SqlRouteStorage implements RouteStorage {
     }    
   }
 
-  @Override
-  public Route loadRoute(Id routeId) {
+  /*
+  private Route loadRoute(Id routeId) {
     SqlId id = (SqlId) routeId;
     SQLiteDatabase db = getDatabase();
     try {
@@ -166,7 +165,8 @@ public class SqlRouteStorage implements RouteStorage {
       db.close();
     }
   }
-
+  */
+  
   @Override
   public Route loadRoute(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
@@ -186,17 +186,21 @@ public class SqlRouteStorage implements RouteStorage {
     return s.replaceAll( "'", "''" );
   }
   
+  private String format(String sql, RouteId routeId ) {
+    return String.format(sql, quote(routeId.getName()), quote(routeId.getDirection()));
+  }
+  private String whereClause(RouteId routeId) {
+    return format("routes.name = '%s' and routes.direction = '%s'", routeId);    
+  }
   @Override
-  public GPX loadGPX(Id routeId) {
-    SqlId id = (SqlId)routeId;
+  public GPX loadGPX(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
     String sql = "select lat, lon, markers.symbol, markers.name, stops.seq from markers" +
         "\njoin stops on markers._id = stops.marker" +
-        "\nwhere stops.route = '%d'" +
+        "\njoin routes on routes._id = stops.route" +
+        "\nwhere " + whereClause(routeId) + 
         "\norder by stops.seq";
-    Route route = loadBasic(db, id);
-    Cursor cursor = db.rawQuery( String.format(sql, id.getId()), null);
-    //Cursor cursor = db.rawQuery( sql, new String[] { routeName, direction });
+    Cursor cursor = db.rawQuery( sql, null);
     try {
       List<Waypoint> waypoints = new ArrayList<Waypoint>();
       if ( cursor.moveToFirst() ) {
@@ -204,7 +208,7 @@ public class SqlRouteStorage implements RouteStorage {
           Waypoint p = new Waypoint(cursor.getFloat(0), cursor.getFloat(1));
           p.setSym(cursor.getString(2));
           p.setName(cursor.getString(3));
-          p.setLinks( Arrays.asList( new String[] { route.getRouteId().toString() }));
+          p.setLinks( Arrays.asList( new String[] { routeId.toString() }));
           waypoints.add(p);
         } while ( cursor.moveToNext() );
       }

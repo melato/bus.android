@@ -18,6 +18,7 @@ import org.melato.gpx.GPXParser;
 import org.melato.gpx.GPXWriter;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
+import org.melato.log.Log;
 
 /**
  * Provides access to nearby stops.
@@ -138,6 +139,7 @@ public class NearbyManager {
       }
     }
     NearbyStop[] array = nearby.toArray(new NearbyStop[0]);
+    Log.info( "nearby.length=" + array.length);
     // sort them by distance and name.
     Arrays.sort( array, new NearbyStop.Comparer() );
     return array;
