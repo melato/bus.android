@@ -10,7 +10,6 @@ import android.view.MenuItem;
  * @author Alex Athanasopoulos
  */
 public class BusActivity extends LocationListActivity {
-  public static final String KEY_ROUTE = BusActivities.KEY_ROUTE;
   BusActivities activities;
     
   public Route getRoute() {

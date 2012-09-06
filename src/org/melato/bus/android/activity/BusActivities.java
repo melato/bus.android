@@ -8,6 +8,7 @@ import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteHandler;
+import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteWriter;
 import org.melato.util.MRU;
 
@@ -39,14 +40,33 @@ public class BusActivities  {
   private Context context;
   /** The current route, if any. */
   protected Route route;
-    
+
+  public static Route getRoute(Activity activity) {
+    String textId = (String) activity.getIntent().getSerializableExtra(KEY_ROUTE);
+    if ( textId != null ) {
+      RouteId routeId = new RouteId(textId);
+      return Info.routeManager(activity).loadRoute(routeId);
+    }
+    /*
+    Id id = (Id) activity.getIntent().getSerializableExtra(KEY_ROUTE);
+    if ( id != null ) {
+      return Info.routeManager(activity).getRoute(id);
+    }
+    */
+    return null;
+  }
+  
+  public static void putRoute(Intent intent, Route route) {
+    intent.putExtra(KEY_ROUTE, route.getRouteId().toString());
+    //intent.putExtra(KEY_ROUTE, route.getId());
+  }
   
   public BusActivities(Activity activity) {
     super();
     this.context = activity;
-    String name = (String) activity.getIntent().getSerializableExtra(KEY_ROUTE);
-    if ( name != null ) {
-      setRoute(Info.routeManager(activity).getRoute(name));
+    Route route = getRoute(activity);
+    if ( route != null ) {
+      setRoute(route);
     }
   }
   
@@ -66,7 +86,7 @@ public class BusActivities  {
     getRecentRoutes().add(route);
     saveRecentRoutes();
     Intent intent = new Intent(context, activity);
-    intent.putExtra(KEY_ROUTE, route.qualifiedName());
+    BusActivities.putRoute(intent, route);
     context.startActivity(intent);    
   }
   

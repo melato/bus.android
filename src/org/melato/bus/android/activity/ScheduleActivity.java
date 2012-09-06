@@ -110,7 +110,7 @@ public class ScheduleActivity extends BusActivity {
       Route route = getRoute();
       schedule = route.getSchedule();
       String title = String.format( getResources().getString(R.string.schedule_title),
-          route.qualifiedName(), getScheduleName() );
+          route.getQualifiedLabel(), getScheduleName() );
       setTitle(title);
       TimeList times = new TimeList(schedule,currentTime);
       ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);

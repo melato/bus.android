@@ -44,7 +44,7 @@ public class StopsActivity extends BusActivity {
     super.onCreate(savedInstanceState);
     Route route = getRoute();
     String title = String.format( getResources().getString(R.string.stops_title),
-        route.qualifiedName(), route.getTitle());
+        route.getQualifiedLabel(), route.getTitle());
     setTitle(title);
 
     gpx = Info.routeManager(this).loadGPX(route);
@@ -125,7 +125,7 @@ public class StopsActivity extends BusActivity {
 
   private void showStop(Waypoint p, int index) {
     Intent intent = new Intent(this, StopActivity.class);
-    intent.putExtra(KEY_ROUTE, getRoute().qualifiedName());
+    BusActivities.putRoute(intent, getRoute());
     intent.putExtra(StopActivity.KEY_MARKER, p.getSym() );
     intent.putExtra(StopActivity.KEY_INDEX, index );
     startActivity(intent);    

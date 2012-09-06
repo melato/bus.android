@@ -16,6 +16,8 @@ import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ListView;
 
 /**
  * Displays information about one stop.
@@ -171,5 +173,13 @@ public class StopActivity extends ItemsActivity {
     refresh();
   }
 
+  @Override
+  protected void onListItemClick(ListView l, View v, int position, long id) {
+    super.onListItemClick(l, v, position, id);
+    Object obj = items.get(position);
+    if ( obj instanceof Route ) {
+      showRoute((Route) obj);
+    }
+  }
   
 }

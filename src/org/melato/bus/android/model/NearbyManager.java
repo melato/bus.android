@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.melato.bus.model.Route;
+import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
 import org.melato.gpx.Earth;
 import org.melato.gpx.GPX;
@@ -121,12 +122,13 @@ public class NearbyManager {
   public NearbyStop[] getNearby(Point location) {
     Waypoint[] waypoints = getNearbyWaypoints(location);
     List<NearbyStop> nearby = new ArrayList<NearbyStop>();
-    Set<String> routeIds = new HashSet<String>();
+    Set<String> links = new HashSet<String>();
     for( Waypoint p: waypoints ) {
       for( String link: p.getLinks() ) {
-        if ( ! routeIds.contains( link )) {
-          routeIds.add(link);
-          Route route = routeManager.getRoute(link);
+        if ( ! links.contains( link )) {
+          links.add(link);
+          RouteId id = new RouteId(link);
+          Route route = routeManager.getRoute(id);
           if ( route != null ) {
             NearbyStop stop = new NearbyStop(p, route);
             stop.setDistance(Earth.distance(p,  location));

@@ -22,7 +22,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
-public class RouteMapActivity extends MapActivity {
+public class NearbyRoutesActivity extends MapActivity {
   private static final String KEY_ZOOM_LEVEL = "zoomLevel";
   private BusActivities activities;
   private MapView map;
@@ -39,14 +39,15 @@ public class RouteMapActivity extends MapActivity {
       activities = new BusActivities(this);
       Route route = activities.getRoute();
       String title = String.format( getResources().getString(R.string.map_title),
-          route.getQualifiedLabel(), route.getTitle() );
+          route.getLabel() + "-" + route.getDirection(), route.getTitle() );
       setTitle(title);
 
       setContentView(R.layout.map);
       map = (MapView) findViewById(R.id.mapview);
       map.setBuiltInZoomControls(true);
       RouteManager routeManager = Info.routeManager(this);
-      GPX gpx = routeManager.loadGPX(route.getId());
+      GPX gpx = routeManager.loadGPX(route);
+      activities.setRoute(route);
       
       Point center = AveragePoint.getCenter(gpx );
       MapController mapController = map.getController();
