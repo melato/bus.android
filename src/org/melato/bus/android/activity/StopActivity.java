@@ -1,5 +1,6 @@
 package org.melato.bus.android.activity;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -126,8 +127,11 @@ public class StopActivity extends ItemsActivity {
       return;
     }
     Route route = getRoute();
-    GPX gpx = Info.routeManager(this).loadGPX(route);
-    List<Waypoint> waypoints = gpx.getRoutes().get(0).path.getWaypoints();
+    GPX gpx = getRouteManager().loadGPX(route);
+    List<Waypoint> waypoints = Collections.emptyList();
+    if ( ! gpx.getRoutes().isEmpty() ) {
+      waypoints = gpx.getRoutes().get(0).path.getWaypoints();
+    }
     path = new Path(waypoints);    
     markerInfo = Info.routeManager(this).loadMarker(symbol);
     marker = markerInfo.getWaypoint();

@@ -123,7 +123,8 @@ public class StopsActivity extends BusActivity {
 
   private void showStop(Waypoint p, int index) {
     Intent intent = new Intent(this, StopActivity.class);
-    BusActivities.putRoute(intent, getRoute());
+    IntentHelper helper = new IntentHelper(intent);
+    helper.putRoute(getRoute());
     intent.putExtra(StopActivity.KEY_MARKER, p.getSym() );
     intent.putExtra(StopActivity.KEY_INDEX, index );
     startActivity(intent);    

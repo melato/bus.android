@@ -32,6 +32,10 @@
             android:label="@string/recent_routes" >
         </activity>
         <activity
+            android:name=".activity.RouteGroupActivity"
+            android:label="@string/routes" >
+        </activity>
+        <activity
             android:name=".activity.ScheduleActivity"
             android:label="@string/schedule" >
         </activity>

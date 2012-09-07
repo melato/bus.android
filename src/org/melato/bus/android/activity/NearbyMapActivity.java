@@ -21,7 +21,7 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
-public class NearbyRoutesActivity extends MapActivity {
+public class NearbyMapActivity extends MapActivity {
   private static final String KEY_ZOOM_LEVEL = "zoomLevel";
   private BusActivities activities;
   private MapView map;
@@ -29,7 +29,7 @@ public class NearbyRoutesActivity extends MapActivity {
 
   @Override
   protected boolean isRouteDisplayed() {
-    return true;
+    return false;
   }
   
   @Override
