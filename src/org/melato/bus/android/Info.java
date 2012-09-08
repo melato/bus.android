@@ -9,6 +9,8 @@ import org.melato.bus.model.RouteManager;
 import android.content.Context;
 
 public class Info {
+  public static final float MARK_PROXIMITY = 200f;
+  
   public static RouteManager routeManager(Context context) {
     return new RouteManager(new SqlRouteStorage(context));
   }
