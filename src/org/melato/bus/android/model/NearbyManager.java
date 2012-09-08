@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.melato.bus.model.Route;
-import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
 import org.melato.gpx.Earth;
 import org.melato.gpx.GPX;
@@ -18,6 +19,7 @@ import org.melato.gpx.GPXParser;
 import org.melato.gpx.GPXWriter;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
+import org.melato.log.Clock;
 import org.melato.log.Log;
 
 /**
@@ -92,22 +94,27 @@ public class NearbyManager {
     return result;
   }
   
-  public Waypoint[] getNearbyWaypoints(Point location) {
+  private List<Waypoint> readCache(Point location) {
+    Clock clock = new Clock("readCache");
     Point lastLocation = getLastLocation();
     File file = new File(cacheDir, NEARBY_FILE ); 
     if ( lastLocation != null && Earth.distance(lastLocation, location) < CACHE_DISTANCE ) {
       try {
         GPXParser parser = new GPXParser();
         GPX gpx = parser.parse(file);
-        return filterDistance(gpx.getWaypoints(), location);
+        Log.info(clock);
+        return gpx.getWaypoints();
       } catch( IOException e ) {
         file.delete();
+      } finally {
+        
       }
     }
-    
-    // not in cache.  filter the global list
-    
-    List<Waypoint> list = routeManager.findNearbyStops(location, TARGET_DISTANCE + CACHE_DISTANCE);
+    return null;
+  }
+
+  private void writeCache(List<Waypoint> list, Point location) {
+    File file = new File(cacheDir, NEARBY_FILE ); 
     GPX gpx = new GPX();
     gpx.setWaypoints(list);
     GPXWriter writer = new GPXWriter();
@@ -115,21 +122,40 @@ public class NearbyManager {
       writer.write(gpx,  file);
       setLastLocation(location);
     } catch( IOException e ) {
+    }        
+  }
+  
+  public Waypoint[] getNearbyWaypoints(Point location) {
+    List<Waypoint> list = null;
+    list = readCache(location);
+    if ( list == null ) {
+      // not in cache.  filter the global list
+      Log.info( "querying database for nearby");
+      list = routeManager.findNearbyStops(location, TARGET_DISTANCE + CACHE_DISTANCE);
+      writeCache(list, location);
     }
-    
     return filterDistance(list, location);
   }
     
+  Map<String,Route> getRouteMap() {
+    Map<String,Route> map = new HashMap<String,Route>();
+    for( Route route: routeManager.getRoutes() ) {
+      map.put( route.getRouteId().toString(), route);
+    }
+    return map;
+  }
   public NearbyStop[] getNearby(Point location) {
+    Log.info("getNearby location=" + location);
     Waypoint[] waypoints = getNearbyWaypoints(location);
+    Log.info("getNearbyWaypoints: " + waypoints.length );
     List<NearbyStop> nearby = new ArrayList<NearbyStop>();
     Set<String> links = new HashSet<String>();
+    Map<String,Route> map = getRouteMap();
     for( Waypoint p: waypoints ) {
       for( String link: p.getLinks() ) {
         if ( ! links.contains( link )) {
           links.add(link);
-          RouteId id = new RouteId(link);
-          Route route = routeManager.getRoute(id);
+          Route route = map.get(link);
           if ( route != null ) {
             NearbyStop stop = new NearbyStop(p, route);
             stop.setDistance(Earth.distance(p,  location));

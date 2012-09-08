@@ -2,13 +2,16 @@ package org.melato.bus.android.activity;
 
 import java.util.List;
 
-import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.model.Route;
+import org.melato.bus.model.RouteGroup;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -19,38 +22,88 @@ import android.widget.ListView;
  *
  */
 public class RoutesActivity extends BusActivity {
-  List<Route> routes;
+  public static final String TYPE_KEY = "routes_type";
+  public static final String RECENT = "recent";
+  public static final String ALL = "all";
   
-  public RoutesActivity() {    
+  private Object[] items = new Object[0];
+
+  private void setRoutes(List<Route> routes) {
+    items = routes.toArray(new Route[0]);    
   }
-  
-  protected List<Route> loadRoutes() {
-    List<Route> routes = activities.getRecentRoutes();
-    if ( routes.isEmpty() ) {
-      return Info.routeManager(this).getRoutes();
-    } else {
-      return RecentRoutesActivity.copyRoutes(routes);
+
+  private boolean initIntentRoutes() {    
+    IntentHelper helper = new IntentHelper(this);
+    List<Route> routes = helper.getRoutes();
+    if ( routes != null && ! routes.isEmpty() ) {
+      setRoutes(routes);
+      setTitle(R.string.routes);
+      return true;
     }
+    return false;
   }
   
-/** Called when the activity is first created. */
+  private boolean initRecentRoutes() {
+    List<Route> routes = activities.getRecentRoutes();
+    /*
+     *  make a copy of the recent routes list.
+     *  otherwise the order of the routes may change without notice
+     *  and may not be in sync with the displayed order.
+     *  toArray() makes a copy.
+     */
+    setRoutes(routes);
+    if ( ! routes.isEmpty() ) {
+      setTitle(R.string.routes);
+      return true;
+    }
+    return false;
+  }
+  
+  private boolean initAllRoutes() {
+    setTitle(R.string.all_routes);
+    List<RouteGroup> groups = RouteGroup.group(getRouteManager().getRoutes());
+    items = groups.toArray(new RouteGroup[0]);
+    setTitle(R.string.all_routes);
+    return true;
+  }
+  
+  /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      routes = loadRoutes();
+      String type = (String) getIntent().getSerializableExtra(TYPE_KEY);
+      if ( RECENT.equals(type)) {
+        initRecentRoutes();
+      } else if ( ALL.equals(type)) {
+        initAllRoutes();
+      } else {
+        boolean init = initIntentRoutes();
+        if ( ! init )
+          init = initRecentRoutes();
+        if ( ! init )
+          initAllRoutes();
+      }
       setListAdapter(new RoutesAdapter());
   }
 
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
-    Route route = routes.get(position);
-    showRoute(route);
+    Object item = items[position];
+    if ( item instanceof Route ) {
+      showRoute((Route)item);
+    } else if ( item instanceof RouteGroup ) {
+      RouteGroup group = (RouteGroup) item;
+      Intent intent = new Intent(this, RoutesActivity.class);
+      IntentHelper helper = new IntentHelper(intent);
+      helper.putRoutes(group);
+      startActivity(intent);
+    }
   }
 
-  class RoutesAdapter extends ArrayAdapter<Route> {
+  class RoutesAdapter extends ArrayAdapter<Object> {
     public RoutesAdapter() {
-      super(RoutesActivity.this, R.layout.list_item, routes);
+      super(RoutesActivity.this, R.layout.list_item, items);
     }
   }
   
@@ -62,4 +115,41 @@ public class RoutesActivity extends BusActivity {
      return true;
   }
 
+  public static void showRecent(Context context) {
+    Intent intent = new Intent(context, RoutesActivity.class);
+    intent.putExtra(RoutesActivity.TYPE_KEY, RoutesActivity.RECENT);
+    context.startActivity(intent);        
+  }
+  
+  public static void showAll(Context context) {
+    Intent intent = new Intent(context, RoutesActivity.class);
+    intent.putExtra(RoutesActivity.TYPE_KEY, RoutesActivity.ALL);
+    context.startActivity(intent);        
+  }
+  
+  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    boolean handled = false;
+
+    switch (item.getItemId()) {
+      case R.id.nearby:
+        startActivity(new Intent(this, NearbyActivity.class));
+        handled = true;
+        break;
+      case R.id.all_routes:
+        initAllRoutes();
+        setListAdapter(new RoutesAdapter());
+        handled = true;
+        break;
+      case R.id.recent_routes:
+        initRecentRoutes();
+        setListAdapter(new RoutesAdapter());
+        handled = true;
+        break;
+      default:
+        break;
+    }
+    return handled;
+  } 
  }

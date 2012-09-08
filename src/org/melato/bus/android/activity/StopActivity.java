@@ -107,10 +107,18 @@ public class StopActivity extends ItemsActivity {
   }
   
   String formatTime( float secondsFromNow ) {
+    secondsFromNow = -4000;
     Date eta = new Date(System.currentTimeMillis() + (int) (secondsFromNow*1000));
     int minutes = Math.round(secondsFromNow/60);
+    String sign = "";
+    if ( minutes < 0 ) {
+      // we may have negative times, such as the time to a previous stop.
+      minutes = -minutes;
+      sign = "-";
+    }
+      
     return Schedule.formatTime(Schedule.getTime(eta)) +
-        " (" + Schedule.formatTime(minutes) + ")";
+        " (" + sign + Schedule.formatTime(minutes) + ")";
     
   }
   

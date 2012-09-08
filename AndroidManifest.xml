@@ -24,18 +24,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.AllRoutesActivity"
-            android:label="@string/all_routes" >
-        </activity>
-        <activity
-            android:name=".activity.RecentRoutesActivity"
-            android:label="@string/recent_routes" >
-        </activity>
-        <activity
-            android:name=".activity.RouteGroupActivity"
-            android:label="@string/routes" >
-        </activity>
-        <activity
             android:name=".activity.ScheduleActivity"
             android:label="@string/schedule" >
         </activity>
@@ -54,6 +42,10 @@
         <activity
             android:name=".activity.StopActivity"
             android:label="@string/stop" >
+        </activity>
+        <activity
+            android:name=".track.TrackActivity"
+            android:label="@string/track" >
         </activity>
         </application>
 

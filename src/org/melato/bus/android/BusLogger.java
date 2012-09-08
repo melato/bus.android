@@ -21,12 +21,13 @@ public class BusLogger implements Logger {
   
   @Override
   public void log(String message) {
+    long time = System.currentTimeMillis()/1000L;
+    message = time + " " + message; 
     android.util.Log.i("melato.org", message);
     try {
       PrintWriter writer = new PrintWriter(new FileOutputStream(logFile, true));
       try {
-        long time = System.currentTimeMillis()/1000L;
-        writer.println( time + " " + message );
+        writer.println( message );
       } finally {
         writer.close();
       }

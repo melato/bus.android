@@ -15,14 +15,16 @@ public final class R {
         public static final int marker=0x7f020001;
     }
     public static final class id {
-        public static final int all_routes=0x7f060004;
-        public static final int browse=0x7f060007;
+        public static final int all_routes=0x7f060003;
+        public static final int browse=0x7f060008;
         public static final int map=0x7f060006;
         public static final int mapview=0x7f060000;
-        public static final int nearby=0x7f060003;
-        public static final int recent_routes=0x7f060005;
+        public static final int mark=0x7f060009;
+        public static final int nearby=0x7f060005;
+        public static final int recent_routes=0x7f060004;
         public static final int schedule=0x7f060002;
         public static final int stops=0x7f060001;
+        public static final int track=0x7f060007;
     }
     public static final class layout {
         public static final int bus_stop_item=0x7f030000;
@@ -32,9 +34,11 @@ public final class R {
     }
     public static final class menu {
         public static final int map_menu=0x7f050000;
-        public static final int routes_menu=0x7f050001;
-        public static final int schedule_menu=0x7f050002;
-        public static final int stops_menu=0x7f050003;
+        public static final int nearby_menu=0x7f050001;
+        public static final int routes_menu=0x7f050002;
+        public static final int schedule_menu=0x7f050003;
+        public static final int stops_menu=0x7f050004;
+        public static final int track_menu=0x7f050005;
     }
     public static final class string {
         public static final int ETA=0x7f04000d;
@@ -49,6 +53,7 @@ public final class R {
         public static final int latitude=0x7f040016;
         public static final int longitude=0x7f040017;
         public static final int map=0x7f040011;
+        public static final int mark=0x7f040018;
         public static final int marker_position=0x7f040015;
         public static final int name=0x7f04000b;
         public static final int nearby=0x7f040010;
@@ -60,6 +65,7 @@ public final class R {
         public static final int stop=0x7f04000a;
         public static final int stops=0x7f040009;
         public static final int straight_distance=0x7f040013;
+        public static final int track=0x7f040019;
         public static final int walkETA=0x7f04000e;
     }
 }

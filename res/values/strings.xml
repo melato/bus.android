@@ -24,5 +24,7 @@
     <string name="marker_position">Position from start</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
+    <string name="mark">Mark</string>
+    <string name="track">Track</string>
     
 </resources>

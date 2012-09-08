@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.track.TrackActivity;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteHandler;
 import org.melato.bus.model.RouteWriter;
@@ -31,6 +32,7 @@ public class BusActivities  {
   public static final String VIEW_SCHEDULE = "schedule";
   public static final String VIEW_STOPS = "stops";
   public static final String VIEW_MAP = "map";
+  public static final String VIEW_TRACK = "track";
   
   public static final int MRU_SIZE = 10;
   
@@ -95,21 +97,7 @@ public class BusActivities  {
     editor.putString(VIEW,  view);
     editor.commit();
   }
-  public void showSchedule(Route route) {
-    setDefaultView(VIEW_SCHEDULE);
-    showRoute(route, ScheduleActivity.class);
-   }
 
-  public void showStops(Route route) {
-    setDefaultView(VIEW_STOPS);
-    showRoute(route, StopsActivity.class);
-   }
-  
-  public void showMap(Route route) {
-    setDefaultView(VIEW_MAP);
-    showRoute(route, RouteMapActivity.class);
-   }
-  
   public void showInBrowser(Route route) {
     Uri uri = Uri.parse(Info.routeManager(context).getUri(route));
     Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
@@ -121,32 +109,34 @@ public class BusActivities  {
     Route route = getRoute();
 
     switch (item.getItemId()) {
+      case R.id.recent_routes:
+        RoutesActivity.showRecent(context);
+        break;
+      case R.id.all_routes:
+        RoutesActivity.showAll(context);
+        break;
       case R.id.schedule:
-        showSchedule(route);
+        setDefaultView(VIEW_SCHEDULE);
+        showRoute(route, ScheduleActivity.class);
         handled = true;
         break;
       case R.id.stops:
-        showStops(route);
+        setDefaultView(VIEW_STOPS);
+        showRoute(route, StopsActivity.class);
         handled = true;
         break;
       case R.id.map:
-        showMap(route);
+        setDefaultView(VIEW_STOPS);
+        showRoute(route, StopsActivity.class);
+        handled = true;
+        break;
+      case R.id.track:
+        setDefaultView(VIEW_TRACK);
+        showRoute(route, TrackActivity.class);
         handled = true;
         break;
       case R.id.browse:
         showInBrowser(route);
-        handled = true;
-        break;
-      case R.id.nearby:
-        context.startActivity(new Intent(context, NearbyActivity.class));
-        handled = true;
-        break;
-      case R.id.all_routes:
-        context.startActivity(new Intent(context, AllRoutesActivity.class));
-        handled = true;
-        break;
-      case R.id.recent_routes:
-        context.startActivity(new Intent(context, RecentRoutesActivity.class));
         handled = true;
         break;
       default:

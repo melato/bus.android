@@ -23,7 +23,9 @@ public class NearbyActivity extends BusActivity {
   NearbyAdapter adapter;
 
   void load(Point location) {
+    Log.info( "Nearby.Activity load");
     stops = Info.nearbyManager(this).getNearby(location);
+    Log.info( "Nearby.Activity loaded");
   }
   
   public NearbyActivity() {
@@ -34,6 +36,7 @@ public class NearbyActivity extends BusActivity {
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       Log.setLogger(new BusLogger(this));
+      Log.info( "nearby.onCreate()");
       Point p = Info.nearbyManager(this).getLastLocation();
       if ( p != null ) {
         setLocation(p);
@@ -76,7 +79,7 @@ public class NearbyActivity extends BusActivity {
   public boolean onCreateOptionsMenu(Menu menu)
   {
      MenuInflater inflater = getMenuInflater();
-     inflater.inflate(R.menu.routes_menu, menu);
+     inflater.inflate(R.menu.nearby_menu, menu);
      return true;
   }
  

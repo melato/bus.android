@@ -21,6 +21,7 @@ import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
 import org.melato.gpx.Sequence;
 import org.melato.gpx.Waypoint;
+import org.melato.log.Clock;
 import org.melato.log.Log;
 import org.melato.util.IntArrays;
 import org.melato.util.VariableSubstitution;
@@ -106,25 +107,19 @@ public class SqlRouteStorage implements RouteStorage {
     }
   }
   
-  private Route loadBasic(SQLiteDatabase db, SqlId id) {    
-    String sql = ROUTE_SELECT + " where _id = %d";
-    Cursor cursor = db.rawQuery( String.format(sql, id.getId()), null);
-    return loadBasic(cursor);
-  }
-  
   private Route loadBasic(SQLiteDatabase db, RouteId routeId) {    
     String sql = ROUTE_SELECT + " where " + whereClause(routeId);
     Cursor cursor = db.rawQuery( sql, null);
     return loadBasic(cursor);
   }  
   
-  private Schedule loadSchedule(SQLiteDatabase db, SqlId routeId) {
+  private Schedule loadSchedule(SQLiteDatabase db, RouteId routeId) {
     String sql = "select days, minutes from schedule_times" +
         "\njoin schedules on schedules._id = schedule_times.schedule" +
         "\njoin routes on routes._id = schedules.route" +
-        "\nwhere routes._id = %d" +
+        "\nwhere " + whereClause(routeId) +
         "\norder by days";
-    Cursor cursor = db.rawQuery( String.format(sql, routeId.getId()), null);
+    Cursor cursor = db.rawQuery( sql, null);
     List<DaySchedule> daySchedules = new ArrayList<DaySchedule>(); 
     try {
       if ( cursor.moveToFirst() ) {
@@ -152,6 +147,14 @@ public class SqlRouteStorage implements RouteStorage {
     }    
   }
 
+  public Schedule loadSchedule(RouteId routeId) {
+    SQLiteDatabase db = getDatabase();
+    try {
+      return loadSchedule(db, routeId);
+    } finally {
+      db.close();
+    }
+  }
   /*
   private Route loadRoute(Id routeId) {
     SqlId id = (SqlId) routeId;
@@ -172,7 +175,7 @@ public class SqlRouteStorage implements RouteStorage {
     SQLiteDatabase db = getDatabase();
     try {
       Route route = loadBasic(db, routeId);
-      Schedule schedule = loadSchedule(db, (SqlId) route.getId());
+      Schedule schedule = loadSchedule(db, routeId);
       route.setSchedule(schedule);
       return route;
     } finally {
@@ -241,7 +244,7 @@ public class SqlRouteStorage implements RouteStorage {
     Cursor cursor = db.rawQuery(
         String.format( sql, lat1, lat2, lon1, lon2),
         null);
-    long time = System.currentTimeMillis();
+    Clock clock = new Clock("sql.iterateNearbyStops");
     if ( cursor.moveToFirst() ) {
       int lastMarkerId = -1;
       Waypoint p = null;
@@ -274,8 +277,7 @@ public class SqlRouteStorage implements RouteStorage {
     }
     cursor.close();
     db.close();
-    time = System.currentTimeMillis() - time;
-    Log.info( "sql.nearby time=" + time );    
+    Log.info(clock);    
   }
 
   private Waypoint loadWaypoint(SQLiteDatabase db, String symbol) {

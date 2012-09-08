@@ -8,7 +8,6 @@ import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteGroup;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
-import org.melato.log.Log;
 
 import android.app.Activity;
 import android.content.Context;
@@ -74,12 +73,10 @@ public class IntentHelper  {
   }
   public List<Route> getRoutes() {
     Integer count = (Integer) intent.getSerializableExtra(KEY_ROUTE_COUNT);
-    Log.info("group.count=" + count);
     List<Route> routes = new ArrayList<Route>();
     if ( count != null ) {
       for(int i = 0; i < count; i++ ) {
         Route route = getRoute(keyRoute(i));
-        Log.info("group.route: " + route);
         if ( route != null ) {
           routes.add(route);
         }
