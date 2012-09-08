@@ -1,9 +1,10 @@
 package org.melato.bus.android.activity;
 
-import java.util.AbstractList;
 import java.util.Date;
 
 import org.melato.bus.android.R;
+import org.melato.bus.android.model.TimeOfDayList;
+import org.melato.bus.android.model.TimeOfDay;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
@@ -24,53 +25,6 @@ public class ScheduleActivity extends BusActivity {
   Schedule schedule;
   Date  currentTime = new Date();
 
-  static class Time {
-    int time;
-    
-    
-    public Time(int time) {
-      super();
-      this.time = time;
-    }
-
-    @Override
-    public String toString() {
-      return Schedule.formatTime(time);
-    }    
-  }
-  
-  static class TimeList extends AbstractList<Time> {
-    Schedule schedule;
-    int[] times;
-    Date  currentTime;
-
-    public TimeList(Schedule schedule, Date currentTime) {
-      this.schedule = schedule;
-      times = schedule.getTimes(currentTime);
-      this.currentTime = currentTime;
-    }
-    @Override
-    public Time get(int location) {
-      return new Time(times[location]);
-    }
-
-    @Override
-    public int size() {
-      return times.length;
-    }
-    
-    public int getDefaultPosition() {
-      int time = Schedule.getTime(currentTime);
-      for( int i = 1; i < times.length; i++ ) {
-        if ( times[i] >= time )
-          return i - 1;
-      }
-      return times.length - 1;
-    }
-    
-    
-  }
-  
   public ScheduleActivity() {    
   }
     
@@ -108,7 +62,7 @@ public class ScheduleActivity extends BusActivity {
       schedule = route.getSchedule();
       String title = route.getLabel() + "-" + route.getDirection() + " " + getScheduleName();
       setTitle(title);
-      TimeList times = new TimeList(schedule,currentTime);
+      TimeOfDayList times = new TimeOfDayList(schedule,currentTime);
       ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);
       setListAdapter(scheduleAdapter);
       int pos = times.getDefaultPosition();
@@ -121,9 +75,9 @@ public class ScheduleActivity extends BusActivity {
     super.onListItemClick(l, v, position, id);
   }
 
-  class ScheduleAdapter extends ArrayAdapter<Time> {
-    TimeList times;
-    public ScheduleAdapter(TimeList times) {
+  class ScheduleAdapter extends ArrayAdapter<TimeOfDay> {
+    TimeOfDayList times;
+    public ScheduleAdapter(TimeOfDayList times) {
       super(ScheduleActivity.this, R.layout.list_item, times);
     }
   }
