@@ -126,8 +126,8 @@ public class BusActivities  {
         handled = true;
         break;
       case R.id.map:
-        setDefaultView(VIEW_STOPS);
-        showRoute(route, StopsActivity.class);
+        setDefaultView(VIEW_MAP);
+        showRoute(route, RouteMapActivity.class);
         handled = true;
         break;
       case R.id.track:
