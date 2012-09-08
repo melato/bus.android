@@ -1,5 +1,7 @@
 package org.melato.bus.android.activity;
 
+import java.util.Date;
+
 import org.melato.gpx.Point;
 
 import android.app.ListActivity;
@@ -10,12 +12,16 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 /**
- * A list activity that is also a location listener and maintains a current location
+ * A list activity that is also a location listener and maintains a current location.
+ * This must be separated from ListActivity, since it doesn't really care what type of activity it is.
+ * It was only because most bus views are list activities (except for the map activities which are not).
+ * For now we're just using onCreate/onDestroy to request/remove location updates.
+ * We're also allowing subclasses to use setLocation() in order to get notified of updates.
  * @author Alex Athanasopoulos
- *
  */
 public class LocationListActivity extends ListActivity implements LocationListener {
   private Point   location;
+  private Date    locationDate;
   private boolean enabledLocations;
   
   public LocationListActivity() {
@@ -56,22 +62,20 @@ public class LocationListActivity extends ListActivity implements LocationListen
     if ( point == null )
       return;
     location = point;
+    locationDate = new Date();
   }
     
   public Point getLocation() {
     return location;
   }
-
-  public static Point location2Point(Location loc) {
-    if ( loc == null )
-      return null;
-    Point p = new Point( (float) loc.getLatitude(), (float) loc.getLongitude());
-    return p;
-  }
   
+  public Date getLocationDate() {
+    return locationDate;
+  }
+
   @Override
   public void onLocationChanged(Location loc) {
-    setLocation(location2Point(loc));
+    setLocation(Locations.location2Point(loc));
   }
   @Override
   public void onProviderDisabled(String provider) {
