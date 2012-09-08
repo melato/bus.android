@@ -86,6 +86,16 @@ public class RoutesActivity extends BusActivity {
       setListAdapter(new RoutesAdapter());
   }
 
+  void showGroup(RouteGroup group) {
+    if ( group.getRoutes().length == 1 ) {
+      showRoute(group.getRoutes()[0]);
+    } else {
+      Intent intent = new Intent(this, RoutesActivity.class);
+      IntentHelper helper = new IntentHelper(intent);
+      helper.putRoutes(group);
+      startActivity(intent);
+    }
+  }
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
@@ -93,11 +103,7 @@ public class RoutesActivity extends BusActivity {
     if ( item instanceof Route ) {
       showRoute((Route)item);
     } else if ( item instanceof RouteGroup ) {
-      RouteGroup group = (RouteGroup) item;
-      Intent intent = new Intent(this, RoutesActivity.class);
-      IntentHelper helper = new IntentHelper(intent);
-      helper.putRoutes(group);
-      startActivity(intent);
+      showGroup((RouteGroup)item);
     }
   }
 

@@ -9,6 +9,12 @@ import android.view.MenuItem;
 
 
 /**
+ * Base Activity class that provides:
+ * ListActivity
+ * Location listener
+ * activities menu
+ * route manager
+ * current route
  * @author Alex Athanasopoulos
  */
 public class BusActivity extends LocationListActivity {

@@ -4,6 +4,7 @@ import java.util.AbstractList;
 import java.util.Date;
 
 import org.melato.bus.model.Schedule;
+import org.melato.log.Log;
 
 public class TimeOfDayList extends AbstractList<TimeOfDay> {
   private int[] times;
@@ -12,10 +13,10 @@ public class TimeOfDayList extends AbstractList<TimeOfDay> {
   public TimeOfDayList(int[] times, Date currentTime) {
     this.times = times;
     this.currentTime = currentTime;
+    Log.info( "TimeOfDayList times.length=" + times.length );
   }
   public TimeOfDayList(Schedule schedule, Date currentTime) {
-    times = schedule.getTimes(currentTime);
-    this.currentTime = currentTime;
+    this(schedule.getTimes(currentTime), currentTime);
   }
   @Override
   public TimeOfDay get(int location) {
