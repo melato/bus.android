@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.melato.bus.android.R;
 
+import android.app.ListActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -14,7 +15,7 @@ import android.widget.TextView;
  * Displays a list of labeled items.
  * @author Alex Athanasopoulos
  */
-public class ItemsActivity extends BusActivity {
+public class ItemsActivity extends ListActivity {
   protected List<Object> items = new ArrayList<Object>();
   private ItemAdapter adapter;
   

@@ -10,11 +10,8 @@ import org.melato.bus.android.model.WaypointDistance;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
-import org.melato.gpx.Earth;
 import org.melato.gpx.GPX;
-import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
-import org.melato.gpx.util.Path;
 
 import android.os.Bundle;
 import android.view.View;
@@ -33,43 +30,36 @@ public class StopActivity extends ItemsActivity {
   public static final float BIKE_OVERHEAD = 1.35f;
   public static final float BIKE_SPEED = 15f;
   static int[] SPEEDS = new int[] { 20, 30, 40, 50 };
+  StopContext stop;
+  private BusActivities activities;
   
-  MarkerInfo markerInfo;
-  Waypoint marker;
-  Path path;
-  int markerIndex;
-  float markerPosition;
-  float straightDistance;
-  /** The path distance to the marker */  
-  float routeDistance;
-
   class MarkerPosition {
     public String toString() {
-      return formatProperty( R.string.marker_position, formatDistance(markerPosition));
+      return formatProperty( R.string.marker_position, formatDistance(stop.getMarkerPosition()));
     }
   }
   
   class StraightDistance {
     public String toString() {
-      return formatProperty( R.string.straight_distance, formatDistance(straightDistance));
+      return formatProperty( R.string.straight_distance, formatDistance(stop.getStraightDistance()));
     }
   }
   
   class PathDistance {
     public String toString() {
-      return formatProperty( R.string.route_distance, formatDistance(routeDistance));
+      return formatProperty( R.string.route_distance, formatDistance(stop.getRouteDistance()));
     }
   }
   
   class Latitude {
     public String toString() {
-      return formatProperty( R.string.latitude, formatDegrees(marker.getLat()));
+      return formatProperty( R.string.latitude, formatDegrees(stop.getMarker().getLat()));
     }
   }
   
   class Longitude{
     public String toString() {
-      return formatProperty( R.string.longitude, formatDegrees(marker.getLon()));
+      return formatProperty( R.string.longitude, formatDegrees(stop.getMarker().getLon()));
     }
   }
   
@@ -82,7 +72,7 @@ public class StopActivity extends ItemsActivity {
 
     public String toString() {
       String label = getResources().getString(R.string.ETA) + " @ " + Math.round(speed) + " Km/h";
-      float time = routeDistance / (speed *1000/3600);
+      float time = stop.getRouteDistance()/ (speed *1000/3600);
       return formatProperty( label, formatTime(time));
     }
   }
@@ -101,7 +91,7 @@ public class StopActivity extends ItemsActivity {
 
     public String toString() {
       String label = getResources().getString(labelId);
-      float time = straightDistance / (speed *1000/3600);
+      float time = stop.getStraightDistance() / (speed *1000/3600);
       return formatProperty( label, formatTime(time));
     }
   }
@@ -129,28 +119,33 @@ public class StopActivity extends ItemsActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    stop = new StopContext(this) {
+      public void refresh() {
+        StopActivity.this.refresh();
+      }
+    };
+    activities = new BusActivities(this);
     String symbol = (String) getIntent().getSerializableExtra(KEY_MARKER);
     Integer index = (Integer) getIntent().getSerializableExtra(KEY_INDEX);
     if ( symbol == null ) {
       return;
     }
-    Route route = getRoute();
-    GPX gpx = getRouteManager().loadGPX(route);
+    Route route = activities.getRoute();
+    GPX gpx = activities.getRouteManager().loadGPX(route);
     List<Waypoint> waypoints = Collections.emptyList();
     if ( ! gpx.getRoutes().isEmpty() ) {
       waypoints = gpx.getRoutes().get(0).path.getWaypoints();
     }
-    path = new Path(waypoints);    
-    markerInfo = Info.routeManager(this).loadMarker(symbol);
-    marker = markerInfo.getWaypoint();
-    if ( index != null ) {
-      markerIndex = index;
-    } else {
-      markerIndex = path.findWaypointIndex(marker);
-    }
-    setTitle(marker.getName());
+    stop.setWaypoints(waypoints);
     
-    markerPosition = path.getPathLength(markerIndex);    
+    MarkerInfo markerInfo = Info.routeManager(this).loadMarker(symbol);
+    if ( index != null ) {
+      stop.setMarkerIndex(index);
+    } else {
+      stop.setMarker(markerInfo.getWaypoint());
+    }
+    setTitle(stop.getMarker().getName());
+    
     addItem(new StraightDistance());
     addItem(new PathDistance());
     addItem(new Latitude());
@@ -164,7 +159,6 @@ public class StopActivity extends ItemsActivity {
     for( Route r: markerInfo.getRoutes() ) {
       addItem( r );
     }
-    setEnabledLocations(true);
   }
 
   private String formatDegrees(float d) {
@@ -174,23 +168,13 @@ public class StopActivity extends ItemsActivity {
   private String formatDistance(float d) {
     return WaypointDistance.formatDistance(d);
   }
-  @Override
-  public void setLocation(Point point) {
-    super.setLocation(point);
-    if ( point == null )
-      return;
-    straightDistance = Earth.distance(point, marker);
-    float pointPosition = path.getPathLength(point);
-    routeDistance = markerPosition - pointPosition;
-    refresh();
-  }
 
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
     Object obj = items.get(position);
     if ( obj instanceof Route ) {
-      showRoute((Route) obj);
+      activities.showRoute((Route) obj);
     }
   }
   

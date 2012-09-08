@@ -3,15 +3,17 @@ package org.melato.bus.android.activity;
 import java.util.Date;
 
 import org.melato.bus.android.R;
-import org.melato.bus.android.model.TimeOfDayList;
 import org.melato.bus.android.model.TimeOfDay;
+import org.melato.bus.android.model.TimeOfDayList;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 
+import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -21,14 +23,15 @@ import android.widget.ListView;
  * @author Alex Athanasopoulos
  *
  */
-public class ScheduleActivity extends BusActivity {
-  Schedule schedule;
-  Date  currentTime = new Date();
+public class ScheduleActivity extends ListActivity {
+  protected BusActivities activities;
+  private Schedule schedule;
+  private Date  currentTime = new Date();
 
   public ScheduleActivity() {    
   }
     
-  private String getScheduleName() {
+  protected String getScheduleName() {
     DaySchedule schedule = this.schedule.getSchedule(currentTime);
     if ( schedule == null )
       return "";
@@ -58,7 +61,8 @@ public class ScheduleActivity extends BusActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      Route route = getRoute();
+      activities = new BusActivities(this);
+      Route route = activities.getRoute();
       schedule = route.getSchedule();
       String title = route.getLabel() + "-" + route.getDirection() + " " + getScheduleName();
       setTitle(title);
@@ -89,4 +93,10 @@ public class ScheduleActivity extends BusActivity {
      inflater.inflate(R.menu.schedule_menu, menu);
      return true;
   }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    return activities.onOptionsItemSelected(item);
+  }
+  
  }

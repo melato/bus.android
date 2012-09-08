@@ -9,6 +9,7 @@ import org.melato.bus.android.R;
 import org.melato.bus.android.track.TrackActivity;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteHandler;
+import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.RouteWriter;
 import org.melato.util.MRU;
 
@@ -50,6 +51,17 @@ public class BusActivities  {
       setRoute(route);
     }
   }
+  
+  private RouteManager routeManager;
+  
+  
+  public RouteManager getRouteManager() {
+    if ( routeManager == null ) {
+      routeManager = Info.routeManager(context);
+    }
+    return routeManager;
+  }
+
   
   public Route getRoute() {
     return route;
@@ -132,7 +144,7 @@ public class BusActivities  {
         break;
       case R.id.track:
         setDefaultView(VIEW_TRACK);
-        showRoute(route, TrackActivity.class);
+        //showRoute(route, TrackActivity.class);
         handled = true;
         break;
       case R.id.browse:

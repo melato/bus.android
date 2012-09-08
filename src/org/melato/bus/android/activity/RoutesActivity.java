@@ -6,6 +6,7 @@ import org.melato.bus.android.R;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteGroup;
 
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,11 +22,12 @@ import android.widget.ListView;
  * @author Alex Athanasopoulos
  *
  */
-public class RoutesActivity extends BusActivity {
+public class RoutesActivity extends ListActivity {
   public static final String TYPE_KEY = "routes_type";
   public static final String RECENT = "recent";
   public static final String ALL = "all";
   
+  public BusActivities activities;
   private Object[] items = new Object[0];
 
   private void setRoutes(List<Route> routes) {
@@ -61,7 +63,7 @@ public class RoutesActivity extends BusActivity {
   
   private boolean initAllRoutes() {
     setTitle(R.string.all_routes);
-    List<RouteGroup> groups = RouteGroup.group(getRouteManager().getRoutes());
+    List<RouteGroup> groups = RouteGroup.group(activities.getRouteManager().getRoutes());
     items = groups.toArray(new RouteGroup[0]);
     setTitle(R.string.all_routes);
     return true;
@@ -71,6 +73,7 @@ public class RoutesActivity extends BusActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      activities = new BusActivities(this);
       String type = (String) getIntent().getSerializableExtra(TYPE_KEY);
       if ( RECENT.equals(type)) {
         initRecentRoutes();
@@ -88,7 +91,7 @@ public class RoutesActivity extends BusActivity {
 
   void showGroup(RouteGroup group) {
     if ( group.getRoutes().length == 1 ) {
-      showRoute(group.getRoutes()[0]);
+      activities.showRoute(group.getRoutes()[0]);
     } else {
       Intent intent = new Intent(this, RoutesActivity.class);
       IntentHelper helper = new IntentHelper(intent);
@@ -101,7 +104,7 @@ public class RoutesActivity extends BusActivity {
     super.onListItemClick(l, v, position, id);
     Object item = items[position];
     if ( item instanceof Route ) {
-      showRoute((Route)item);
+      activities.showRoute((Route)item);
     } else if ( item instanceof RouteGroup ) {
       showGroup((RouteGroup)item);
     }

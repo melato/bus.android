@@ -1,7 +1,5 @@
 package org.melato.bus.android.activity;
 
-import java.util.Date;
-
 import org.melato.gpx.Point;
 
 import android.content.Context;
@@ -21,7 +19,6 @@ import android.os.Bundle;
 public class LocationContext implements LocationListener {
   protected Context context;
   private Point   location;
-  private Date    locationDate;
   private boolean enabledLocations;
   
 
@@ -57,17 +54,12 @@ public class LocationContext implements LocationListener {
     if ( point == null )
       return;
     location = point;
-    locationDate = new Date();
   }
     
   public Point getLocation() {
     return location;
   }
   
-  public Date getLocationDate() {
-    return locationDate;
-  }
-
   @Override
   public void onLocationChanged(Location loc) {
     setLocation(Locations.location2Point(loc));

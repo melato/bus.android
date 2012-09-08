@@ -1,26 +1,19 @@
 package org.melato.bus.android.activity;
 
-import java.util.List;
-
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.model.WaypointDistance;
 import org.melato.bus.model.Route;
-import org.melato.gpx.Earth;
 import org.melato.gpx.GPX;
-import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
 
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
 /**
  * Displays the schedule for a route
@@ -28,12 +21,9 @@ import android.widget.TextView;
  * @author Alex Athanasopoulos
  * 
  */
-public class StopsActivity extends BusActivity {
-  GPX gpx;
-  WaypointDistance[] stops;
-  int closestStop = -1;
-  boolean isSelected;
-  StopsAdapter adapter;
+public class StopsActivity extends ListActivity {
+  private BusActivities activities;
+  private StopsContext stops;
 
   public StopsActivity() {
   }
@@ -42,97 +32,35 @@ public class StopsActivity extends BusActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Route route = getRoute();
+    activities = new BusActivities(this);
+    stops = new StopsContext(this);
+    Route route = activities.getRoute();
     setTitle(route.getFullTitle());
 
-    gpx = Info.routeManager(this).loadGPX(route);
-    List<Waypoint> waypoints = gpx.getRoutes().get(0).path.getWaypoints();
-    stops = new WaypointDistance[waypoints.size()];
-    double pathLength = 0;
-    Waypoint previous = null;
-    for (int i = 0; i < stops.length; i++) {
-      Waypoint p = waypoints.get(i);
-      if (i != 0) {
-        pathLength += Earth.distance(previous, p);
-      }
-      stops[i] = new WaypointDistance(p, (float) pathLength);
-      previous = p;
-    }
-    setListAdapter(adapter = new StopsAdapter());
-    setEnabledLocations(true);
+    GPX gpx = Info.routeManager(this).loadGPX(route);
+    stops.setGPX(gpx);
   }
-
-  private void findClosestStop(Point point) {
-    if ( point == null ) {
-      closestStop = -1;
-      return;
-    }
-      
-    float minDistance = 0;
-    
-    for( int i = 0; i < stops.length; i++ ) {
-      float d = Earth.distance(point, stops[i].getWaypoint());
-      if ( i == 0 || d < minDistance ) {
-        minDistance = d;
-        closestStop = i;
-      }
-    }
-  }
-
+  
   @Override
-  public void setLocation(Point point) {
-    super.setLocation(point);
-    findClosestStop(point);
-    adapter.notifyDataSetChanged();
-    // scroll to the nearest stop, if we haven't done it yet.
-    if ( ! isSelected && closestStop >= 0 ) {
-      isSelected = true;
-      setSelection(closestStop);
-    }
-  }
-
-  class StopsAdapter extends ArrayAdapter<WaypointDistance> {
-    TextView view;
-
-    public StopsAdapter() {
-      super(StopsActivity.this, R.layout.list_item, stops);
-      Log.i("melato.org", "stops.length=" + stops.length);
-    }
-
-    private String distanceSuffix(WaypointDistance stop) {
-      Point here = getLocation();
-      if ( here != null ) {
-        return " (" + WaypointDistance.formatDistance(Earth.distance(here, stop.getWaypoint())) + ")";
-      }
-      return "";
-    }
-    
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-      TextView view = (TextView) super.getView(position, convertView, parent);
-      WaypointDistance stop = stops[position];
-      if ( position == closestStop ) {
-        view.setText( "* " + stop + distanceSuffix(stop) );
-      } else if (position == closestStop + 1 || position == closestStop -1 ) {
-        view.setText( stop + distanceSuffix(stop) );
-      }
-      return view;
-    }
-
+  protected void onDestroy() {
+    stops.close();
+    super.onDestroy();
   }
 
   private void showStop(Waypoint p, int index) {
     Intent intent = new Intent(this, StopActivity.class);
     IntentHelper helper = new IntentHelper(intent);
-    helper.putRoute(getRoute());
+    helper.putRoute(activities.getRoute());
     intent.putExtra(StopActivity.KEY_MARKER, p.getSym() );
     intent.putExtra(StopActivity.KEY_INDEX, index );
     startActivity(intent);    
   }
+ 
+  
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
-    showStop( stops[position].getWaypoint(), position );
+    showStop( stops.getWaypoint(position), position );
     
   }
 
@@ -142,4 +70,9 @@ public class StopsActivity extends BusActivity {
     inflater.inflate(R.menu.stops_menu, menu);
     return true;
   }
+  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    return activities.onOptionsItemSelected(item);
+  }  
 }
