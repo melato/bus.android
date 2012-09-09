@@ -151,6 +151,10 @@ public class BusActivities  {
         showInBrowser(route);
         handled = true;
         break;
+      case R.id.all_schedules:
+        showRoute(route, SchedulesActivity.class);
+        handled = true;
+        break;
       default:
         break;
     }

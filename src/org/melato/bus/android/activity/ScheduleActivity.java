@@ -10,6 +10,7 @@ import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -24,18 +25,16 @@ import android.widget.ListView;
  *
  */
 public class ScheduleActivity extends ListActivity {
+  public static final String KEY_DAYS = "days";
   protected BusActivities activities;
   private Schedule schedule;
   private Date  currentTime = new Date();
+  DaySchedule daySchedule;
 
   public ScheduleActivity() {    
   }
     
-  protected String getScheduleName() {
-    DaySchedule schedule = this.schedule.getSchedule(currentTime);
-    if ( schedule == null )
-      return "";
-    int days = schedule.getDays();
+  public static String getScheduleName(Context context, int days) {
     int resourceId = 0;
     switch( days ) {
       case DaySchedule.SUNDAY:
@@ -53,10 +52,16 @@ public class ScheduleActivity extends ListActivity {
       default:
         return "";
     }
-    return getResources().getString(resourceId);
+    return context.getResources().getString(resourceId);
 
     
   }
+  protected String getScheduleName() {
+    if ( daySchedule == null )
+      return "";
+    return getScheduleName(this, daySchedule.getDays());
+  }
+  
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -64,14 +69,28 @@ public class ScheduleActivity extends ListActivity {
       activities = new BusActivities(this);
       Route route = activities.getRoute();
       schedule = route.getSchedule();
+      Integer days = (Integer) getIntent().getSerializableExtra(KEY_DAYS);
+      if ( days != null ) {
+        for( DaySchedule d: schedule.getSchedules() ) {
+          if ( days == d.getDays() ) {
+            this.daySchedule = d;
+            break;
+          }
+        }
+      }
+      if ( daySchedule == null ) {
+        daySchedule = schedule.getSchedule(currentTime); 
+      }
       String title = route.getLabel() + "-" + route.getDirection() + " " + getScheduleName();
       setTitle(title);
-      TimeOfDayList times = new TimeOfDayList(schedule,currentTime);
-      ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);
-      setListAdapter(scheduleAdapter);
-      int pos = times.getDefaultPosition();
-      if ( pos >= 0 )
-        this.setSelection(pos);
+      if ( daySchedule != null ) {
+        TimeOfDayList times = new TimeOfDayList(daySchedule,currentTime);
+        ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);
+        setListAdapter(scheduleAdapter);
+        int pos = times.getDefaultPosition();
+        if ( pos >= 0 )
+          this.setSelection(pos);
+      }
   }
 
   @Override

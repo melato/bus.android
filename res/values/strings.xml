@@ -5,6 +5,7 @@
     <string name="all_routes">All</string>
     <string name="recent_routes">Recent</string>
     <string name="schedule">Schedule</string>
+    <string name="all_schedules">All Schedules</string>
     <string name="days_Su">Sunday</string>
     <string name="days_M_F">Monday-Friday</string>
     <string name="days_Sa">Saturday</string>

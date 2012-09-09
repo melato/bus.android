@@ -3,6 +3,7 @@ package org.melato.bus.android.model;
 import java.util.AbstractList;
 import java.util.Date;
 
+import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Schedule;
 import org.melato.log.Log;
 
@@ -17,6 +18,9 @@ public class TimeOfDayList extends AbstractList<TimeOfDay> {
   }
   public TimeOfDayList(Schedule schedule, Date currentTime) {
     this(schedule.getTimes(currentTime), currentTime);
+  }
+  public TimeOfDayList(DaySchedule schedule, Date currentTime) {
+    this(schedule.getTimes(), currentTime);;
   }
   @Override
   public TimeOfDay get(int location) {

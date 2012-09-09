@@ -28,6 +28,10 @@
             android:label="@string/schedule" >
         </activity>
         <activity
+            android:name=".activity.SchedulesActivity"
+            android:label="@string/all_schedules" >
+        </activity>
+        <activity
             android:name=".activity.StopsActivity"
             android:label="@string/stops" >
         </activity>
