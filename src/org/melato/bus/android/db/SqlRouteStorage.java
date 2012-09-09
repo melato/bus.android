@@ -114,7 +114,6 @@ public class SqlRouteStorage implements RouteStorage {
   }  
   
   private Schedule loadSchedule(SQLiteDatabase db, RouteId routeId) {
-    Log.info( "Sql loadSchedule: routeId=" + routeId );
     String sql = "select days, minutes from schedule_times" +
         "\njoin schedules on schedules._id = schedule_times.schedule" +
         "\njoin routes on routes._id = schedules.route" +
@@ -130,13 +129,12 @@ public class SqlRouteStorage implements RouteStorage {
         do {
           int days = cursor.getInt(0);
           int minutes = cursor.getInt(1);
-          Log.info( "minutes: " + minutes );
           if ( days != lastDays ) {
             if ( ! times.isEmpty() ) {
               daySchedules.add( new DaySchedule(IntArrays.toArray(times), lastDays));
               times.clear();
-              lastDays = days;
             }
+            lastDays = days;
           }
           times.add(minutes);
         } while ( cursor.moveToNext() );
