@@ -3,7 +3,7 @@ package org.melato.bus.android.activity;
 import java.util.List;
 
 import org.melato.bus.android.R;
-import org.melato.bus.android.model.WaypointDistance;
+import org.melato.bus.client.WaypointDistance;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;

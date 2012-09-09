@@ -3,8 +3,8 @@ package org.melato.bus.android.activity;
 import java.util.Date;
 
 import org.melato.bus.android.R;
-import org.melato.bus.android.model.TimeOfDay;
-import org.melato.bus.android.model.TimeOfDayList;
+import org.melato.bus.client.TimeOfDay;
+import org.melato.bus.client.TimeOfDayList;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;

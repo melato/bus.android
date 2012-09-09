@@ -4,8 +4,8 @@ import java.util.Arrays;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.model.NearbyStop;
-import org.melato.bus.android.model.WaypointDistance;
+import org.melato.bus.client.NearbyStop;
+import org.melato.bus.client.WaypointDistance;
 import org.melato.gpx.Point;
 import org.melato.log.Clock;
 import org.melato.log.Log;

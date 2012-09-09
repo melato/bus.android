@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.model.WaypointDistance;
+import org.melato.bus.client.WaypointDistance;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
