@@ -1,6 +1,6 @@
 package org.melato.bus.android.activity;
 
-import org.melato.bus.android.BusLogger;
+import org.melato.bus.android.AndroidLogger;
 import org.melato.bus.android.R;
 import org.melato.bus.android.model.NearbyStop;
 import org.melato.log.Log;
@@ -24,7 +24,6 @@ public class NearbyActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      Log.setLogger(new BusLogger(this));
       activities = new BusActivities(this);
       nearby = new NearbyContext(this);
   }

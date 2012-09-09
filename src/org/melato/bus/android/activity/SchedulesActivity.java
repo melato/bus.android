@@ -1,9 +1,11 @@
 package org.melato.bus.android.activity;
 
+import org.melato.bus.android.AndroidLogger;
 import org.melato.bus.android.R;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
+import org.melato.log.Log;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -24,7 +26,8 @@ public class SchedulesActivity extends ListActivity {
   private DaySchedule[] schedules;
   private Route route;
 
-  public SchedulesActivity() {    
+  public SchedulesActivity() {
+    Log.setLogger(new AndroidLogger(this));
   }
     
   class SchedulesAdapter extends ArrayAdapter<DaySchedule> {
@@ -50,6 +53,7 @@ public class SchedulesActivity extends ListActivity {
     setTitle( route.getFullTitle() );
     schedule = route.getSchedule();
     schedules = schedule.getSchedules();
+    Log.info( "schedule: " + schedule );
     setListAdapter(new SchedulesAdapter());
   }
 

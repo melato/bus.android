@@ -9,14 +9,14 @@ import org.melato.log.Logger;
 
 import android.content.Context;
 
-public class BusLogger implements Logger {
+public class AndroidLogger implements Logger {
   Context context;
   File    logFile;
   
-  public BusLogger(Context context) {
+  public AndroidLogger(Context context) {
     super();
     this.context = context;
-    logFile = new File( context.getFilesDir(), "log.txt");    
+    //logFile = new File( context.getFilesDir(), "log.txt");    
   }
   
   @Override
@@ -24,15 +24,17 @@ public class BusLogger implements Logger {
     long time = System.currentTimeMillis()/1000L;
     message = time + " " + message; 
     android.util.Log.i("melato.org", message);
-    try {
-      PrintWriter writer = new PrintWriter(new FileOutputStream(logFile, true));
+    if ( logFile != null ) {
       try {
-        writer.println( message );
-      } finally {
-        writer.close();
+        PrintWriter writer = new PrintWriter(new FileOutputStream(logFile, true));
+        try {
+          writer.println( message );
+        } finally {
+          writer.close();
+        }
+      } catch (FileNotFoundException e) {
+        throw new RuntimeException( e );
       }
-    } catch (FileNotFoundException e) {
-      throw new RuntimeException( e );
     }
   }  
 }

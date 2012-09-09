@@ -2,7 +2,7 @@ package org.melato.bus.android.track;
 
 import java.util.Date;
 
-import org.melato.bus.android.BusLogger;
+import org.melato.bus.android.AndroidLogger;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.LocationContext;
@@ -54,7 +54,7 @@ public class TrackActivity extends ScheduleActivity {
   }
   
   public void mark() {
-    Log.setLogger(new BusLogger(this));
+    Log.setLogger(new AndroidLogger(this));
     Route route = activities.getRoute();
     Point point = location.getLocation();
     if ( route != null && point != null ) {
