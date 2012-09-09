@@ -27,7 +27,7 @@ public class StopsContext extends LocationContext {
     return stops[index].getWaypoint();
   }
   public void setGPX(GPX gpx) {
-    List<Waypoint> waypoints = gpx.getRoutes().get(0).path.getWaypoints();
+    List<Waypoint> waypoints = gpx.getRoutes().get(0).getWaypoints();
     stops = new WaypointDistance[waypoints.size()];
     double pathLength = 0;
     Waypoint previous = null;
