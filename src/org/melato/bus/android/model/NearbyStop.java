@@ -32,7 +32,7 @@ public class NearbyStop extends WaypointDistance {
 
   @Override
   public String toString() {
-    String s = route + " (" + formatDistance(getDistance()) + ") " + getWaypoint().getName();
+    String s = route + " " + getWaypoint().getName() + " (" + formatDistance(getDistance()) + ")";
     return s;
   }
 }
