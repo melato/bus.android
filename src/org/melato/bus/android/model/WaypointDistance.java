@@ -32,7 +32,7 @@ public class WaypointDistance implements Comparable<WaypointDistance> {
   }
 
   public static String formatDistance(float distance) {
-    if ( distance < 1000 ) {
+    if ( Math.abs(distance) < 1000 ) {
       return String.valueOf( Math.round(distance)) + "m";
     } else {
       return kmFormat.format(distance/1000) + "Km";

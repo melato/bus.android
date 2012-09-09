@@ -60,7 +60,7 @@ public class StopsActivity extends ListActivity {
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
-    showStop( stops.getWaypoint(position), position );
+    showStop( stops.getWaypoints().get(position), position );
     
   }
 

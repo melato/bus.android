@@ -29,7 +29,7 @@ public class StopActivity extends ItemsActivity {
   public static final float WALK_SPEED = 5f;
   public static final float BIKE_OVERHEAD = 1.35f;
   public static final float BIKE_SPEED = 15f;
-  static int[] SPEEDS = new int[] { 20, 30, 40, 50 };
+  static int[] SPEEDS = new int[] { 20, 30, 40 };
   StopContext stop;
   private BusActivities activities;
   
@@ -153,7 +153,7 @@ public class StopActivity extends ItemsActivity {
       addItem( new PathETA(speed));
     }
     addItem(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
-    addItem(new StraightETA(R.string.bikeETA, BIKE_SPEED, BIKE_OVERHEAD));
+    // addItem(new StraightETA(R.string.bikeETA, BIKE_SPEED, BIKE_OVERHEAD));
     addItem(getResources().getString(R.string.routes));
     for( Route r: markerInfo.getRoutes() ) {
       addItem( r );
