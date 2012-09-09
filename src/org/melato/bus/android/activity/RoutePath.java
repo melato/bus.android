@@ -25,7 +25,7 @@ public class RoutePath {
     if ( gpx.getRoutes().isEmpty() ) {
       waypoints = Collections.emptyList();
     } else {
-      waypoints = gpx.getRoutes().get(0).path.getWaypoints();
+      waypoints = gpx.getRoutes().get(0).getWaypoints();
     }
     stops = new WaypointDistance[waypoints.size()];
     double pathLength = 0;

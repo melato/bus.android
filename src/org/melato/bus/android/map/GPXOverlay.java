@@ -47,7 +47,7 @@ public class GPXOverlay extends Overlay {
     Path path = new Path();
     Projection projection = view.getProjection();
     for( Route route: gpx.getRoutes() ) {
-      addToPath(path, projection, route.path.getWaypoints());
+      addToPath(path, projection, route.getWaypoints());
     }
     
     Paint   paint = new Paint();

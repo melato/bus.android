@@ -97,7 +97,6 @@ public class StopActivity extends ItemsActivity {
   }
   
   String formatTime( float secondsFromNow ) {
-    secondsFromNow = -4000;
     Date eta = new Date(System.currentTimeMillis() + (int) (secondsFromNow*1000));
     int minutes = Math.round(secondsFromNow/60);
     String sign = "";
@@ -134,7 +133,7 @@ public class StopActivity extends ItemsActivity {
     GPX gpx = activities.getRouteManager().loadGPX(route);
     List<Waypoint> waypoints = Collections.emptyList();
     if ( ! gpx.getRoutes().isEmpty() ) {
-      waypoints = gpx.getRoutes().get(0).path.getWaypoints();
+      waypoints = gpx.getRoutes().get(0).getWaypoints();
     }
     stop.setWaypoints(waypoints);
     
