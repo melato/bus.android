@@ -1,9 +1,7 @@
 package org.melato.bus.android.activity;
 
-import org.melato.bus.android.AndroidLogger;
 import org.melato.bus.android.R;
 import org.melato.bus.client.NearbyStop;
-import org.melato.log.Log;
 
 import android.app.ListActivity;
 import android.os.Bundle;
