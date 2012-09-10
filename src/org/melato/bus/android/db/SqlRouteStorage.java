@@ -39,10 +39,14 @@ public class SqlRouteStorage implements RouteStorage {
     SQLiteDatabase db = getDatabase();
     String sql = "select value from properties where name = '%s'";
     Cursor cursor = db.rawQuery(String.format(sql, quote(name)), null);
-    if ( cursor.moveToFirst() ) {
-      return cursor.getString(0);
+    try {
+      if ( cursor.moveToFirst() ) {
+        return cursor.getString(0);
+      }
+      return null;
+    } finally {
+      cursor.close();
     }
-    return null;
   }
   
   @Override
