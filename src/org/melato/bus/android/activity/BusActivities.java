@@ -6,11 +6,10 @@ import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.track.TrackActivity;
 import org.melato.bus.model.Route;
-import org.melato.bus.model.RouteHandler;
 import org.melato.bus.model.RouteManager;
-import org.melato.bus.model.RouteWriter;
+import org.melato.bus.model.xml.RouteHandler;
+import org.melato.bus.model.xml.RouteWriter;
 import org.melato.util.MRU;
 
 import android.app.Activity;
@@ -75,7 +74,7 @@ public class BusActivities  {
     return context.getSharedPreferences(NAV_PREFERENCES, Context.MODE_PRIVATE);
   }
   
-  public void showRoute(Route route, Class activity) {
+  public void showRoute(Route route, Class<? extends Activity> activity) {
     getRecentRoutes().add(route);
     saveRecentRoutes();
     Intent intent = new Intent(context, activity);
@@ -171,7 +170,7 @@ public class BusActivities  {
     }
     mru = new MRU<Route>(MRU_SIZE);
     try {
-      List<Route> routes = RouteHandler.parse(recentRoutesFile());
+      List<Route> routes = RouteHandler.parseRoutes(recentRoutesFile());
       for( Route route: routes ) {
         mru.add(mru.size(), route);
       }
@@ -185,8 +184,6 @@ public class BusActivities  {
     }
     try {
       RouteWriter writer = new RouteWriter();
-      writer.setIncludeSchedule(false);
-      writer.setIncludeStops(false);
       writer.writeRoutes(mru, recentRoutesFile());
     } catch( IOException e ) {
       throw new RuntimeException(e);
