@@ -51,7 +51,7 @@ public class SchedulesActivity extends ListActivity {
     activities = new BusActivities(this);
     route = activities.getRoute();
     setTitle( route.getFullTitle() );
-    schedule = route.getSchedule();
+    schedule = activities.getRouteManager().loadSchedule(route);
     schedules = schedule.getSchedules();
     Log.info( "schedule: " + schedule );
     setListAdapter(new SchedulesAdapter());

@@ -180,8 +180,6 @@ public class SqlRouteStorage implements RouteStorage {
     SQLiteDatabase db = getDatabase();
     try {
       Route route = loadBasic(db, routeId);
-      Schedule schedule = loadSchedule(db, routeId);
-      route.setSchedule(schedule);
       return route;
     } finally {
       db.close();

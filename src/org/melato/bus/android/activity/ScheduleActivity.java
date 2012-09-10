@@ -68,7 +68,7 @@ public class ScheduleActivity extends ListActivity {
       super.onCreate(savedInstanceState);
       activities = new BusActivities(this);
       Route route = activities.getRoute();
-      schedule = route.getSchedule();
+      schedule = activities.getRouteManager().loadSchedule(route);
       Integer days = (Integer) getIntent().getSerializableExtra(KEY_DAYS);
       if ( days != null ) {
         for( DaySchedule d: schedule.getSchedules() ) {
