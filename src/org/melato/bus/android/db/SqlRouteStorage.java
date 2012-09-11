@@ -17,9 +17,7 @@ import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteStorage;
 import org.melato.bus.model.Schedule;
 import org.melato.gpx.Earth;
-import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
-import org.melato.gpx.Sequence;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Clock;
 import org.melato.log.Log;
@@ -160,20 +158,6 @@ public class SqlRouteStorage implements RouteStorage {
       db.close();
     }
   }
-  /*
-  private Route loadRoute(Id routeId) {
-    SqlId id = (SqlId) routeId;
-    SQLiteDatabase db = getDatabase();
-    try {
-      Route route = loadBasic(db, id);
-      Schedule schedule = loadSchedule(db, id);
-      route.setSchedule(schedule);
-      return route;
-    } finally {
-      db.close();
-    }
-  }
-  */
   
   @Override
   public Route loadRoute(RouteId routeId) {
@@ -199,7 +183,7 @@ public class SqlRouteStorage implements RouteStorage {
     return format("routes.name = '%s' and routes.direction = '%s'", routeId);    
   }
   @Override
-  public GPX loadGPX(RouteId routeId) {
+  public List<Waypoint> loadWaypoints(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
     String sql = "select lat, lon, markers.symbol, markers.name, stops.seq from markers" +
         "\njoin stops on markers._id = stops.marker" +
@@ -218,11 +202,7 @@ public class SqlRouteStorage implements RouteStorage {
           waypoints.add(p);
         } while ( cursor.moveToNext() );
       }
-      GPX gpx = new GPX();
-      org.melato.gpx.Route rte = new org.melato.gpx.Route();
-      rte.path = new Sequence(waypoints);
-      gpx.getRoutes().add(rte);
-      return gpx;      
+      return waypoints;
     } finally {
       cursor.close();
       db.close();
