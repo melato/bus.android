@@ -27,5 +27,10 @@
     <string name="longitude">Longitude</string>
     <string name="mark">Mark</string>
     <string name="track">Track</string>
+    <string name="check_updates">Check Updates</string>
+    <string name="update">Update</string>
+    <string name="update_comment"></string>
+    <string name="cancel">Cancel</string>
+    <string name="available_updates">Available Updates</string>
     
 </resources>

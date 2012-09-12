@@ -3,6 +3,7 @@ package org.melato.bus.android.activity;
 import java.util.List;
 
 import org.melato.bus.android.R;
+import org.melato.bus.android.update.UpdateActivity;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteGroup;
 
@@ -87,6 +88,7 @@ public class RoutesActivity extends ListActivity {
           initAllRoutes();
       }
       setListAdapter(new RoutesAdapter());
+      UpdateActivity.checkUpdates(this);
   }
 
   void showGroup(RouteGroup group) {
@@ -136,7 +138,6 @@ public class RoutesActivity extends ListActivity {
     context.startActivity(intent);        
   }
   
-  
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
@@ -154,6 +155,10 @@ public class RoutesActivity extends ListActivity {
       case R.id.recent_routes:
         initRecentRoutes();
         setListAdapter(new RoutesAdapter());
+        handled = true;
+        break;
+      case R.id.check_updates:
+        UpdateActivity.checkUpdates(this);
         handled = true;
         break;
       default:

@@ -51,6 +51,18 @@ public class StopActivity extends ItemsActivity {
     }
   }
   
+  class DistanceFromStart {
+    public String toString() {
+      return formatProperty( R.string.route_distance, formatDistance(stop.getRouteDistance()));
+    }
+  }
+  
+  class DistanceToEnd {
+    public String toString() {
+      return formatProperty( R.string.route_distance, formatDistance(stop.getRouteDistance()));
+    }
+  }
+  
   class Latitude {
     public String toString() {
       return formatProperty( R.string.latitude, formatDegrees(stop.getMarker().getLat()));

@@ -1,0 +1,52 @@
+package org.melato.bus.android.update;
+
+import java.io.File;
+import java.util.List;
+
+import org.melato.bus.android.db.SqlRouteStorage;
+import org.melato.progress.ProgressGenerator;
+import org.melato.update.PortableUpdateManager;
+import org.melato.update.UpdateFile;
+
+import android.content.Context;
+
+/** Checks for and/or downloads database updates. */
+public class UpdateManager extends PortableUpdateManager {
+  public static final String INDEX_URL = "http://x1Sx0kDqz7qJUUZb63kR.melato.org/updates.xml";
+  //public static final String INDEX_URL = "http://transit.melato.org/updates.xml";
+  public static final String ROUTES_UPDATE = "ROUTES.zip";  
+  public static final String ROUTES_ENTRY = "ROUTES.db";
+  private Context context;
+  
+  public UpdateManager(Context context) {
+    super(INDEX_URL, context.getFilesDir());
+    this.context = context;
+  }
+  
+  public void update(List<UpdateFile> updates) {
+    ProgressGenerator progress = ProgressGenerator.get();
+    for( UpdateFile f: updates ) {
+      if ( ROUTES_UPDATE.equals(f.getName())) {
+        String databaseName = SqlRouteStorage.DATABASE_NAME;
+        File databaseFile = context.getDatabasePath(databaseName);
+        progress.setText("Routes Database");
+        updateZipedFile(f, ROUTES_ENTRY, databaseFile);
+        continue;
+      }
+      if ( "test".equals(f.getName())) {
+        progress.setText("Test");
+        int n = 100;
+        progress.setLimit(n);
+        for( int i = 0; i < n; i++ ) {
+          try {
+            Thread.sleep(50);
+            progress.setPosition(i);
+          } catch (InterruptedException e) {
+          }
+        }
+        setInstalled(f);
+        continue;
+      }
+    }
+  }
+}

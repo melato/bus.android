@@ -9,11 +9,10 @@ import android.location.LocationManager;
 import android.os.Bundle;
 
 /**
- * A list activity that is also a location listener and maintains a current location.
- * This must be separated from ListActivity, since it doesn't really care what type of activity it is.
- * It was only because most bus views are list activities (except for the map activities which are not).
- * For now we're just using onCreate/onDestroy to request/remove location updates.
- * We're also allowing subclasses to use setLocation() in order to get notified of updates.
+ * A location listener that attaches itself to an activity and maintains a current location.
+ * Subclass and override setLocation() to do something with the locations.
+ * The activity must call close() from its onDestroy() method
+ * to remove the listener from the LocationManager.
  * @author Alex Athanasopoulos
  */
 public class LocationContext implements LocationListener {

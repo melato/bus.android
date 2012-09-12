@@ -10,6 +10,7 @@ import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
 
 import android.app.ListActivity;
+import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -73,8 +74,23 @@ public class StopsContext extends LocationContext {
         float d = path.getPathLength(position) - closestPathDistance;
         text += " (" + WaypointDistance.formatDistance(d) + ")";
       }
+      /*
       if ( position == closestStop ) {
-        text = "* " + text;
+        view.setBackgroundColor(Color.CYAN);
+        view.setTextColor(Color.BLACK);
+        //text = "* " + text;
+      } else {
+        view.setBackgroundColor(Color.BLACK);
+        view.setTextColor(Color.WHITE);
+      }
+      */
+      Resources resources = context.getResources();
+      if ( position == closestStop ) {
+        view.setBackgroundColor(context.getResources().getColor(R.color.list_highlighted_background));
+        view.setTextColor(context.getResources().getColor(R.color.list_highlighted_text));
+      } else {
+        view.setBackgroundColor(context.getResources().getColor(R.color.list_background));
+        view.setTextColor(context.getResources().getColor(R.color.list_text));
       }
       view.setText( text );
       return view;

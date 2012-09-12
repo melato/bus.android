@@ -4,12 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import org.melato.bus.android.AndroidLogger;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.xml.RouteHandler;
 import org.melato.bus.model.xml.RouteWriter;
+import org.melato.log.Log;
 import org.melato.util.MRU;
 
 import android.app.Activity;
@@ -44,6 +46,7 @@ public class BusActivities  {
 
   public BusActivities(Activity activity) {
     super();
+    Log.setLogger(new AndroidLogger(activity));
     this.context = activity;    
     Route route = new IntentHelper(activity).getRoute();
     if ( route != null ) {

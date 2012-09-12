@@ -29,7 +29,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 public class SqlRouteStorage implements RouteStorage {
-  static final String DATABASE_NAME = "ROUTES.db";
+  public static final String DATABASE_NAME = "ROUTES.db";
   private String databaseFile;
   
   
