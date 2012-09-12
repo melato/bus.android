@@ -28,20 +28,19 @@ public final class R {
     }
     public static final class id {
         public static final int all_routes=0x7f070007;
-        public static final int all_schedules=0x7f07000c;
-        public static final int browse=0x7f07000e;
+        public static final int all_schedules=0x7f07000b;
+        public static final int browse=0x7f07000d;
         public static final int cancel=0x7f070004;
-        public static final int check_updates=0x7f07000a;
         public static final int linearLayout1=0x7f070002;
-        public static final int map=0x7f07000b;
+        public static final int map=0x7f07000a;
         public static final int mapview=0x7f070000;
-        public static final int mark=0x7f07000f;
+        public static final int mark=0x7f07000e;
         public static final int nearby=0x7f070009;
         public static final int note=0x7f070001;
         public static final int recent_routes=0x7f070008;
         public static final int schedule=0x7f070006;
         public static final int stops=0x7f070005;
-        public static final int track=0x7f07000d;
+        public static final int track=0x7f07000c;
         public static final int update=0x7f070003;
     }
     public static final class layout {
@@ -92,6 +91,7 @@ public final class R {
         public static final int track=0x7f05001a;
         public static final int update=0x7f05001c;
         public static final int update_comment=0x7f05001d;
+        public static final int update_url=0x7f050020;
         public static final int walkETA=0x7f05000f;
     }
 }

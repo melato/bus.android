@@ -32,5 +32,6 @@
     <string name="update_comment"></string>
     <string name="cancel">Cancel</string>
     <string name="available_updates">Available Updates</string>
+    <string name="update_url">http://x1Sx0kDqz7qJUUZb63kR.melato.org/updates.xml</string>
     
 </resources>

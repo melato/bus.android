@@ -157,10 +157,6 @@ public class RoutesActivity extends ListActivity {
         setListAdapter(new RoutesAdapter());
         handled = true;
         break;
-      case R.id.check_updates:
-        UpdateActivity.checkUpdates(this);
-        handled = true;
-        break;
       default:
         break;
     }

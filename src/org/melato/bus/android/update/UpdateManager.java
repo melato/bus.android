@@ -3,6 +3,7 @@ package org.melato.bus.android.update;
 import java.io.File;
 import java.util.List;
 
+import org.melato.bus.android.R;
 import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.progress.ProgressGenerator;
 import org.melato.update.PortableUpdateManager;
@@ -12,15 +13,15 @@ import android.content.Context;
 
 /** Checks for and/or downloads database updates. */
 public class UpdateManager extends PortableUpdateManager {
-  public static final String INDEX_URL = "http://x1Sx0kDqz7qJUUZb63kR.melato.org/updates.xml";
-  //public static final String INDEX_URL = "http://transit.melato.org/updates.xml";
   public static final String ROUTES_UPDATE = "ROUTES.zip";  
   public static final String ROUTES_ENTRY = "ROUTES.db";
   private Context context;
   
   public UpdateManager(Context context) {
-    super(INDEX_URL, context.getFilesDir());
+    super();
     this.context = context;
+    setIndexUrl(context.getResources().getString(R.string.update_url));
+    setFilesDir(context.getFilesDir());
   }
   
   public void update(List<UpdateFile> updates) {
