@@ -77,16 +77,47 @@ public class UpdateActivity extends Activity implements Runnable {
     super.onDestroy();
   }
   
-  /** Check for updates, and if there are any available give the option of downloading them. */
-  public static void checkUpdates(Context context) {
-    ConnectivityManager network = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
-    NetworkInfo networkInfo = network.getActiveNetworkInfo();
-    if ( networkInfo != null && networkInfo.getState() == State.CONNECTED ) {
-      UpdateManager updateManager = new UpdateManager(context);
+  /**
+   * Checks for available updates.  It does so in a background thread, if there is need to download anything.
+   * Otherwise it checks in the ui thread.
+   * @author Alex Athanasopoulos
+   */
+  static class UpdatesChecker implements Runnable {
+    UpdateManager updateManager;
+    Context context;
+    
+    public UpdatesChecker(Context context) {
+      this.context = context;
+      updateManager = new UpdateManager(context);
+    }
+    
+    public void checkUpdates() {
+      ConnectivityManager network = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
+      NetworkInfo networkInfo = network.getActiveNetworkInfo();
+      if ( networkInfo != null && networkInfo.getState() == State.CONNECTED ) {
+        // do a quick local check
+        if ( updateManager.needsRefresh() ) {
+          // refresh in the background
+          new Thread(this).start();
+        }
+        else {
+          // check here
+          run();
+        }
+      }
+    }
+    
+    public void run() {
       if ( ! updateManager.getAvailableUpdates().isEmpty() ) {
         context.startActivity(new Intent(context, UpdateActivity.class));
       }
     }
+  }
+  
+  /** Check for updates, and if there are any available give the option of downloading them. */
+  public static void checkUpdates(Context context) {
+    UpdatesChecker checker = new UpdatesChecker(context);
+    checker.checkUpdates();
   }
 
 
