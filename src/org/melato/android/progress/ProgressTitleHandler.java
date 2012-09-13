@@ -12,25 +12,33 @@ import android.view.Window;
  */
 public class ProgressTitleHandler extends ActivityProgressHandler {
   private CharSequence activityTitle;
+  private boolean replacedTitle;
   
   public ProgressTitleHandler(Activity activity) {
     super(activity);
     activity.requestWindowFeature(Window.FEATURE_PROGRESS);
   }
   
+  /** Restore the activity's original title. */
+  public void end() {
+    activity.setProgressBarVisibility(false);
+    activity.setProgress(10000);
+    if ( replacedTitle ) {
+      activity.setTitle(activityTitle);
+    }
+  }
   @Override
   public void updateUI() {
     if ( limit == 0 || position >= limit - 1 || isCanceled() ) {      
       Log.i( "melato.org", "end progress" );
-      activity.setProgressBarVisibility(false);
-      activity.setProgress(10000);
-      if ( activityTitle != null ) {
-        activity.setTitle(activityTitle);
-      }
+      end();
     } else {
       activity.setProgressBarVisibility(true);
-      if ( activityTitle == null && text != null ) {
-        activityTitle = activity.getTitle();
+      if ( text != null ) {
+        if ( ! replacedTitle ) {
+          replacedTitle = true;
+          activityTitle = activity.getTitle();
+        }
         activity.setTitle(text);        
       }
       Log.i( "melato.org", "position=" + position + " limit=" + limit + " p=" + position / limit * 10000);
