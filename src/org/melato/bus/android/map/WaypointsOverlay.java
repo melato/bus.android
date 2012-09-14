@@ -16,11 +16,9 @@ import com.google.android.maps.ItemizedOverlay;
  */
 public class WaypointsOverlay extends ItemizedOverlay<WaypointOverlayItem> {
 	private List<Waypoint> waypoints = Collections.emptyList();
-	private Context context;
 	
 	public WaypointsOverlay(Drawable defaultMarker, Context context) {
 		  super(boundCenterBottom(defaultMarker));
-		  this.context = context;
 	}
 
 	public void setWaypoints(List<Waypoint> waypoints) {
