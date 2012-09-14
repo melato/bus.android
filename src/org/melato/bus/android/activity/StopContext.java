@@ -6,6 +6,8 @@ import org.melato.gpx.Earth;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
+import org.melato.gpx.util.PathTracker;
+import org.melato.gpx.util.SimplePathTracker;
 
 import android.content.Context;
 
@@ -13,6 +15,7 @@ public class StopContext extends LocationContext {
   private List<Waypoint> waypoints;
   private Waypoint marker;
   private Path path;
+  private PathTracker pathTracker;
   private int markerIndex;
   private float markerPosition;
   private float straightDistance;
@@ -44,7 +47,8 @@ public class StopContext extends LocationContext {
     if ( point == null )
       return;
     straightDistance = Earth.distance(point, marker);
-    float pointPosition = path.getPathLength(point);
+    pathTracker.setLocation(point);
+    float pointPosition = pathTracker.getPosition();
     routeDistance = markerPosition - pointPosition;
     refresh();
   }
@@ -55,17 +59,15 @@ public class StopContext extends LocationContext {
 
   public void setWaypoints(List<Waypoint> waypoints) {
     this.waypoints = waypoints;
-    path = new Path(waypoints);
+    this.path = new Path(waypoints);
+    pathTracker = new SimplePathTracker();
+    pathTracker.setPath(path);
   }
   
   public void setMarkerIndex(int index) {
     markerIndex = index;
     marker = waypoints.get(index);
-    markerPosition = path.getPathLength(markerIndex);        
+    markerPosition = path.getLength(markerIndex);        
     setEnabledLocations(true);
-  }
-  public void setMarker(Waypoint marker) {
-    markerIndex = path.findWaypointIndex(marker);
-    setMarkerIndex(markerIndex);    
   }
 }

@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.Info;
 import org.melato.bus.client.WaypointDistance;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
@@ -150,11 +150,10 @@ public class StopActivity extends ItemsActivity {
     stop.setWaypoints(waypoints);
     
     MarkerInfo markerInfo = Info.routeManager(this).loadMarker(symbol);
-    if ( index != null ) {
-      stop.setMarkerIndex(index);
-    } else {
-      stop.setMarker(markerInfo.getWaypoint());
+    if ( index == null ) {
+      index = findWaypointIndex(waypoints, markerInfo.getWaypoint());
     }
+    stop.setMarkerIndex(index);
     setTitle(stop.getMarker().getName());
     
     addItem(new StraightDistance());
@@ -172,6 +171,16 @@ public class StopActivity extends ItemsActivity {
     }
   }
 
+  static int findWaypointIndex(List<Waypoint> waypoints, Waypoint p) {
+    int size = waypoints.size();
+    for( int i = 0; i < size; i++ ) {
+      if ( p.equals(waypoints.get(i))) {
+        return i;
+      }
+    }
+    return -1;
+  }
+  
   private String formatDegrees(float d) {
     return String.valueOf(d);
   }

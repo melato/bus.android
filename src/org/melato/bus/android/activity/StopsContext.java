@@ -8,9 +8,10 @@ import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
+import org.melato.gpx.util.PathTracker;
+import org.melato.gpx.util.SimplePathTracker;
 
 import android.app.ListActivity;
-import android.content.res.Resources;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 public class StopsContext extends LocationContext {
   private List<Waypoint> waypoints;
   private Path path;
+  private PathTracker pathTracker;
   private int closestStop = -1;
   private float closestPathDistance = 0;
   private boolean isSelected;
@@ -29,6 +31,8 @@ public class StopsContext extends LocationContext {
   public void setGPX(GPX gpx) {
     waypoints = gpx.getRoutes().get(0).getWaypoints();
     path = new Path(waypoints);
+    pathTracker = new SimplePathTracker();
+    pathTracker.setPath(path);
     list.setListAdapter(adapter = new StopsAdapter());
     setEnabledLocations(true);
   }
@@ -42,8 +46,9 @@ public class StopsContext extends LocationContext {
   public void setLocation(Point point) {
     super.setLocation(point);
     if ( point != null) {
-      closestStop = path.findNearestIndex(point);
-      closestPathDistance = path.getPathLength(point);
+      pathTracker.setLocation(point);
+      closestStop = pathTracker.getNearestIndex();
+      closestPathDistance = pathTracker.getPosition();
     }
     adapter.notifyDataSetChanged();
     // scroll to the nearest stop, if we haven't done it yet.
@@ -71,27 +76,10 @@ public class StopsContext extends LocationContext {
       TextView view = (TextView) super.getView(position, convertView, parent);
       String text = waypoints.get(position).getName();
       if ( closestStop >= 0 ) {
-        float d = path.getPathLength(position) - closestPathDistance;
+        float d = path.getLength(position) - closestPathDistance;
         text += " (" + WaypointDistance.formatDistance(d) + ")";
       }
-      /*
-      if ( position == closestStop ) {
-        view.setBackgroundColor(Color.CYAN);
-        view.setTextColor(Color.BLACK);
-        //text = "* " + text;
-      } else {
-        view.setBackgroundColor(Color.BLACK);
-        view.setTextColor(Color.WHITE);
-      }
-      */
-      Resources resources = context.getResources();
-      if ( position == closestStop ) {
-        view.setBackgroundColor(context.getResources().getColor(R.color.list_highlighted_background));
-        view.setTextColor(context.getResources().getColor(R.color.list_highlighted_text));
-      } else {
-        view.setBackgroundColor(context.getResources().getColor(R.color.list_background));
-        view.setTextColor(context.getResources().getColor(R.color.list_text));
-      }
+      UI.highlight(view, position == closestStop );
       view.setText( text );
       return view;
     }
