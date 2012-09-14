@@ -16,8 +16,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Displays the schedule for a route
@@ -100,8 +102,16 @@ public class ScheduleActivity extends ListActivity {
 
   class ScheduleAdapter extends ArrayAdapter<TimeOfDay> {
     TimeOfDayList times;
+    int currentPosition;
     public ScheduleAdapter(TimeOfDayList times) {
       super(ScheduleActivity.this, R.layout.list_item, times);
+      currentPosition = times.getDefaultPosition();
+    }
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+      TextView view = (TextView) super.getView(position, convertView, parent);
+      UI.highlight(view, position == currentPosition );
+      return view;
     }
   }
   
