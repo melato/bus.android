@@ -4,12 +4,11 @@ import java.util.List;
 
 import org.melato.bus.android.R;
 import org.melato.bus.client.WaypointDistance;
+import org.melato.geometry.gpx.PathTracker;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
-import org.melato.gpx.util.PathTracker;
-import org.melato.gpx.util.SimplePathTracker;
 
 import android.app.ListActivity;
 import android.view.View;
@@ -31,7 +30,7 @@ public class StopsContext extends LocationContext {
   public void setGPX(GPX gpx) {
     waypoints = gpx.getRoutes().get(0).getWaypoints();
     path = new Path(waypoints);
-    pathTracker = new SimplePathTracker();
+    pathTracker = new PathTracker();
     pathTracker.setPath(path);
     list.setListAdapter(adapter = new StopsAdapter());
     setEnabledLocations(true);

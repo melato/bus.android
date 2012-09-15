@@ -9,5 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/melato.bus"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/melato.util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/melato.progress"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/melato.geometry"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

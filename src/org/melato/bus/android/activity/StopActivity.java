@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.melato.bus.android.R;
 import org.melato.bus.android.Info;
+import org.melato.bus.android.R;
 import org.melato.bus.client.WaypointDistance;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
@@ -29,7 +29,6 @@ public class StopActivity extends ItemsActivity {
   public static final float WALK_SPEED = 5f;
   public static final float BIKE_OVERHEAD = 1.35f;
   public static final float BIKE_SPEED = 15f;
-  static int[] SPEEDS = new int[] { 20, 30, 40 };
   StopContext stop;
   private BusActivities activities;
   
@@ -74,18 +73,38 @@ public class StopActivity extends ItemsActivity {
       return formatProperty( R.string.longitude, formatDegrees(stop.getMarker().getLon()));
     }
   }
+
+  float getSpeed() {
+    float speed = stop.getSpeed().getSpeed();
+    if ( speed > 0.3f ) {
+      // don't show speeds smaller than 0.3 m/s (about 1 Km/h)
+      return speed;
+    }
+    return Float.NaN;
+  }
+  
+  class PathSpeed {
+    public String toString() {
+      String label = getResources().getString(R.string.speed);
+      String value = "";
+      float speed = getSpeed() * 3600f/1000f;
+      if ( ! Float.isNaN(speed)) {
+        value = String.valueOf(Math.round(speed)) + " Km/h";
+      }
+      return formatProperty( label, value);
+    }
+  }
   
   class PathETA {
-    float speed;
-    
-    public PathETA(float speed) {
-      this.speed = speed;
-    }
-
     public String toString() {
-      String label = getResources().getString(R.string.ETA) + " @ " + Math.round(speed) + " Km/h";
-      float time = stop.getRouteDistance()/ (speed *1000/3600);
-      return formatProperty( label, formatTime(time));
+      String label = getResources().getString(R.string.ETA);
+      String value = "";
+      float speed = getSpeed();
+      if ( ! Float.isNaN(speed)) {
+        float time = stop.getSpeed().getRemainingTime(stop.getMarkerIndex());
+        value = formatTime(time);
+      }
+      return formatProperty( label, value);
     }
   }
   
@@ -160,9 +179,8 @@ public class StopActivity extends ItemsActivity {
     addItem(new PathDistance());
     addItem(new Latitude());
     addItem(new Longitude());
-    for( float speed: SPEEDS ) {
-      addItem( new PathETA(speed));
-    }
+    addItem( new PathSpeed());
+    addItem( new PathETA());
     addItem(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
     // addItem(new StraightETA(R.string.bikeETA, BIKE_SPEED, BIKE_OVERHEAD));
     addItem(getResources().getString(R.string.routes));
