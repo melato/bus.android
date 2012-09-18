@@ -10,5 +10,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/melato.util"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/melato.progress"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/melato.geometry"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/melato.android"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

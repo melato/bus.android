@@ -64,22 +64,23 @@ public final class R {
         public static final int all_routes=0x7f050002;
         public static final int all_schedules=0x7f050005;
         public static final int app_name=0x7f050000;
-        public static final int available_updates=0x7f05001f;
+        public static final int available_updates=0x7f050020;
         public static final int bikeETA=0x7f050010;
         public static final int browse=0x7f050013;
-        public static final int cancel=0x7f05001e;
-        public static final int check_updates=0x7f05001b;
+        public static final int cancel=0x7f05001f;
+        public static final int check_updates=0x7f05001c;
         public static final int days_M_F=0x7f050007;
         public static final int days_Sa=0x7f050008;
         public static final int days_SaSu=0x7f050009;
         public static final int days_Su=0x7f050006;
-        public static final int latitude=0x7f050017;
-        public static final int longitude=0x7f050018;
+        public static final int latitude=0x7f050018;
+        public static final int longitude=0x7f050019;
         public static final int map=0x7f050012;
-        public static final int mark=0x7f050019;
-        public static final int marker_position=0x7f050016;
+        public static final int mark=0x7f05001a;
         public static final int name=0x7f05000c;
         public static final int nearby=0x7f050011;
+        public static final int position_from_end=0x7f050017;
+        public static final int position_from_start=0x7f050016;
         public static final int recent_routes=0x7f050003;
         public static final int route_distance=0x7f050015;
         public static final int routes=0x7f050001;
@@ -88,10 +89,10 @@ public final class R {
         public static final int stop=0x7f05000b;
         public static final int stops=0x7f05000a;
         public static final int straight_distance=0x7f050014;
-        public static final int track=0x7f05001a;
-        public static final int update=0x7f05001c;
-        public static final int update_comment=0x7f05001d;
-        public static final int update_url=0x7f050020;
+        public static final int track=0x7f05001b;
+        public static final int update=0x7f05001d;
+        public static final int update_comment=0x7f05001e;
+        public static final int update_url=0x7f050021;
         public static final int walkETA=0x7f05000f;
     }
 }

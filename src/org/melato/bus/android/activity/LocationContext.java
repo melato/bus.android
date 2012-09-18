@@ -1,5 +1,6 @@
 package org.melato.bus.android.activity;
 
+import org.melato.android.location.Locations;
 import org.melato.gpx.Point;
 
 import android.content.Context;

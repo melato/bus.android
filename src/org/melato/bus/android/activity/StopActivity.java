@@ -4,17 +4,19 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.melato.android.ui.PropertiesDisplay;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.client.WaypointDistance;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Waypoint;
 
+import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 /**
@@ -22,7 +24,7 @@ import android.widget.ListView;
  * @author Alex Athanasopoulos
  *
  */
-public class StopActivity extends ItemsActivity {
+public class StopActivity extends ListActivity {
   public static final String KEY_MARKER = "marker";
   public static final String KEY_INDEX = "index";
   public static final float WALK_OVERHEAD = 1.25f;
@@ -30,47 +32,43 @@ public class StopActivity extends ItemsActivity {
   public static final float BIKE_OVERHEAD = 1.35f;
   public static final float BIKE_SPEED = 15f;
   StopContext stop;
+  PropertiesDisplay properties;
+  ArrayAdapter<Object> adapter;
   private BusActivities activities;
-  
-  class MarkerPosition {
-    public String toString() {
-      return formatProperty( R.string.marker_position, formatDistance(stop.getMarkerPosition()));
-    }
-  }
   
   class StraightDistance {
     public String toString() {
-      return formatProperty( R.string.straight_distance, formatDistance(stop.getStraightDistance()));
+      return properties.formatProperty( R.string.straight_distance, UI.straightDistance(stop.getStraightDistance()));
     }
   }
   
   class PathDistance {
     public String toString() {
-      return formatProperty( R.string.route_distance, formatDistance(stop.getRouteDistance()));
+      return properties.formatProperty( R.string.route_distance, UI.routeDistance(stop.getRouteDistance()));
     }
   }
   
   class DistanceFromStart {
     public String toString() {
-      return formatProperty( R.string.route_distance, formatDistance(stop.getRouteDistance()));
+      return properties.formatProperty( R.string.position_from_start, UI.routeDistance(stop.getMarkerPosition()));
     }
   }
   
   class DistanceToEnd {
     public String toString() {
-      return formatProperty( R.string.route_distance, formatDistance(stop.getRouteDistance()));
+      return properties.formatProperty( R.string.position_from_start, UI.routeDistance(stop.getRouteDistance()));
     }
   }
   
   class Latitude {
     public String toString() {
-      return formatProperty( R.string.latitude, formatDegrees(stop.getMarker().getLat()));
+      return properties.formatProperty( R.string.latitude, UI.degrees(stop.getMarker().getLat()));
     }
   }
   
   class Longitude{
     public String toString() {
-      return formatProperty( R.string.longitude, formatDegrees(stop.getMarker().getLon()));
+      return properties.formatProperty( R.string.longitude, UI.degrees(stop.getMarker().getLon()));
     }
   }
 
@@ -91,7 +89,7 @@ public class StopActivity extends ItemsActivity {
       if ( ! Float.isNaN(speed)) {
         value = String.valueOf(Math.round(speed)) + " Km/h";
       }
-      return formatProperty( label, value);
+      return properties.formatProperty( label, value);
     }
   }
   
@@ -104,7 +102,7 @@ public class StopActivity extends ItemsActivity {
         float time = stop.getSpeed().getRemainingTime(stop.getMarkerIndex());
         value = formatTime(time);
       }
-      return formatProperty( label, value);
+      return properties.formatProperty( label, value);
     }
   }
   
@@ -123,7 +121,7 @@ public class StopActivity extends ItemsActivity {
     public String toString() {
       String label = getResources().getString(labelId);
       float time = stop.getStraightDistance() / (speed *1000/3600);
-      return formatProperty( label, formatTime(time));
+      return properties.formatProperty( label, formatTime(time));
     }
   }
   
@@ -149,9 +147,10 @@ public class StopActivity extends ItemsActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    properties = new PropertiesDisplay(this);
     stop = new StopContext(this) {
       public void refresh() {
-        StopActivity.this.refresh();
+        adapter.notifyDataSetChanged();
       }
     };
     activities = new BusActivities(this);
@@ -175,18 +174,20 @@ public class StopActivity extends ItemsActivity {
     stop.setMarkerIndex(index);
     setTitle(stop.getMarker().getName());
     
-    addItem(new StraightDistance());
-    addItem(new PathDistance());
-    addItem(new Latitude());
-    addItem(new Longitude());
-    addItem( new PathSpeed());
-    addItem( new PathETA());
-    addItem(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
-    // addItem(new StraightETA(R.string.bikeETA, BIKE_SPEED, BIKE_OVERHEAD));
-    addItem(getResources().getString(R.string.routes));
+    properties.add(new StraightDistance());
+    properties.add(new PathDistance());
+    properties.add(new Latitude());
+    properties.add(new Longitude());
+    properties.add( new PathSpeed());
+    properties.add( new PathETA());
+    properties.add(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
+    // properties.add(new StraightETA(R.string.bikeETA, BIKE_SPEED, BIKE_OVERHEAD));
+    properties.add(getResources().getString(R.string.routes));
     for( Route r: markerInfo.getRoutes() ) {
-      addItem( r );
+      properties.add( r );
     }
+    adapter = properties.createAdapter(R.layout.list_item);
+    setListAdapter(adapter);
   }
 
   static int findWaypointIndex(List<Waypoint> waypoints, Waypoint p) {
@@ -199,18 +200,10 @@ public class StopActivity extends ItemsActivity {
     return -1;
   }
   
-  private String formatDegrees(float d) {
-    return String.valueOf(d);
-  }
-  
-  private String formatDistance(float d) {
-    return WaypointDistance.formatDistance(d);
-  }
-
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
-    Object obj = items.get(position);
+    Object obj = properties.getItem(position);
     if ( obj instanceof Route ) {
       activities.showRoute((Route) obj);
     }

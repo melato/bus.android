@@ -82,4 +82,5 @@ public class StopContext extends LocationContext {
     marker = waypoints.get(index);
     setEnabledLocations(true);
   }
+  
 }
