@@ -1,94 +1,94 @@
-package org.melato.bus.android.activity;
+package org.melato.bus.android.map;
 
-import org.melato.android.gpx.map.GPXOverlay;
+import org.melato.android.AndroidLogger;
 import org.melato.android.gpx.map.Maps;
-import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.model.Route;
-import org.melato.bus.model.RouteManager;
-import org.melato.gpx.GPX;
+import org.melato.bus.android.activity.BusActivities;
 import org.melato.gpx.Point;
-import org.melato.gpx.util.AveragePoint;
+import org.melato.log.Log;
 
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
-import com.google.android.maps.MyLocationOverlay;
 
-/** An activity that displays a route on the map. */
-public class RouteMapActivity extends MapActivity {
+/** An activity that displays all routes on the map. */
+public class AllMapActivity extends MapActivity {
   private static final String KEY_ZOOM_LEVEL = "zoomLevel";
   private BusActivities activities;
   private MapView map;
-  private MyLocationOverlay myLocation; 
+  private RoutesOverlay routesOverlay;
 
   @Override
   protected boolean isRouteDisplayed() {
-    return true;
+    return false;
   }
   
+  public GeoPoint getCurrentLocation() {
+    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    if ( loc == null )
+      return null;
+    return new GeoPoint((int) Math.round(loc.getLatitude() * 1E6), (int) Math.round(loc.getLongitude() * 1E6));    
+  }
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      Log.setLogger(new AndroidLogger(this));
       activities = new BusActivities(this);
-      Route route = activities.getRoute();
-      setTitle(route.getFullTitle());
-
       setContentView(R.layout.map);
       map = (MapView) findViewById(R.id.mapview);
       map.setBuiltInZoomControls(true);
-      RouteManager routeManager = Info.routeManager(this);
-      GPX gpx = routeManager.loadGPX(route);
-      
-      Point center = AveragePoint.getCenter(gpx );
       MapController mapController = map.getController();
       int zoom = getSharedPreferences(BusActivities.NAV_PREFERENCES, 0).getInt(KEY_ZOOM_LEVEL, 15 );
+      zoom = 16;
       mapController.setZoom(zoom);
+      GeoPoint center = getCurrentLocation();
+      Point point = new Point(37.931496f,24.005596f);
+      center = Maps.geoPoint(point);
       if ( center != null ) {
-        mapController.setCenter(Maps.geoPoint(center));
+        mapController.setCenter(center);        
       }
-
-      GPXOverlay pathOverlay = new GPXOverlay(gpx);
-      map.getOverlays().add(pathOverlay);
-      
-      myLocation = new MyLocationOverlay(this, map);
-      map.getOverlays().add(myLocation);
-      
-      /*
-      List<Waypoint> path = gpx.getRoutes().get(0).path.getWaypoints();
-      Drawable drawable = this.getResources().getDrawable(R.drawable.marker);
-      WaypointsOverlay stopsOverlay = new WaypointsOverlay(drawable, this);
-      stopsOverlay.setWaypoints( path );      
-      map.getOverlays().add(stopsOverlay);
-      */
+      routesOverlay = new RoutesOverlay(activities.getRouteManager());
+      map.getOverlays().add(routesOverlay);      
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    myLocation.disableMyLocation();
     SharedPreferences.Editor edit = getSharedPreferences(BusActivities.NAV_PREFERENCES, 0).edit();
     edit.putInt( KEY_ZOOM_LEVEL, map.getZoomLevel());
     edit.commit();
   }
-  
-    
+
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.map_menu, menu);
+    inflater.inflate(R.menu.all_map_menu, menu);
     return true;
   }
   
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+    boolean handled = false;
+    switch(item.getItemId()) {
+      case R.id.refresh:
+        routesOverlay.refresh();
+        handled = true;
+        break;
+    }
+    if ( handled )
+      return true;
     return activities.onOptionsItemSelected(item);
   }
-    
+  
 }

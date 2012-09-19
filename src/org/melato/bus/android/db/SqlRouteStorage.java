@@ -210,10 +210,8 @@ public class SqlRouteStorage implements RouteStorage {
   }
 
   @Override
-  public void iterateNearbyStops(Point point, float distance,
+  public void iterateNearbyStops(Point point, float latDiff, float lonDiff,
       Collection<Waypoint> collector) {
-    float latDiff = Earth.latitudeForDistance(distance);
-    float lonDiff = Earth.longitudeForDistance(distance, point.getLat());
     float lat1 = point.getLat() - latDiff;
     float lat2 = point.getLat() + latDiff;
     float lon1 = point.getLon() - lonDiff;
@@ -242,10 +240,13 @@ public class SqlRouteStorage implements RouteStorage {
         }
         if ( p == null ) {
           p = new Waypoint(cursor.getFloat(0), cursor.getFloat(1));
+          // can check the filter here.
+          /*
           if ( Earth.distance(point,  p) > distance ) {
             p = null;
             continue;
-          }          
+          } 
+          */         
           p.setSym(cursor.getString(2));
           p.setName(cursor.getString(3));
           p.setLinks( new ArrayList<String>() );
@@ -257,6 +258,33 @@ public class SqlRouteStorage implements RouteStorage {
       if ( p != null ) {
         collector.add(p);
       }
+    }
+    cursor.close();
+    db.close();
+    Log.info(clock);    
+  }
+
+  @Override
+  public void iterateNearbyRoutes(Point point, float latDiff, float lonDiff,
+      Collection<RouteId> collector) {
+    float lat1 = point.getLat() - latDiff;
+    float lat2 = point.getLat() + latDiff;
+    float lon1 = point.getLon() - lonDiff;
+    float lon2 = point.getLon() + lonDiff;
+    SQLiteDatabase db = getDatabase();
+    String sql = "select distinct routes.name, routes.direction from markers" +
+        "\njoin stops on markers._id = stops.marker" +
+        "\njoin routes on routes._id = stops.route" +
+        "\nwhere lat > %f and lat < %f and lon > %f and lon < %f";
+    Cursor cursor = db.rawQuery(
+        String.format( sql, lat1, lat2, lon1, lon2),
+        null);
+    Clock clock = new Clock("sql.iterateNearbyRoutes");
+    if ( cursor.moveToFirst() ) {
+      do {
+        RouteId routeId = new RouteId( cursor.getString(0), cursor.getString(1));
+        collector.add(routeId);
+      } while ( cursor.moveToNext() );
     }
     cursor.close();
     db.close();

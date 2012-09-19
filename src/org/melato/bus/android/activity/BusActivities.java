@@ -4,9 +4,10 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.melato.bus.android.AndroidLogger;
+import org.melato.android.AndroidLogger;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.map.AllMapActivity;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.xml.RouteHandler;
@@ -143,6 +144,10 @@ public class BusActivities  {
         setDefaultView(VIEW_MAP);
         showRoute(route, RouteMapActivity.class);
         handled = true;
+        break;
+      case R.id.all_map:
+        handled = true;
+        context.startActivity(new Intent(context, AllMapActivity.class));    
         break;
       case R.id.track:
         setDefaultView(VIEW_TRACK);

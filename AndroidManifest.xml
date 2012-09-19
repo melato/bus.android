@@ -47,6 +47,10 @@
             android:label="@string/map" >
         </activity>
         <activity
+            android:name=".map.AllMapActivity"
+            android:label="@string/map" >
+        </activity>
+        <activity
             android:name=".activity.StopActivity"
             android:label="@string/stop" >
         </activity>

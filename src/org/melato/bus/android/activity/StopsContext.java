@@ -2,13 +2,15 @@ package org.melato.bus.android.activity;
 
 import java.util.List;
 
+import org.melato.android.AndroidLogger;
 import org.melato.bus.android.R;
-import org.melato.bus.client.WaypointDistance;
 import org.melato.geometry.gpx.PathTracker;
+import org.melato.gpx.Earth;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
+import org.melato.log.Log;
 
 import android.app.ListActivity;
 import android.view.View;
@@ -38,6 +40,7 @@ public class StopsContext extends LocationContext {
   
   public StopsContext(ListActivity activity) {
     super(activity);
+    Log.setLogger(new AndroidLogger(activity));
     this.list = activity;
   }
 
@@ -73,10 +76,14 @@ public class StopsContext extends LocationContext {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
       TextView view = (TextView) super.getView(position, convertView, parent);
-      String text = waypoints.get(position).getName();
-      if ( closestStop >= 0 ) {
-        float d = path.getLength(position) - closestPathDistance;
-        text += " (" + WaypointDistance.formatDistance(d) + ")";
+      Waypoint waypoint = waypoints.get(position);
+      String text = waypoint.getName();
+      float routeDistance = path.getLength(position) - closestPathDistance;
+      text += " " + UI.routeDistance(routeDistance);
+      Point here = getLocation();
+      if ( here != null ) {
+        float straightDistance = Earth.distance(here, waypoint); 
+        text += " " + UI.straightDistance(straightDistance);
       }
       UI.highlight(view, position == closestStop );
       view.setText( text );

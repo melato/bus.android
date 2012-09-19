@@ -1,9 +1,9 @@
 package org.melato.bus.android.activity;
 
+import org.melato.android.gpx.map.GPXOverlay;
+import org.melato.android.gpx.map.Maps;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.map.GPXOverlay;
-import org.melato.bus.android.map.Maps;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
 import org.melato.gpx.GPX;

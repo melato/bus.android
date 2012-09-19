@@ -16,7 +16,6 @@ import org.melato.gpx.Waypoint;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 /**
@@ -27,118 +26,9 @@ import android.widget.ListView;
 public class StopActivity extends ListActivity {
   public static final String KEY_MARKER = "marker";
   public static final String KEY_INDEX = "index";
-  public static final float WALK_OVERHEAD = 1.25f;
-  public static final float WALK_SPEED = 5f;
-  public static final float BIKE_OVERHEAD = 1.35f;
-  public static final float BIKE_SPEED = 15f;
-  StopContext stop;
-  PropertiesDisplay properties;
-  ArrayAdapter<Object> adapter;
+  private StopContext stop;
+  private PropertiesDisplay properties;
   private BusActivities activities;
-  
-  class StraightDistance {
-    public String toString() {
-      return properties.formatProperty( R.string.straight_distance, UI.straightDistance(stop.getStraightDistance()));
-    }
-  }
-  
-  class PathDistance {
-    public String toString() {
-      return properties.formatProperty( R.string.route_distance, UI.routeDistance(stop.getRouteDistance()));
-    }
-  }
-  
-  class DistanceFromStart {
-    public String toString() {
-      return properties.formatProperty( R.string.position_from_start, UI.routeDistance(stop.getMarkerPosition()));
-    }
-  }
-  
-  class DistanceToEnd {
-    public String toString() {
-      return properties.formatProperty( R.string.position_from_start, UI.routeDistance(stop.getRouteDistance()));
-    }
-  }
-  
-  class Latitude {
-    public String toString() {
-      return properties.formatProperty( R.string.latitude, UI.degrees(stop.getMarker().getLat()));
-    }
-  }
-  
-  class Longitude{
-    public String toString() {
-      return properties.formatProperty( R.string.longitude, UI.degrees(stop.getMarker().getLon()));
-    }
-  }
-
-  float getSpeed() {
-    float speed = stop.getSpeed().getSpeed();
-    if ( speed > 0.3f ) {
-      // don't show speeds smaller than 0.3 m/s (about 1 Km/h)
-      return speed;
-    }
-    return Float.NaN;
-  }
-  
-  class PathSpeed {
-    public String toString() {
-      String label = getResources().getString(R.string.speed);
-      String value = "";
-      float speed = getSpeed() * 3600f/1000f;
-      if ( ! Float.isNaN(speed)) {
-        value = String.valueOf(Math.round(speed)) + " Km/h";
-      }
-      return properties.formatProperty( label, value);
-    }
-  }
-  
-  class PathETA {
-    public String toString() {
-      String label = getResources().getString(R.string.ETA);
-      String value = "";
-      float speed = getSpeed();
-      if ( ! Float.isNaN(speed)) {
-        float time = stop.getSpeed().getRemainingTime(stop.getMarkerIndex());
-        value = formatTime(time);
-      }
-      return properties.formatProperty( label, value);
-    }
-  }
-  
-  class StraightETA {
-    int labelId;
-    float speed;
-    float overhead;
-    
-    public StraightETA(int labelId, float speed, float overhead) {
-      super();
-      this.labelId = labelId;
-      this.speed = speed;
-      this.overhead = overhead;
-    }
-
-    public String toString() {
-      String label = getResources().getString(labelId);
-      float time = stop.getStraightDistance() / (speed *1000/3600);
-      return properties.formatProperty( label, formatTime(time));
-    }
-  }
-  
-  String formatTime( float secondsFromNow ) {
-    Date eta = new Date(System.currentTimeMillis() + (int) (secondsFromNow*1000));
-    int minutes = Math.round(secondsFromNow/60);
-    String sign = "";
-    if ( minutes < 0 ) {
-      // we may have negative times, such as the time to a previous stop.
-      minutes = -minutes;
-      sign = "-";
-    }
-      
-    return Schedule.formatTime(Schedule.getTime(eta)) +
-        " (" + sign + Schedule.formatTime(minutes) + ")";
-    
-  }
   
   public StopActivity() {
   }
@@ -147,12 +37,8 @@ public class StopActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    properties = new PropertiesDisplay(this);
-    stop = new StopContext(this) {
-      public void refresh() {
-        adapter.notifyDataSetChanged();
-      }
-    };
+    stop = new StopContext(this);
+    properties = stop.getProperties();
     activities = new BusActivities(this);
     String symbol = (String) getIntent().getSerializableExtra(KEY_MARKER);
     Integer index = (Integer) getIntent().getSerializableExtra(KEY_INDEX);
@@ -174,20 +60,11 @@ public class StopActivity extends ListActivity {
     stop.setMarkerIndex(index);
     setTitle(stop.getMarker().getName());
     
-    properties.add(new StraightDistance());
-    properties.add(new PathDistance());
-    properties.add(new Latitude());
-    properties.add(new Longitude());
-    properties.add( new PathSpeed());
-    properties.add( new PathETA());
-    properties.add(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
-    // properties.add(new StraightETA(R.string.bikeETA, BIKE_SPEED, BIKE_OVERHEAD));
     properties.add(getResources().getString(R.string.routes));
     for( Route r: markerInfo.getRoutes() ) {
       properties.add( r );
     }
-    adapter = properties.createAdapter(R.layout.list_item);
-    setListAdapter(adapter);
+    setListAdapter(stop.createAdapter(R.layout.list_item));
   }
 
   static int findWaypointIndex(List<Waypoint> waypoints, Waypoint p) {

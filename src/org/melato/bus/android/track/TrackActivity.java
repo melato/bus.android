@@ -2,7 +2,7 @@ package org.melato.bus.android.track;
 
 import java.util.Date;
 
-import org.melato.bus.android.AndroidLogger;
+import org.melato.android.AndroidLogger;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.LocationContext;

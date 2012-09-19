@@ -160,6 +160,9 @@ public class RoutesActivity extends ListActivity {
       default:
         break;
     }
+    if ( ! handled ) {
+      handled = activities.onOptionsItemSelected(item);
+    }
     return handled;
   } 
  }

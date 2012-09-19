@@ -1,4 +1,4 @@
-package org.melato.bus.android.map;
+package org.melato.android.gpx.map;
 
 import org.melato.gpx.Waypoint;
 

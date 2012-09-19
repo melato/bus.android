@@ -1,7 +1,11 @@
 package org.melato.bus.android.activity;
 
+import java.util.Date;
 import java.util.List;
 
+import org.melato.android.ui.PropertiesDisplay;
+import org.melato.bus.android.R;
+import org.melato.bus.model.Schedule;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.geometry.gpx.SpeedTracker;
 import org.melato.gpx.Earth;
@@ -10,8 +14,14 @@ import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
 
 import android.content.Context;
+import android.widget.ArrayAdapter;
 
 public class StopContext extends LocationContext {
+  public static final float WALK_OVERHEAD = 1.25f;
+  public static final float WALK_SPEED = 5f;
+  public static final float BIKE_OVERHEAD = 1.35f;
+  public static final float BIKE_SPEED = 15f;
+
   private List<Waypoint> waypoints;
   private int markerIndex;
   private Waypoint marker;
@@ -19,6 +29,8 @@ public class StopContext extends LocationContext {
   private Path path;
   private PathTracker pathTracker;
   private SpeedTracker speed;
+  private PropertiesDisplay properties;
+  private ArrayAdapter<Object> adapter;
   
   private float straightDistance;
 
@@ -40,10 +52,6 @@ public class StopContext extends LocationContext {
     return pathTracker;
   }
 
-  public SpeedTracker getSpeed() {
-    return speed;
-  }
-
   public float getMarkerPosition() {
     return path.getLength(markerIndex);
   }
@@ -52,7 +60,10 @@ public class StopContext extends LocationContext {
     return path.getLength(markerIndex) - pathTracker.getPosition();
   }
   
-  public void refresh() {}
+  public void refresh() {
+    if ( adapter != null )
+      adapter.notifyDataSetChanged();
+  }
   
   @Override
   public void setLocation(Point point) {
@@ -67,6 +78,18 @@ public class StopContext extends LocationContext {
 
   public StopContext(Context context) {
     super(context);
+    properties = new PropertiesDisplay(context);
+    addProperties();
+  }
+
+  
+  public PropertiesDisplay getProperties() {
+    return properties;
+  }
+
+  public ArrayAdapter<Object> createAdapter(int listItemId) {
+    adapter = properties.createAdapter(listItemId);
+    return adapter;
   }
 
   public void setWaypoints(List<Waypoint> waypoints) {
@@ -82,5 +105,128 @@ public class StopContext extends LocationContext {
     marker = waypoints.get(index);
     setEnabledLocations(true);
   }
+
+  class StraightDistance {
+    public String toString() {
+      return properties.formatProperty( R.string.straight_distance, UI.straightDistance(getStraightDistance()));
+    }
+  }
   
+  class RouteDistance {
+    public String toString() {
+      return properties.formatProperty( R.string.route_distance, UI.routeDistance(getRouteDistance()));
+    }
+  }
+  
+  class DistanceFromStart {
+    public String toString() {
+      String name = path.getWaypoint(0).getName();
+      String label = String.format(context.getString(R.string.position_from_start), name);
+      return PropertiesDisplay.formatProperty( label, UI.routeDistance(-getMarkerPosition()));
+    }
+  }
+  
+  class DistanceToEnd {
+    public String toString() {
+      float distance = path.getLength() - getMarkerPosition();
+      String name = path.getWaypoint(path.size()-1).getName();
+      String label = String.format(context.getString(R.string.position_from_end), name);
+      return PropertiesDisplay.formatProperty( label, UI.routeDistance(distance));
+    }
+  }
+  
+  class Latitude {
+    public String toString() {
+      return properties.formatProperty( R.string.latitude, UI.degrees(getMarker().getLat()));
+    }
+  }
+  
+  class Longitude{
+    public String toString() {
+      return properties.formatProperty( R.string.longitude, UI.degrees(getMarker().getLon()));
+    }
+  }
+
+  float getSpeed() {
+    float speed = this.speed.getSpeed();
+    if ( speed > 0.3f ) {
+      // don't show speeds smaller than 0.3 m/s (about 1 Km/h)
+      return speed;
+    }
+    return Float.NaN;
+  }
+  
+  class PathSpeed {
+    public String toString() {
+      String label = context.getResources().getString(R.string.speed);
+      String value = "";
+      float speed = getSpeed() * 3600f/1000f;
+      if ( ! Float.isNaN(speed)) {
+        value = String.valueOf(Math.round(speed)) + " Km/h";
+      }
+      return PropertiesDisplay.formatProperty( label, value);
+    }
+  }
+  
+  class PathETA {
+    public String toString() {
+      String label = context.getResources().getString(R.string.ETA);
+      String value = "";
+      float speed = getSpeed();
+      if ( ! Float.isNaN(speed)) {
+        float time = StopContext.this.speed.getRemainingTime(getMarkerIndex());
+        value = formatTime(time);
+      }
+      return properties.formatProperty( label, value);
+    }
+  }
+  
+  class StraightETA {
+    int labelId;
+    float speed;
+    float overhead;
+    
+    public StraightETA(int labelId, float speed, float overhead) {
+      super();
+      this.labelId = labelId;
+      this.speed = speed;
+      this.overhead = overhead;
+    }
+
+    public String toString() {
+      String label = context.getResources().getString(labelId);
+      float time = getStraightDistance() / (speed *1000/3600);
+      return PropertiesDisplay.formatProperty( label, formatTime(time));
+    }
+  }
+  
+  String formatTime( float secondsFromNow ) {
+    Date eta = new Date(System.currentTimeMillis() + (int) (secondsFromNow*1000));
+    int minutes = Math.round(secondsFromNow/60);
+    String sign = "";
+    if ( minutes < 0 ) {
+      // we may have negative times, such as the time to a previous stop.
+      minutes = -minutes;
+      sign = "-";
+    }
+      
+    return Schedule.formatTime(Schedule.getTime(eta)) +
+        " (" + sign + Schedule.formatTime(minutes) + ")";
+    
+  }
+  
+  
+  public void addProperties() {
+    properties.add(new StraightDistance());
+    properties.add(new RouteDistance());
+    properties.add(new DistanceFromStart());
+    properties.add(new DistanceToEnd());
+    properties.add(new Latitude());
+    properties.add(new Longitude());    
+
+    properties.add( new PathSpeed());
+    properties.add( new PathETA());
+    properties.add(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
+    // properties.add(new StraightETA(R.string.bikeETA, BIKE_SPEED, BIKE_OVERHEAD));
+  }
 }
