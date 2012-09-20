@@ -16,7 +16,7 @@ public class HelpActivity extends Activity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.help_layout);
+    setContentView(R.layout.help);
     TextView helpView = (TextView) findViewById(R.id.help);
     int helpId = getIntent().getIntExtra(KEY_ID, R.string.help_default);
     helpView.setText(helpId);
@@ -42,9 +42,8 @@ public class HelpActivity extends Activity {
     }
     
   }
-  public static MenuItem addItem(Menu menu, Context context, int helpId) {
+  public static void addItem(Menu menu, Context context, int helpId) {
     MenuItem item = menu.add(R.string.help);
     item.setOnMenuItemClickListener(new HelpListener(context, helpId));
-    return item;
   }
 }
