@@ -3,8 +3,6 @@ package org.melato.bus.android.map;
 import java.util.List;
 
 import org.melato.gpx.Point;
-import org.melato.gpx.Waypoint;
-import org.melato.util.DelegateList;
 
 import com.google.android.maps.GeoPoint;
 
@@ -31,14 +29,21 @@ public class RoutePoints {
     return latMin < lat && lat < latMax && lonMin < lon && lon < lonMax;     
   }
   
-  public RoutePoints(List<Point> waypoints) {
+  public RoutePoints(int[] lat, int[] lon) {
+    super();
+    this.lat = lat;
+    this.lon = lon;
+  }
+
+  public static RoutePoints createFromPoints(List<Point> waypoints) {
     int n = waypoints.size();
-    lat = new int[n];
-    lon = new int[n];
+    int[] lat = new int[n];
+    int[] lon = new int[n];
     for( int i = 0; i < n; i++ ) {
       Point p = waypoints.get(i);
       lat[i] = (int) (p.getLat()*1e6f);
       lon[i] = (int) (p.getLon()*1e6f);
     }
+    return new RoutePoints(lat,lon); 
   }
 }

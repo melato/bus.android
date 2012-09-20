@@ -40,6 +40,7 @@ public class RoutesOverlay extends Overlay {
   private Map<RouteId,RoutePoints> routeCache;
   private int pointCount;
   private org.melato.gpx.Point averagePoint;
+  private static Map<RouteId,RoutePoints> allRoutes;
   	
 	public RoutesOverlay(RouteManager routeManager) {
     super();
@@ -57,7 +58,7 @@ public class RoutesOverlay extends Overlay {
     routes = new ArrayList<RouteId>();
     routes.add(routeId);
     routeCache = new HashMap<RouteId,RoutePoints>();
-    routeCache.put(routeId, new RoutePoints(Waypoint.asPoints(waypoints)));
+    routeCache.put(routeId, RoutePoints.createFromPoints(Waypoint.asPoints(waypoints)));
   }
 
 	public org.melato.gpx.Point getAveragePoint() {
@@ -77,9 +78,12 @@ public class RoutesOverlay extends Overlay {
 	}
 	
 	private void loadAllRoutes() {
-	  RoutePointsCollector collector = new RoutePointsCollector();
-	  routeManager.iterateAllRouteStops(collector);
-	  routeCache = collector.getMap();
+	  if ( allRoutes == null ) {
+	    RoutePointsCollector collector = new RoutePointsCollector();
+	    routeManager.iterateAllRouteStops(collector);
+	    allRoutes = collector.getMap();
+	  }
+	  routeCache = allRoutes;
 	}
 	
 	public void refresh() {
