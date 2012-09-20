@@ -1,7 +1,7 @@
 package org.melato.bus.android.activity;
 
 import org.melato.android.gpx.map.GPXOverlay;
-import org.melato.android.gpx.map.Maps;
+import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.model.Route;
@@ -51,7 +51,7 @@ public class RouteMapActivity extends MapActivity {
       int zoom = getSharedPreferences(BusActivities.NAV_PREFERENCES, 0).getInt(KEY_ZOOM_LEVEL, 15 );
       mapController.setZoom(zoom);
       if ( center != null ) {
-        mapController.setCenter(Maps.geoPoint(center));
+        mapController.setCenter(GMap.geoPoint(center));
       }
 
       GPXOverlay pathOverlay = new GPXOverlay(gpx);

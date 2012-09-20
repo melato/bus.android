@@ -59,11 +59,13 @@ public class StopActivity extends ListActivity {
     }
     stop.setMarkerIndex(index);
     setTitle(stop.getMarker().getName());
-    
+   
+    /*
     properties.add(getResources().getString(R.string.routes));
     for( Route r: markerInfo.getRoutes() ) {
       properties.add( r );
     }
+    */
     setListAdapter(stop.createAdapter(R.layout.list_item));
   }
 

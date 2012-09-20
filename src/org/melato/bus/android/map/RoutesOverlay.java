@@ -5,12 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.melato.android.gpx.map.Maps;
+import org.melato.android.gpx.map.GMap;
+import org.melato.bus.android.activity.IntentHelper;
+import org.melato.bus.android.activity.NearbyActivity;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
-import org.melato.gpx.Waypoint;
+import org.melato.log.Clock;
 import org.melato.log.Log;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -18,7 +22,6 @@ import android.graphics.Path;
 import android.graphics.Point;
 
 import com.google.android.maps.GeoPoint;
-import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
@@ -31,12 +34,18 @@ public class RoutesOverlay extends Overlay {
   private RouteManager routeManager;
   private float latDiff; 
   private float lonDiff;
+  private int latMin6E;
+  private int latMax6E;
+  private int lonMin6E;
+  private int lonMax6E;
   private List<RouteId> routes;
-  private Map<RouteId,List<Waypoint>> routeCache = new HashMap<RouteId,List<Waypoint>>();
+  private Map<RouteId,RoutePoints> routeCache;
+  private int pointCount;
   	
 	public RoutesOverlay(RouteManager routeManager) {
     super();
     this.routeManager = routeManager;
+    loadAllRoutes();
   }
 
 	private void findBoundaries(MapView view) {
@@ -44,49 +53,81 @@ public class RoutesOverlay extends Overlay {
     int lonSpan = view.getLongitudeSpan();
     latDiff = ((float) latSpan) / 1E6f / 2; 
     lonDiff = ((float) lonSpan) / 1E6f / 2;
+    GeoPoint center = view.getMapCenter();
+    latMin6E = center.getLatitudeE6() - latSpan / 2;
+    latMax6E = center.getLatitudeE6() + latSpan / 2;
+    lonMin6E = center.getLongitudeE6() - lonSpan / 2;
+    lonMax6E = center.getLongitudeE6() + lonSpan / 2;
+	}
+	
+	private void loadAllRoutes() {
+	  RoutePointsCollector collector = new RoutePointsCollector();
+	  routeManager.iterateAllRouteStops(collector);
+	  routeCache = collector.getMap();
 	}
 	
 	public void refresh() {
 	  routes = null;
 	}
 	List<RouteId> getMapRoutes(MapView view) {
-    Log.info("getMapRoutes");
 	  if ( routes == null ) {
       routes = new ArrayList<RouteId>();
       GeoPoint center = view.getMapCenter();
-      routeManager.iterateNearbyRoutes(Maps.point(center), latDiff, lonDiff, routes);
+      routeManager.iterateNearbyRoutes(GMap.point(center), latDiff, lonDiff, routes);
 	  }
-    Log.info("routes: " + routes.size());
+    //Log.info("routes: " + routes.size());
     return routes;
 	}
 	
-  Path getPath(Projection projection, List<Waypoint> waypoints) {
+  Path getPath(Projection projection, RoutePoints points) {
     Path path = new Path();
-    int size = waypoints.size();
+    int size = points.size();
     if ( size == 0 )
       return path;
     Point p = new Point();
-    projection.toPixels(Maps.geoPoint(waypoints.get(0)), p);
+    boolean previousInside = false;
+    projection.toPixels(points.getGeoPoint(0), p);
     path.moveTo(p.x, p.y);
-    for( int i = 1; i < size; i++ ) {
-      projection.toPixels(Maps.geoPoint(waypoints.get(i)), p);
-      path.lineTo(p.x, p.y);
+    for( int i = 0; i < size; i++ ) {
+      boolean inside = points.isInside(i, latMin6E, latMax6E, lonMin6E, lonMax6E);
+      if ( inside ) {
+        pointCount++;
+      }
+      if ( previousInside ) {
+        // draw from previous point
+        projection.toPixels(points.getGeoPoint(i), p);
+        path.lineTo(p.x, p.y );
+      } else if ( inside && i > 0 ) {
+        projection.toPixels(points.getGeoPoint(i-1), p);
+        path.moveTo(p.x, p.y );          
+        projection.toPixels(points.getGeoPoint(i), p);
+        path.lineTo(p.x, p.y );
+      } else {
+        // do nothing
+        // segment is outside the view area or we are at the beginning            
+      }
+      previousInside = inside;
     }
     return path;
   }
 	
-  void drawPath(Canvas canvas, Paint paint, Projection projection, List<Waypoint> waypoints ) {
-    Path path = getPath(projection, waypoints);
+  void drawPath(Canvas canvas, Paint paint, Projection projection, RoutePoints route ) {
+    Path path = getPath(projection, route);
     canvas.drawPath(path, paint);    
   }
 
-  List<Waypoint> getWaypoints(RouteId routeId) {
-    List<Waypoint> waypoints = routeCache.get(routeId);
-    if ( waypoints == null ) {
-      waypoints = routeManager.loadWaypoints(routeId);
-      routeCache.put(routeId,  waypoints);
+  RoutePoints getPoints(RouteId routeId) {
+    RoutePoints points = routeCache.get(routeId);    
+    /*
+    if ( points == null ) {
+      List<Waypoint> waypoints = routeManager.loadWaypoints(routeId);
+      //List<Waypoint> waypoints = Collections.emptyList();
+      //routeManager.getStorage().iterateWaypoints(routeId);
+      points = new RoutePoints(waypoints);
+      routeCache.put(routeId,  points);
     }
-    return waypoints;
+    */
+    return points;
   }
   Map<RouteId,Integer> routeColors = new HashMap<RouteId,Integer>();
   int[] colors = new int[] { Color.RED, Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW };
@@ -109,6 +150,8 @@ public class RoutesOverlay extends Overlay {
   
   public void draw(Canvas canvas, MapView view, boolean shadow){
     super.draw(canvas, view, shadow);
+    pointCount = 0;
+    Clock clock = new Clock("RoutesOverlay.draw");
     findBoundaries(view);
     Paint   paint = new Paint();
     paint.setDither(true);
@@ -120,9 +163,20 @@ public class RoutesOverlay extends Overlay {
     Projection projection = view.getProjection();    
     for( RouteId routeId: getMapRoutes(view)) {
       paint.setColor(getRouteColor(routeId));
-      Log.info( "draw " + routeId );
-      List<Waypoint> waypoints = getWaypoints(routeId);
-      drawPath(canvas, paint, projection, waypoints);
+      RoutePoints route = getPoints(routeId);
+      drawPath(canvas, paint, projection, route);
     }
+    //Log.info(clock + " points=" + pointCount);
 	}
+
+  @Override
+  public boolean onTap(GeoPoint geoPoint, MapView mapView) {
+    Context context = mapView.getContext();
+    Intent intent = new Intent(context, NearbyActivity.class);
+    IntentHelper.putLocation(intent, GMap.point(geoPoint));
+    Log.info( "intent.location " + IntentHelper.getLocation(intent));
+    context.startActivity(intent);
+    return true;
+  }
+  
 }

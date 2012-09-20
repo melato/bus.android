@@ -68,13 +68,18 @@ public class NearbyContext extends LocationContext {
   public NearbyContext(ListActivity activity) {
     super(activity);
     this.activity = activity;
-    Log.info( "NearbyContext activity=" + activity);
-    Point p = Info.nearbyManager(activity).getLastLocation();
-    if ( p != null ) {
-      setLocation(p);
+    Point center = IntentHelper.getLocation(activity.getIntent());
+    Log.info( "NearbyContext center=" + center);
+    if ( center != null) {
+      setLocation(center);
+    } else {
+      Point p = Info.nearbyManager(activity).getLastLocation();
+      if ( p != null ) {
+        setLocation(p);
+      }
+      haveLocation = false;
+      setEnabledLocations(true);
     }
-    haveLocation = false;
-    setEnabledLocations(true);
   }
 
   public void setLocation(Point point) {

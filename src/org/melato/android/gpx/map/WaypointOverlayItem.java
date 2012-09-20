@@ -8,7 +8,7 @@ public class WaypointOverlayItem extends OverlayItem {
 	private Waypoint waypoint;
 	
 	public WaypointOverlayItem(Waypoint waypoint) {
-		super( Maps.geoPoint(waypoint), null, waypoint.name);
+		super( GMap.geoPoint(waypoint), null, waypoint.name);
 		this.waypoint = waypoint;
 	}
 

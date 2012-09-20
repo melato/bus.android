@@ -1,7 +1,8 @@
 package org.melato.bus.android.map;
 
 import org.melato.android.AndroidLogger;
-import org.melato.android.gpx.map.Maps;
+import org.melato.android.gpx.map.GMap;
+import org.melato.android.location.Locations;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
 import org.melato.gpx.Point;
@@ -16,7 +17,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -33,12 +33,10 @@ public class AllMapActivity extends MapActivity {
     return false;
   }
   
-  public GeoPoint getCurrentLocation() {
+  public Point getCurrentLocation() {
     LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
     Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    if ( loc == null )
-      return null;
-    return new GeoPoint((int) Math.round(loc.getLatitude() * 1E6), (int) Math.round(loc.getLongitude() * 1E6));    
+    return Locations.location2Point(loc);
   }
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -50,13 +48,13 @@ public class AllMapActivity extends MapActivity {
       map.setBuiltInZoomControls(true);
       MapController mapController = map.getController();
       int zoom = getSharedPreferences(BusActivities.NAV_PREFERENCES, 0).getInt(KEY_ZOOM_LEVEL, 15 );
-      zoom = 16;
+      zoom = 14;
       mapController.setZoom(zoom);
-      GeoPoint center = getCurrentLocation();
-      Point point = new Point(37.931496f,24.005596f);
-      center = Maps.geoPoint(point);
+      Point center = getCurrentLocation();
+      //center = new Point(37.931496f,24.005596f); // 304 Τέρμα
+      //center = new Point(38.009903f,23.806004f); // 304 Αφετηρία
       if ( center != null ) {
-        mapController.setCenter(center);        
+        mapController.setCenter(GMap.geoPoint(center));        
       }
       routesOverlay = new RoutesOverlay(activities.getRouteManager());
       map.getOverlays().add(routesOverlay);      

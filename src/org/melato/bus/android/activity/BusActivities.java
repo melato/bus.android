@@ -119,6 +119,11 @@ public class BusActivities  {
     context.startActivity(browserIntent);   
    }
   
+  private void benchmark() {
+    Log.setLogger(new AndroidLogger(context));
+    getRouteManager().benchmark();
+  }
+  
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
     Route route = getRoute();
@@ -148,6 +153,10 @@ public class BusActivities  {
       case R.id.all_map:
         handled = true;
         context.startActivity(new Intent(context, AllMapActivity.class));    
+        break;
+      case R.id.benchmark:
+        handled = true;
+        benchmark();    
         break;
       case R.id.track:
         setDefaultView(VIEW_TRACK);

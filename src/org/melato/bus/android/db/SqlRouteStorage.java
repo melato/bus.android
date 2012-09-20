@@ -14,9 +14,9 @@ import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
+import org.melato.bus.model.RouteStopCallback;
 import org.melato.bus.model.RouteStorage;
 import org.melato.bus.model.Schedule;
-import org.melato.gpx.Earth;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Clock;
@@ -182,6 +182,29 @@ public class SqlRouteStorage implements RouteStorage {
   private String whereClause(RouteId routeId) {
     return format("routes.name = '%s' and routes.direction = '%s'", routeId);    
   }
+  
+  /** use for benchmarking */
+  public void iterateWaypoints(RouteId routeId) {
+    SQLiteDatabase db = getDatabase();
+    String sql = "select lat, lon, stops.seq from markers" +
+        "\njoin stops on markers._id = stops.marker" +
+        "\njoin routes on routes._id = stops.route" +
+        "\nwhere " + whereClause(routeId) + 
+        "\norder by stops.seq";
+    Cursor cursor = db.rawQuery( sql, null);
+    try {      
+      if ( cursor.moveToFirst() ) {
+        do {
+          cursor.getFloat(0);
+          cursor.getFloat(1);
+        } while ( cursor.moveToNext() );
+      }
+    } finally {
+      cursor.close();
+      db.close();
+    }
+  }
+
   @Override
   public List<Waypoint> loadWaypoints(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
@@ -203,6 +226,42 @@ public class SqlRouteStorage implements RouteStorage {
         } while ( cursor.moveToNext() );
       }
       return waypoints;
+    } finally {
+      cursor.close();
+      db.close();
+    }
+  }
+
+  @Override
+  public void iterateAllRouteStops(RouteStopCallback callback) {
+    SQLiteDatabase db = getDatabase();
+    String sql = "select lat, lon, routes._id, routes.name, routes.direction from markers" +
+        "\njoin stops on markers._id = stops.marker" +
+        "\njoin routes on routes._id = stops.route" +
+        "\norder by routes._id, stops.seq";
+    Cursor cursor = db.rawQuery( sql, null);
+    try {
+      int last_route_id = -1;
+      RouteId routeId = null;
+      List<Point> waypoints = null;
+      if ( cursor.moveToFirst() ) {
+        do {
+          Point p = new Point(cursor.getFloat(0), cursor.getFloat(1));
+          int route_id = cursor.getInt(2);
+          if ( route_id != last_route_id ) {
+            if ( routeId != null) {
+              callback.add(routeId, waypoints );
+            }
+            last_route_id = route_id;
+            routeId = new RouteId(cursor.getString(3), cursor.getString(4));
+            waypoints = new ArrayList<Point>();
+          }
+          waypoints.add(p);
+        } while ( cursor.moveToNext() );
+        if ( routeId != null) {
+          callback.add(routeId, waypoints );
+        }
+      }
     } finally {
       cursor.close();
       db.close();

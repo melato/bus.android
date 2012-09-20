@@ -33,10 +33,10 @@ public class GPXOverlay extends Overlay {
     if ( size == 0 )
       return;
     Point p = new Point();
-    projection.toPixels(Maps.geoPoint(waypoints.get(0)), p);
+    projection.toPixels(GMap.geoPoint(waypoints.get(0)), p);
     path.moveTo(p.x, p.y);
     for( int i = 1; i < size; i++ ) {
-      projection.toPixels(Maps.geoPoint(waypoints.get(i)), p);
+      projection.toPixels(GMap.geoPoint(waypoints.get(i)), p);
       path.lineTo(p.x, p.y);
     }
 	}

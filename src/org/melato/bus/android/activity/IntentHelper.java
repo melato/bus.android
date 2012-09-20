@@ -8,6 +8,7 @@ import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteGroup;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
+import org.melato.gpx.Point;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,6 +22,8 @@ import android.content.Intent;
 public class IntentHelper  {
   public static final String KEY_ROUTE = "org.melato.bus.android.route";
   public static final String KEY_ROUTE_COUNT = "org.melato.bus.android.route_count";
+  public static final String KEY_LATITUDE = "org.melato.android.gpx.lat";
+  public static final String KEY_LONGITUDE = "org.melato.android.gpx.lon";
   
   private Intent    intent;
   private Context   context;
@@ -44,6 +47,21 @@ public class IntentHelper  {
     this.intent = intent;
   }
 
+  public static void putLocation(Intent intent, Point p) {
+    intent.putExtra(KEY_LATITUDE, p.getLat());
+    intent.putExtra(KEY_LONGITUDE, p.getLon());
+  }
+  
+  public static Point getLocation(Intent intent) {
+    Float lat = (Float) intent.getSerializableExtra(KEY_LATITUDE);
+    Float lon = (Float) intent.getSerializableExtra(KEY_LONGITUDE);
+    if ( lat != null && lon != null ) {
+      return new Point(lat, lon);
+    }
+    return null;
+  }
+  
+  
   public void putRoute(Route route) {
     intent.putExtra(KEY_ROUTE, route.getRouteId().toString());
   }
