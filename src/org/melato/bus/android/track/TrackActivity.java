@@ -1,20 +1,22 @@
 package org.melato.bus.android.track;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.melato.android.AndroidLogger;
 import org.melato.bus.android.Info;
-import org.melato.bus.android.R;
 import org.melato.bus.android.activity.LocationContext;
-import org.melato.bus.android.activity.RoutePath;
 import org.melato.bus.android.activity.ScheduleActivity;
 import org.melato.bus.model.Route;
 import org.melato.gpx.Earth;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
+import org.melato.gpx.util.Path;
 import org.melato.log.Log;
 
+import android.R;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -63,9 +65,15 @@ public class TrackActivity extends ScheduleActivity {
         return;
       }
       GPX gpx = activities.getRouteManager().loadGPX(route);
-      RoutePath path = new RoutePath(gpx);
-      path.setLocation(point);
-      Waypoint p = path.getClosestWaypoint();
+      List<Waypoint> waypoints = null;
+      if ( gpx.getRoutes().isEmpty() ) {
+        waypoints = Collections.emptyList();
+      } else {
+        waypoints = gpx.getRoutes().get(0).getWaypoints();
+      }
+      Path path = new Path(waypoints);
+      int closestIndex = path.findNearestIndex(point);
+      Waypoint p = path.getWaypoint(closestIndex);
       if ( p != null && Earth.distance(p,  point) < Info.MARK_PROXIMITY ) {
         Log.info("marker: " + p.getSym() );
         Pass pass = new Pass(route, p.getSym() );

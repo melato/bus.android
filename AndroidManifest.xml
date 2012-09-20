@@ -43,7 +43,7 @@
             android:label="@string/nearby" >
         </activity>        
         <activity
-            android:name=".activity.RouteMapActivity"
+            android:name=".map.RouteMapActivity"
             android:label="@string/map" >
         </activity>
         <activity

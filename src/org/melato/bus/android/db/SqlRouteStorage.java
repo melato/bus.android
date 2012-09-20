@@ -234,6 +234,7 @@ public class SqlRouteStorage implements RouteStorage {
 
   @Override
   public void iterateAllRouteStops(RouteStopCallback callback) {
+    Clock clock = new Clock();
     SQLiteDatabase db = getDatabase();
     String sql = "select lat, lon, routes._id, routes.name, routes.direction from markers" +
         "\njoin stops on markers._id = stops.marker" +
@@ -245,6 +246,7 @@ public class SqlRouteStorage implements RouteStorage {
       RouteId routeId = null;
       List<Point> waypoints = null;
       if ( cursor.moveToFirst() ) {
+        Log.info( clock.lap( "all.RouteStops.moveToFirst"));
         do {
           Point p = new Point(cursor.getFloat(0), cursor.getFloat(1));
           int route_id = cursor.getInt(2);
@@ -262,6 +264,7 @@ public class SqlRouteStorage implements RouteStorage {
           callback.add(routeId, waypoints );
         }
       }
+      Log.info( clock.lap( "all.RouteStops.cursor"));
     } finally {
       cursor.close();
       db.close();

@@ -8,6 +8,7 @@ import org.melato.android.AndroidLogger;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.map.AllMapActivity;
+import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.xml.RouteHandler;

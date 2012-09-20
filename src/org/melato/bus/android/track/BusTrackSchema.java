@@ -1,5 +1,7 @@
 package org.melato.bus.android.track;
 
+import org.melato.android.db.Column;
+
 import android.net.Uri;
 import android.provider.BaseColumns;
 
