@@ -177,7 +177,7 @@ public class StopContext extends LocationContext {
         float time = StopContext.this.speed.getRemainingTime(getMarkerIndex());
         value = formatTime(time);
       }
-      return properties.formatProperty( label, value);
+      return PropertiesDisplay.formatProperty( label, value);
     }
   }
   

@@ -59,6 +59,10 @@
             android:label="@string/available_updates" >
         </activity>
         <activity
+            android:name=".help.HelpActivity"
+            android:label="@string/help" >
+        </activity>
+        <activity
             android:name=".track.TrackActivity"
             android:label="@string/track" >
         </activity>

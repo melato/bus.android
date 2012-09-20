@@ -2,6 +2,7 @@ package org.melato.bus.android.activity;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.help.HelpActivity;
 import org.melato.bus.model.Route;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Waypoint;
@@ -68,6 +69,7 @@ public class StopsActivity extends ListActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.stops_menu, menu);
+    HelpActivity.addItem(menu, this, R.string.help_stops);
     return true;
   }
   

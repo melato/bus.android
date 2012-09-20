@@ -3,6 +3,7 @@ package org.melato.bus.android.activity;
 import java.util.List;
 
 import org.melato.bus.android.R;
+import org.melato.bus.android.help.HelpActivity;
 import org.melato.bus.android.update.UpdateActivity;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteGroup;
@@ -123,6 +124,7 @@ public class RoutesActivity extends ListActivity {
   {
      MenuInflater inflater = getMenuInflater();
      inflater.inflate(R.menu.routes_menu, menu);
+     HelpActivity.addItem(menu, this, R.string.help_routes);
      return true;
   }
 

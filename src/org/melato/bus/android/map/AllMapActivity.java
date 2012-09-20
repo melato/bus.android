@@ -5,6 +5,7 @@ import org.melato.android.gpx.map.GMap;
 import org.melato.android.location.Locations;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
+import org.melato.bus.android.help.HelpActivity;
 import org.melato.gpx.Point;
 import org.melato.log.Log;
 
@@ -72,6 +73,7 @@ public class AllMapActivity extends MapActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.all_map_menu, menu);
+    HelpActivity.addItem(menu, this, R.string.help_map);
     return true;
   }
   

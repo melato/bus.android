@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="help_default">Default Help.</string>
+    <string name="help_map">The Map displays one or more routes.
+        When you tap on any point on the map,
+        you are taken to a list of routes that have stops near the point that you tapped on.</string>
+    <string name="help_nearby">The <b>Nearby</b> screen displays the nearest routes to your current location,
+      or to a location that you previously selected by tapping on the map, or from a route stop.</string>
+    <string name="help_routes">The Routes screen displays a list of routes,
+either the routes you most recently looked at, or the list of all routes.</string>    
+    <string name="help_stops">
+The <b>Stops</b> screen displays the route stops, in sequence from the start of the route to the end.
+The application may highlight a stop of special interest if:
+<ul>
+<li>It is the closest stop to your current location or to the location you selected earlier</li>
+<li>It is the <b>current</b> stop while you are in the route</li>
+</ul>
+The list of stops displays one or two distances.
+A distance in parenthesis is a straight line distance from the current location or from a reference location.
+A distance with a + or - sign is a <i>route distance</i>, the distance along the route
+from a reference location on the route.
+The reference route location is the current location, if you are on the route,
+or the closest route location to your route location,
+or the beginning of the route.  
+</string>    
+</resources>
