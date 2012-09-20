@@ -60,8 +60,9 @@ public final class R {
         public static final int nearby_menu=0x7f060002;
         public static final int routes_menu=0x7f060003;
         public static final int schedule_menu=0x7f060004;
-        public static final int stops_menu=0x7f060005;
-        public static final int track_menu=0x7f060006;
+        public static final int stop_menu=0x7f060005;
+        public static final int stops_menu=0x7f060006;
+        public static final int track_menu=0x7f060007;
     }
     public static final class string {
         public static final int ETA=0x7f05000e;

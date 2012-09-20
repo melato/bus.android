@@ -1,7 +1,6 @@
 package org.melato.bus.android.activity;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import org.melato.android.ui.PropertiesDisplay;
@@ -9,12 +8,14 @@ import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
-import org.melato.bus.model.Schedule;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Waypoint;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
@@ -87,5 +88,31 @@ public class StopActivity extends ListActivity {
       activities.showRoute((Route) obj);
     }
   }
+ 
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.stop_menu, menu);
+    return true;
+  }
+ 
+  private void showNearby() {
+    Waypoint point = stop.getMarker();
+    NearbyActivity.start(this, point);
+  }
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    boolean handled = false;
+    switch (item.getItemId()) {
+      case R.id.nearby:
+        showNearby();
+        break;
+      default:
+        break;
+    }
+    if ( handled )
+      return true;
+    return activities.onOptionsItemSelected(item);
+  }  
   
 }

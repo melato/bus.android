@@ -171,11 +171,7 @@ public class RoutesOverlay extends Overlay {
 
   @Override
   public boolean onTap(GeoPoint geoPoint, MapView mapView) {
-    Context context = mapView.getContext();
-    Intent intent = new Intent(context, NearbyActivity.class);
-    IntentHelper.putLocation(intent, GMap.point(geoPoint));
-    Log.info( "intent.location " + IntentHelper.getLocation(intent));
-    context.startActivity(intent);
+    NearbyActivity.start(mapView.getContext(), GMap.point(geoPoint));
     return true;
   }
   

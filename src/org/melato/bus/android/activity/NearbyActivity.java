@@ -1,9 +1,14 @@
 package org.melato.bus.android.activity;
 
+import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.R;
 import org.melato.bus.client.NearbyStop;
+import org.melato.gpx.Point;
+import org.melato.log.Log;
 
 import android.app.ListActivity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,6 +55,12 @@ public class NearbyActivity extends ListActivity {
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     return activities.onOptionsItemSelected(item);
+  }
+  
+  public static void start(Context context, Point center) {
+    Intent intent = new Intent(context, NearbyActivity.class);
+    IntentHelper.putLocation(intent, center);
+    context.startActivity(intent);    
   }
  
 }
