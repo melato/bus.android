@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuItem.OnMenuItemClickListener;
@@ -20,6 +21,7 @@ public class HelpActivity extends Activity {
     TextView helpView = (TextView) findViewById(R.id.help);
     int helpId = getIntent().getIntExtra(KEY_ID, R.string.help_default);
     helpView.setText(helpId);
+    helpView.setMovementMethod(new ScrollingMovementMethod());    
   }
   
   public static void showHelp(Context context, int helpId) {

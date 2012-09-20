@@ -12,8 +12,7 @@ either the routes you most recently looked at, or the list of all routes.</strin
 The <b>Stops</b> screen displays the route stops, in sequence from the start of the route to the end.
 The application may highlight a stop of special interest if it is the closest stop to your current location
 or if it is the <b>current</b> stop while you are in the route.
-<p/>
-<br></br><br></br>
+\n\n
 The list of stops displays one or two distances.
 A distance in parenthesis is a straight line distance from the current location or from a reference location.
 A distance with a + or - sign is a <i>route distance</i>, the distance along the route

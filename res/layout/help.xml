@@ -23,6 +23,7 @@
         android:layout_weight="1.10"
         android:background="@color/white"
         android:inputType="textMultiLine"
+        android:scrollbars = "vertical"        
         android:textColor="@color/black"
         android:padding="10dp"
         android:textSize="20sp" >

@@ -51,12 +51,11 @@ public final class R {
     public static final class layout {
         public static final int bus_stop_item=0x7f030000;
         public static final int help=0x7f030001;
-        public static final int help_layout=0x7f030002;
-        public static final int highlighted_item=0x7f030003;
-        public static final int list_item=0x7f030004;
-        public static final int map=0x7f030005;
-        public static final int route_item=0x7f030006;
-        public static final int update=0x7f030007;
+        public static final int highlighted_item=0x7f030002;
+        public static final int list_item=0x7f030003;
+        public static final int map=0x7f030004;
+        public static final int route_item=0x7f030005;
+        public static final int update=0x7f030006;
     }
     public static final class menu {
         public static final int all_map_menu=0x7f060000;
