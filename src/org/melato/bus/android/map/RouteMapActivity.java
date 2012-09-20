@@ -1,15 +1,12 @@
 package org.melato.bus.android.map;
 
-import org.melato.android.gpx.map.GPXOverlay;
 import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
-import org.melato.gpx.GPX;
 import org.melato.gpx.Point;
-import org.melato.gpx.util.AveragePoint;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -45,9 +42,8 @@ public class RouteMapActivity extends MapActivity {
       map = (MapView) findViewById(R.id.mapview);
       map.setBuiltInZoomControls(true);
       RouteManager routeManager = Info.routeManager(this);
-      GPX gpx = routeManager.loadGPX(route);
-      
-      Point center = AveragePoint.getCenter(gpx );
+      RoutesOverlay routesOverlay = new RoutesOverlay(routeManager, route.getRouteId());
+      Point center = routesOverlay.getAveragePoint();
       MapController mapController = map.getController();
       int zoom = getSharedPreferences(BusActivities.NAV_PREFERENCES, 0).getInt(KEY_ZOOM_LEVEL, 15 );
       mapController.setZoom(zoom);
@@ -55,8 +51,7 @@ public class RouteMapActivity extends MapActivity {
         mapController.setCenter(GMap.geoPoint(center));
       }
 
-      GPXOverlay pathOverlay = new GPXOverlay(gpx);
-      map.getOverlays().add(pathOverlay);
+      map.getOverlays().add(routesOverlay);
       
       myLocation = new MyLocationOverlay(this, map);
       map.getOverlays().add(myLocation);

@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.melato.android.AndroidLogger;
 import org.melato.bus.android.Info;
+import org.melato.bus.android.R;
 import org.melato.bus.android.activity.LocationContext;
 import org.melato.bus.android.activity.ScheduleActivity;
 import org.melato.bus.model.Route;
@@ -16,7 +17,6 @@ import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
 import org.melato.log.Log;
 
-import android.R;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;

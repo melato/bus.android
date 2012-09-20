@@ -3,6 +3,7 @@ package org.melato.bus.android.track;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import org.melato.android.db.Column;
 import org.melato.bus.android.track.BusTrackSchema.PassColumns;
 import org.melato.bus.android.track.BusTrackSchema.Passes;
 import org.melato.bus.model.RouteId;

@@ -6,15 +6,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.melato.android.gpx.map.GMap;
-import org.melato.bus.android.activity.IntentHelper;
 import org.melato.bus.android.activity.NearbyActivity;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
+import org.melato.gpx.Waypoint;
+import org.melato.gpx.util.AveragePoint;
 import org.melato.log.Clock;
-import org.melato.log.Log;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -41,6 +39,7 @@ public class RoutesOverlay extends Overlay {
   private List<RouteId> routes;
   private Map<RouteId,RoutePoints> routeCache;
   private int pointCount;
+  private org.melato.gpx.Point averagePoint;
   	
 	public RoutesOverlay(RouteManager routeManager) {
     super();
@@ -48,7 +47,24 @@ public class RoutesOverlay extends Overlay {
     loadAllRoutes();
   }
 
-	private void findBoundaries(MapView view) {
+  public RoutesOverlay(RouteManager routeManager, RouteId routeId) {
+    super();
+    this.routeManager = routeManager;
+    List<Waypoint> waypoints = routeManager.loadWaypoints(routeId);
+    AveragePoint average = new AveragePoint();
+    average.add(waypoints);
+    averagePoint = average.getCenter();
+    routes = new ArrayList<RouteId>();
+    routes.add(routeId);
+    routeCache = new HashMap<RouteId,RoutePoints>();
+    routeCache.put(routeId, new RoutePoints(Waypoint.asPoints(waypoints)));
+  }
+
+	public org.melato.gpx.Point getAveragePoint() {
+    return averagePoint;
+  }
+
+  private void findBoundaries(MapView view) {
     int latSpan = view.getLatitudeSpan();
     int lonSpan = view.getLongitudeSpan();
     latDiff = ((float) latSpan) / 1E6f / 2; 
@@ -130,7 +146,7 @@ public class RoutesOverlay extends Overlay {
     return points;
   }
   Map<RouteId,Integer> routeColors = new HashMap<RouteId,Integer>();
-  int[] colors = new int[] { Color.RED, Color.BLUE, Color.GREEN, Color.CYAN, Color.YELLOW };
+  int[] colors = new int[] { Color.BLUE, Color.RED, Color.GREEN, Color.CYAN, Color.YELLOW };
   int colorIndex = 0;
   
   int nextColor() {

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.melato.gpx.Point;
 import org.melato.gpx.Waypoint;
+import org.melato.util.DelegateList;
 
 import com.google.android.maps.GeoPoint;
 
@@ -40,5 +41,4 @@ public class RoutePoints {
       lon[i] = (int) (p.getLon()*1e6f);
     }
   }
-  
 }
