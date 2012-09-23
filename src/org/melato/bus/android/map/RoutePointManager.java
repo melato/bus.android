@@ -18,7 +18,6 @@ public class RoutePointManager {
   private RouteManager routeManager;
   private Map<RouteId,RoutePoints> map = new HashMap<RouteId,RoutePoints>();
   private boolean loaded;
-  private boolean scheduledRefresh;
 
   private RoutePointManager(Context context) {
     super();
