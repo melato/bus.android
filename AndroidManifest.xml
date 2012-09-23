@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.melato.bus.android"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="0.5" >
 
     <uses-sdk android:minSdkVersion="8" />
 
@@ -47,10 +47,6 @@
             android:label="@string/map" >
         </activity>
         <activity
-            android:name=".map.AllMapActivity"
-            android:label="@string/map" >
-        </activity>
-        <activity
             android:name=".activity.StopActivity"
             android:label="@string/stop" >
         </activity>
@@ -61,6 +57,10 @@
         <activity
             android:name=".help.HelpActivity"
             android:label="@string/help" >
+        </activity>
+        <activity
+            android:name=".help.AboutActivity"
+            android:label="@string/about" >
         </activity>
         <activity
             android:name=".track.TrackActivity"

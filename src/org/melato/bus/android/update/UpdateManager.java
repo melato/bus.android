@@ -28,8 +28,7 @@ public class UpdateManager extends PortableUpdateManager {
     ProgressGenerator progress = ProgressGenerator.get();
     for( UpdateFile f: updates ) {
       if ( ROUTES_UPDATE.equals(f.getName())) {
-        String databaseName = SqlRouteStorage.DATABASE_NAME;
-        File databaseFile = context.getDatabasePath(databaseName);
+        File databaseFile = SqlRouteStorage.databaseFile(context);
         progress.setText("Routes Database");
         updateZipedFile(f, ROUTES_ENTRY, databaseFile);
         continue;

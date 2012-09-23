@@ -6,18 +6,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.melato.android.gpx.map.GMap;
+import org.melato.bus.android.Info;
 import org.melato.bus.android.activity.NearbyActivity;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
-import org.melato.gpx.Waypoint;
-import org.melato.gpx.util.AveragePoint;
-import org.melato.log.Clock;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
+import android.view.View;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -37,32 +37,50 @@ public class RoutesOverlay extends Overlay {
   private int lonMin6E;
   private int lonMax6E;
   private List<RouteId> routes;
-  private Map<RouteId,RoutePoints> routeCache;
-  private int pointCount;
-  private org.melato.gpx.Point averagePoint;
-  private static Map<RouteId,RoutePoints> allRoutes;
-  	
-	public RoutesOverlay(RouteManager routeManager) {
+  private RoutePointManager routePointManager;
+  private RoutePoints route;
+  private boolean scheduledRefresh;
+
+  /** Class to refresh the map view when the route point manager is loaded. */
+  class Refresher implements Runnable {
+    private View view;
+    
+    public Refresher(View view) {
+      super();
+      this.view = view;
+    }
+
+    public void run() {
+      synchronized( routePointManager ) {
+        if ( ! routePointManager.isLoaded() ) {
+          try {
+            routePointManager.wait();
+          } catch (InterruptedException e) {
+            return;
+          }
+        }
+        view.postInvalidate();          
+      }
+    }
+  }
+	public RoutesOverlay(Context context) {
     super();
-    this.routeManager = routeManager;
-    loadAllRoutes();
+    routeManager = Info.routeManager(context);
+    routePointManager = RoutePointManager.getInstance(context);
   }
 
-  public RoutesOverlay(RouteManager routeManager, RouteId routeId) {
-    super();
-    this.routeManager = routeManager;
-    List<Waypoint> waypoints = routeManager.loadWaypoints(routeId);
-    AveragePoint average = new AveragePoint();
-    average.add(waypoints);
-    averagePoint = average.getCenter();
-    routes = new ArrayList<RouteId>();
-    routes.add(routeId);
-    routeCache = new HashMap<RouteId,RoutePoints>();
-    routeCache.put(routeId, RoutePoints.createFromPoints(Waypoint.asPoints(waypoints)));
-  }
-
-	public org.melato.gpx.Point getAveragePoint() {
-    return averagePoint;
+	public void setRoute(RouteId routeId) {
+	  routes = new ArrayList<RouteId>();
+	  routes.add(routeId);
+	  routePointManager.ensureLoaded(routeId);
+	  route = routePointManager.getRoutePoints(routeId);
+	}
+	
+	public GeoPoint getCenter() {
+    if ( route != null ) {
+      return route.getCenterGeoPoint();
+    }
+    return null;
   }
 
   private void findBoundaries(MapView view) {
@@ -77,25 +95,16 @@ public class RoutesOverlay extends Overlay {
     lonMax6E = center.getLongitudeE6() + lonSpan / 2;
 	}
 	
-	private void loadAllRoutes() {
-	  if ( allRoutes == null ) {
-	    RoutePointsCollector collector = new RoutePointsCollector();
-	    routeManager.iterateAllRouteStops(collector);
-	    allRoutes = collector.getMap();
-	  }
-	  routeCache = allRoutes;
-	}
-	
 	public void refresh() {
 	  routes = null;
 	}
+	
 	List<RouteId> getMapRoutes(MapView view) {
 	  if ( routes == null ) {
       routes = new ArrayList<RouteId>();
       GeoPoint center = view.getMapCenter();
       routeManager.iterateNearbyRoutes(GMap.point(center), latDiff, lonDiff, routes);
 	  }
-    //Log.info("routes: " + routes.size());
     return routes;
 	}
 	
@@ -110,9 +119,6 @@ public class RoutesOverlay extends Overlay {
     path.moveTo(p.x, p.y);
     for( int i = 0; i < size; i++ ) {
       boolean inside = points.isInside(i, latMin6E, latMax6E, lonMin6E, lonMax6E);
-      if ( inside ) {
-        pointCount++;
-      }
       if ( previousInside ) {
         // draw from previous point
         projection.toPixels(points.getGeoPoint(i), p);
@@ -136,19 +142,6 @@ public class RoutesOverlay extends Overlay {
     canvas.drawPath(path, paint);    
   }
 
-  RoutePoints getPoints(RouteId routeId) {
-    RoutePoints points = routeCache.get(routeId);    
-    /*
-    if ( points == null ) {
-      List<Waypoint> waypoints = routeManager.loadWaypoints(routeId);
-      //List<Waypoint> waypoints = Collections.emptyList();
-      //routeManager.getStorage().iterateWaypoints(routeId);
-      points = new RoutePoints(waypoints);
-      routeCache.put(routeId,  points);
-    }
-    */
-    return points;
-  }
   Map<RouteId,Integer> routeColors = new HashMap<RouteId,Integer>();
   int[] colors = new int[] { Color.BLUE, Color.RED, Color.GREEN, Color.CYAN, Color.YELLOW };
   int colorIndex = 0;
@@ -170,8 +163,6 @@ public class RoutesOverlay extends Overlay {
   
   public void draw(Canvas canvas, MapView view, boolean shadow){
     super.draw(canvas, view, shadow);
-    pointCount = 0;
-    Clock clock = new Clock("RoutesOverlay.draw");
     findBoundaries(view);
     Paint   paint = new Paint();
     paint.setDither(true);
@@ -180,13 +171,21 @@ public class RoutesOverlay extends Overlay {
     paint.setStrokeCap(Paint.Cap.ROUND);
     paint.setStrokeWidth(2);
     
-    Projection projection = view.getProjection();    
+    Projection projection = view.getProjection();
+    boolean missingData = false;
     for( RouteId routeId: getMapRoutes(view)) {
       paint.setColor(getRouteColor(routeId));
-      RoutePoints route = getPoints(routeId);
-      drawPath(canvas, paint, projection, route);
+      RoutePoints route = routePointManager.getRoutePoints(routeId);
+      if ( route != null ) {
+        drawPath(canvas, paint, projection, route);
+      } else {
+        missingData =  true;
+      }
     }
-    //Log.info(clock + " points=" + pointCount);
+    if ( missingData && ! scheduledRefresh ) {
+      scheduledRefresh = true;
+      new Thread( new Refresher(view)).start();
+    }
 	}
 
   @Override

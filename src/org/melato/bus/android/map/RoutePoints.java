@@ -23,6 +23,16 @@ public class RoutePoints {
   public GeoPoint getGeoPoint(int i) {
     return new GeoPoint(lat[i], lon[i]);
   }
+  private static int mean(int[] coordinates) {
+    long sum = 0;
+    for( int i = 0; i < coordinates.length; i++ ) {
+      sum += coordinates[i];
+    }
+    return (int) (sum / coordinates.length);
+  }
+  public GeoPoint getCenterGeoPoint() {
+    return new GeoPoint(mean(lat), mean(lon));    
+  }
   public boolean isInside(int i, int latMin, int latMax, int lonMin, int lonMax) {
     int lat = getLatitude6E(i);
     int lon = getLongitude6E(i);

@@ -7,7 +7,7 @@ import java.util.List;
 import org.melato.android.AndroidLogger;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.map.AllMapActivity;
+import org.melato.bus.android.help.AboutActivity;
 import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
@@ -113,7 +113,11 @@ public class BusActivities  {
     editor.putString(VIEW,  view);
     editor.commit();
   }
-
+  
+  public void showAbout() {
+    context.startActivity( new Intent(context, AboutActivity.class));    
+  }
+  
   public void showInBrowser(Route route) {
     Uri uri = Uri.parse(Info.routeManager(context).getUri(route));
     Intent browserIntent = new Intent(Intent.ACTION_VIEW, uri);
@@ -147,18 +151,24 @@ public class BusActivities  {
         handled = true;
         break;
       case R.id.map:
-        setDefaultView(VIEW_MAP);
-        showRoute(route, RouteMapActivity.class);
+        if ( route != null ) {
+          setDefaultView(VIEW_MAP);
+          showRoute(route, RouteMapActivity.class);
+        } else {
+          context.startActivity(new Intent(context, RouteMapActivity.class));    
+        }
         handled = true;
         break;
-      case R.id.all_map:
+      case R.id.about:
         handled = true;
-        context.startActivity(new Intent(context, AllMapActivity.class));    
+        showAbout();
         break;
+      /*
       case R.id.benchmark:
         handled = true;
         benchmark();    
         break;
+      */
       case R.id.track:
         setDefaultView(VIEW_TRACK);
         //showRoute(route, TrackActivity.class);

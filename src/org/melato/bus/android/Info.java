@@ -12,7 +12,7 @@ public class Info {
   public static final float MARK_PROXIMITY = 200f;
   
   public static RouteManager routeManager(Context context) {
-    return new RouteManager(new SqlRouteStorage(context));
+    return new RouteManager(new SqlRouteStorage(context.getApplicationContext()));
   }
   
   
