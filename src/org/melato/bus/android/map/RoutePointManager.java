@@ -1,14 +1,13 @@
 package org.melato.bus.android.map;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
-import org.melato.gpx.Waypoint;
 
+import android.app.Activity;
 import android.content.Context;
 
 /** Caches the coordinates of all routes in memory, for quick access by the map.
@@ -19,6 +18,7 @@ public class RoutePointManager {
   private RouteManager routeManager;
   private Map<RouteId,RoutePoints> map = new HashMap<RouteId,RoutePoints>();
   private boolean loaded;
+  private boolean scheduledRefresh;
 
   private RoutePointManager(Context context) {
     super();
@@ -58,28 +58,8 @@ public class RoutePointManager {
     return loaded;
   }
   
-  private RoutePoints loadRoute(RouteId routeId) {
-    List<Waypoint> waypoints = routeManager.loadWaypoints(routeId);
-    return RoutePoints.createFromPoints(Waypoint.asPoints(waypoints));
-  }
-
-  /**
-   * Ensure that the RoutePoints are loaded.  Load them separately, if necessary.
-   * @param routeManager
-   * @param routeId
-   * @return
-   */
-  public void ensureLoaded(RouteId routeId) {    
-    RoutePoints route = null;
-    synchronized(this) {
-      route = map.get(routeId);
-    }
-    if ( route == null ) {
-      route = loadRoute(routeId);
-      synchronized(this) {
-        map.put(routeId,  route);
-      }
-    }
+  public boolean isLoading() {
+    return ! isLoaded();
   }
   
   /**
@@ -91,5 +71,49 @@ public class RoutePointManager {
   public synchronized RoutePoints getRoutePoints(RouteId routeId) {
     return map.get(routeId);
   }  
+
+  /** Run the specified action when the routes are loaded.
+   * If the routes are not loaded, start a new thread that waits for the loading.
+   * Then run the action on the activity's UI thread.
+   * Otherwise run the action immediately. 
+   * @param activity
+   * @param action
+   */
+  public void runWhenLoaded(Activity activity, Runnable action) {
+    boolean isLoaded = false;
+    synchronized (this) {
+      isLoaded = isLoaded();
+    }
+    if ( isLoaded ) {
+      action.run();
+    } else {
+      new Thread( new WaitForLoad(activity, action)).start();
+    }
+  }
+  
+  class WaitForLoad implements Runnable {
+    Activity  activity;
+    Runnable  action;
+    
+    public WaitForLoad(Activity activity, Runnable action) {
+      super();
+      this.activity = activity;
+      this.action = action;
+    }
+
+    @Override
+    public void run() {
+      try {
+        RoutePointManager rm = RoutePointManager.this;
+        synchronized(rm) {
+          if ( rm.isLoading() ) {
+            rm.wait();
+          }
+        }
+        activity.runOnUiThread(action);
+      } catch (InterruptedException e) {
+      }        
+    }    
+  }
   
 }

@@ -1,12 +1,10 @@
 package org.melato.bus.android.map;
 
 import org.melato.android.gpx.map.GMap;
-import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
 import org.melato.bus.android.help.HelpActivity;
 import org.melato.bus.model.Route;
-import org.melato.bus.model.RouteManager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,6 +26,7 @@ public class RouteMapActivity extends MapActivity {
   private BusActivities activities;
   private MapView map;
   private RoutesOverlay routesOverlay;
+  private boolean isShowingAll;
 
   @Override
   protected boolean isRouteDisplayed() {
@@ -82,12 +81,31 @@ public class RouteMapActivity extends MapActivity {
     return true;
   }
   
+  class OnRoutesLoaded implements Runnable {
+    @Override
+    public void run() {
+      setTitle("Nearby Routes");
+      map.invalidate();
+    }    
+  }
+  void showAllRoutes() {
+    if ( ! isShowingAll ) {
+      setTitle("Loading");
+    }
+    routesOverlay.refresh();
+    if ( ! isShowingAll ) {
+      isShowingAll = true;
+      RoutePointManager rm = RoutePointManager.getInstance(this);
+      rm.runWhenLoaded(this, new OnRoutesLoaded());
+    }
+  }
+  
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
     switch(item.getItemId()) {
       case R.id.refresh:
-        routesOverlay.refresh();
+        showAllRoutes();
         handled = true;
         break;
     }

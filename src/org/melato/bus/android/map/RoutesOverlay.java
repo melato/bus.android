@@ -10,6 +10,7 @@ import org.melato.bus.android.Info;
 import org.melato.bus.android.activity.NearbyActivity;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
+import org.melato.gpx.Waypoint;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -39,41 +40,17 @@ public class RoutesOverlay extends Overlay {
   private List<RouteId> routes;
   private RoutePointManager routePointManager;
   private RoutePoints route;
-  private boolean scheduledRefresh;
 
-  /** Class to refresh the map view when the route point manager is loaded. */
-  class Refresher implements Runnable {
-    private View view;
-    
-    public Refresher(View view) {
-      super();
-      this.view = view;
-    }
-
-    public void run() {
-      synchronized( routePointManager ) {
-        if ( ! routePointManager.isLoaded() ) {
-          try {
-            routePointManager.wait();
-          } catch (InterruptedException e) {
-            return;
-          }
-        }
-        view.postInvalidate();          
-      }
-    }
-  }
 	public RoutesOverlay(Context context) {
     super();
     routeManager = Info.routeManager(context);
-    routePointManager = RoutePointManager.getInstance(context);
   }
 
 	public void setRoute(RouteId routeId) {
 	  routes = new ArrayList<RouteId>();
 	  routes.add(routeId);
-	  routePointManager.ensureLoaded(routeId);
-	  route = routePointManager.getRoutePoints(routeId);
+    List<Waypoint> waypoints = routeManager.loadWaypoints(routeId);
+    route = RoutePoints.createFromPoints(Waypoint.asPoints(waypoints));
 	}
 	
 	public GeoPoint getCenter() {
@@ -97,6 +74,7 @@ public class RoutesOverlay extends Overlay {
 	
 	public void refresh() {
 	  routes = null;
+	  route = null;
 	}
 	
 	List<RouteId> getMapRoutes(MapView view) {
@@ -172,19 +150,22 @@ public class RoutesOverlay extends Overlay {
     paint.setStrokeWidth(2);
     
     Projection projection = view.getProjection();
-    boolean missingData = false;
-    for( RouteId routeId: getMapRoutes(view)) {
-      paint.setColor(getRouteColor(routeId));
-      RoutePoints route = routePointManager.getRoutePoints(routeId);
-      if ( route != null ) {
-        drawPath(canvas, paint, projection, route);
-      } else {
-        missingData =  true;
-      }
+    if ( route != null ) {
+      paint.setColor(Color.BLUE);
+      drawPath(canvas, paint, projection, route);      
     }
-    if ( missingData && ! scheduledRefresh ) {
-      scheduledRefresh = true;
-      new Thread( new Refresher(view)).start();
+    else {
+      routePointManager = RoutePointManager.getInstance(view.getContext());
+      for( RouteId routeId: getMapRoutes(view)) {
+        paint.setColor(getRouteColor(routeId));
+        RoutePoints route = routePointManager.getRoutePoints(routeId);
+        if ( route != null ) {
+          drawPath(canvas, paint, projection, route);
+        }
+        // if route is null, the routepoint manager is loading
+        // The RouteMapActivity will be waiting for it load
+        // and it will invalidate the map view, causing this to draw again.
+      }
     }
 	}
 
