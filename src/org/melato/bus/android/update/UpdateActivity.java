@@ -77,6 +77,12 @@ public class UpdateActivity extends Activity implements Runnable {
     super.onDestroy();
   }
   
+  public static boolean isConnected(Context context) {
+    ConnectivityManager network = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
+    NetworkInfo networkInfo = network.getActiveNetworkInfo();
+    return networkInfo != null && networkInfo.getState() == State.CONNECTED;      
+  }
+  
   /**
    * Checks for available updates.  It does so in a background thread, if there is need to download anything.
    * Otherwise it checks in the ui thread.
@@ -91,20 +97,24 @@ public class UpdateActivity extends Activity implements Runnable {
       updateManager = new UpdateManager(context);
     }
     
-    public void checkUpdates() {
-      ConnectivityManager network = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
-      NetworkInfo networkInfo = network.getActiveNetworkInfo();
-      if ( networkInfo != null && networkInfo.getState() == State.CONNECTED ) {
-        // do a quick local check
-        if ( updateManager.needsRefresh() ) {
-          // refresh in the background
-          new Thread(this).start();
-        }
-        else {
-          // check here
-          run();
+    public boolean checkUpdates() {
+      if ( updateManager.isFirstTime() ) {
+        // assume that we have not data.  We have to update or die.
+        context.startActivity(new Intent(context, UpdateActivity.class));
+        return false;
+      } else {
+        if ( isConnected(context) ) {
+          if ( updateManager.needsRefresh() ) {
+            // refresh in the background
+            new Thread(this).start();
+          }
+          else {
+            // check here
+            run();
+          }
         }
       }
+      return true;
     }
     
     public void run() {
@@ -114,10 +124,13 @@ public class UpdateActivity extends Activity implements Runnable {
     }
   }
   
-  /** Check for updates, and if there are any available give the option of downloading them. */
-  public static void checkUpdates(Context context) {
+  /** Check for updates, and if there are any available give the option of downloading them.
+   * return true if the application should proceed normally.
+   * false if it should do nothing and let the UpdateActivity take over.
+   **/
+  public static boolean checkUpdates(Context context) {
     UpdatesChecker checker = new UpdatesChecker(context);
-    checker.checkUpdates();
+    return checker.checkUpdates();
   }
 
 
