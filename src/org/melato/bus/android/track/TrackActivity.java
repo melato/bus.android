@@ -60,8 +60,8 @@ public class TrackActivity extends ScheduleActivity {
     Route route = activities.getRoute();
     Point point = location.getLocation();
     if ( route != null && point != null ) {
-      Date date = point.getTime();
-      if ( System.currentTimeMillis() - date.getTime() > 10000L) {
+      long time = point.getTime();
+      if ( System.currentTimeMillis() - time > 10000L) {
         return;
       }
       GPX gpx = activities.getRouteManager().loadGPX(route);
@@ -77,7 +77,7 @@ public class TrackActivity extends ScheduleActivity {
       if ( p != null && Earth.distance(p,  point) < Info.MARK_PROXIMITY ) {
         Log.info("marker: " + p.getSym() );
         Pass pass = new Pass(route, p.getSym() );
-        pass.setDate(point.getTime());
+        pass.setDate(point.getDate());
         BusTrackHelper trackDb = new BusTrackHelper(this);
         trackDb.insertPass(pass);
       }
