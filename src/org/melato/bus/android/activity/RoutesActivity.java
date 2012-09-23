@@ -75,6 +75,9 @@ public class RoutesActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      if ( ! UpdateActivity.checkUpdates(this) ) {
+        return;
+      }
       activities = new BusActivities(this);
       String type = (String) getIntent().getSerializableExtra(TYPE_KEY);
       if ( RECENT.equals(type)) {
@@ -89,7 +92,6 @@ public class RoutesActivity extends ListActivity {
           initAllRoutes();
       }
       setListAdapter(new RoutesAdapter());
-      UpdateActivity.checkUpdates(this);
   }
 
   void showGroup(RouteGroup group) {
