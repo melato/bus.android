@@ -23,7 +23,6 @@ public class StopsContext extends LocationContext {
   private Path path;
   private PathTracker pathTracker;
   private int closestStop = -1;
-  private float closestPathDistance = 0;
   private boolean isSelected;
   private StopsAdapter adapter;
 
@@ -50,7 +49,6 @@ public class StopsContext extends LocationContext {
     if ( point != null) {
       pathTracker.setLocation(point);
       closestStop = pathTracker.getNearestIndex();
-      closestPathDistance = pathTracker.getPosition();
     }
     adapter.notifyDataSetChanged();
     // scroll to the nearest stop, if we haven't done it yet.
@@ -78,10 +76,8 @@ public class StopsContext extends LocationContext {
       TextView view = (TextView) super.getView(position, convertView, parent);
       Waypoint waypoint = waypoints.get(position);
       String text = waypoint.getName();
-      float routeDistance = path.getLength(position) - closestPathDistance;
-      text += " " + UI.routeDistance(routeDistance);
       Point here = getLocation();
-      if ( here != null ) {
+      if ( here != null && closestStop == position ) {
         float straightDistance = Earth.distance(here, waypoint); 
         text += " " + UI.straightDistance(straightDistance);
       }
