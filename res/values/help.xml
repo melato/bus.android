@@ -9,16 +9,58 @@
     <string name="help_routes">The Routes screen displays a list of routes,
 either the routes you most recently looked at, or the list of all routes.</string>    
     <string name="help_stops">
-The <b>Stops</b> screen displays the route stops, in sequence from the start of the route to the end.
-The application may highlight a stop of special interest if it is the closest stop to your current location
-or if it is the <b>current</b> stop while you are in the route.
-\n\n
-The list of stops displays one or two distances.
 A distance in parenthesis is a straight line distance from the current location or from a reference location.
 A distance with a + or - sign is a <i>route distance</i>, the distance along the route
-from a reference location on the route.
+from a reference location on the route.  A positive distance means that the stop is ahead of you.
+A negative distance means that the stop is behind you as you travel along the route.
+\n\n
 The reference route location is the current location, if you are on the route,
-or the closest route location to your route location,
-or the beginning of the route.  
+or the closest route location to your current location,
+or the beginning of the route.    
 </string>    
+    <string name="help_stop">
+If the application has detected that you are following the given route, it computes your average speed
+and consequently the estimated time of arrival (ETA) to the chosen stop.
+The computation uses the planned route distance (including turns) rather than the straight line distance.
+\n
+The average speed is computed from the earliest known time that you were following the route.
+This is currently computed only within this screen.
+To get a better estimate, stay on the screen for about a minute.
+\n
+The screen also computes the estimated time it would take you to walk to this stop, if you were walking
+1.25 times the straight line distance to the stop at 5 Km/h.
+Use this to check if it would be faster to walk than wait for the next bus.
+\n
+If you are waiting for the bus at this stop,
+you can use the distance of the stop from the route start
+to estimate how long it takes the bus to get here.
+The application currently does not compute such an estimate, but
+if you know the approximate speed of the bus from your own measurements,
+(perhaps using this application, or any GPS tracking application)
+you can compute a rough estimate yourself.
+Assuming a speed of V Km/h, multiply the route Km distance by 60/V.
+\n
+For example, if you assume that the bus goes at an average speed of 20 Km/h,
+multiply the distance in Km by 3 (60/20) to get the time in minutes.
+\n
+We would like to provide this computation in a future version
+but we would need speed data.
+</string>   
+    <string name="help_about">
+<b>Athens Next Bus</b>, version %1$s
+Written by Alex Athanasopoulos, Copyright (c) 2012.\n\n
+The route maps and timetables are provided by OASA and are available to the public from www.oasa.gr.
+Contact OASA to fix errors in its timetables and contact me to fix bugs in the application.
+\n
+If you notice a mistake in a route timetable (e.g. the scheduled departure time shown by the application
+does not match the time posted at the start bus stop):
+\n
+1. Check www.oasa.gr to see if the error is in their data.\n
+2. If so, contact OASA directly (by phone or email) and ask them to correct it.\n
+3. If this application does not match the OASA website,
+please contact me so I can fix the bug or update the application with the latest information from OASA.
+\n\n
+I can be contacted at alex@melato.org        
+</string>    
+    
 </resources>
