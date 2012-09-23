@@ -1,11 +1,13 @@
 package org.melato.bus.android.activity;
 
+import org.melato.android.AndroidLogger;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.help.HelpActivity;
 import org.melato.bus.model.Route;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Waypoint;
+import org.melato.log.Log;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -33,12 +35,17 @@ public class StopsActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    Log.setLogger(new AndroidLogger(this));
+    Log.info("BusActivities");
     activities = new BusActivities(this);
+    Log.info("StopContext");
     stops = new StopsContext(this);
     Route route = activities.getRoute();
+    Log.info("route: " + route);
     setTitle(route.getFullTitle());
 
     GPX gpx = Info.routeManager(this).loadGPX(route);
+    Log.info("gpx");
     stops.setGPX(gpx);
   }
   

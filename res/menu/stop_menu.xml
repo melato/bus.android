@@ -4,4 +4,6 @@
           android:title="@string/nearby" />
     <item android:id="@+id/map"
           android:title="@string/map" />
+    <item android:id="@+id/schedule"
+          android:title="@string/schedule" />
 </menu>

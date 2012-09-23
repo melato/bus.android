@@ -59,8 +59,12 @@ public class SqlRouteStorage implements RouteStorage {
     }
     return null;
   }
+  public static File databaseFile(Context context) {
+    File dir = context.getFilesDir();
+    return new File(dir, DATABASE_NAME);    
+  }
   public SqlRouteStorage(Context context) {
-    databaseFile = context.getDatabasePath(DATABASE_NAME).toString();
+    databaseFile = databaseFile(context).toString();
   }
   public SqlRouteStorage(File databaseFile) {
     this.databaseFile = databaseFile.toString();
@@ -208,11 +212,12 @@ public class SqlRouteStorage implements RouteStorage {
   @Override
   public List<Waypoint> loadWaypoints(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
-    String sql = "select lat, lon, markers.symbol, markers.name, stops.seq from markers" +
+    String sql = "select lat, lon, markers.symbol, markers.name, stops.duration from markers" +
         "\njoin stops on markers._id = stops.marker" +
         "\njoin routes on routes._id = stops.route" +
         "\nwhere " + whereClause(routeId) + 
-        "\norder by stops.seq";
+        "\norder by stops._id";
+    Log.info(sql );
     Cursor cursor = db.rawQuery( sql, null);
     try {
       List<Waypoint> waypoints = new ArrayList<Waypoint>();
@@ -221,10 +226,12 @@ public class SqlRouteStorage implements RouteStorage {
           Waypoint p = new Waypoint(cursor.getFloat(0), cursor.getFloat(1));
           p.setSym(cursor.getString(2));
           p.setName(cursor.getString(3));
+          p.setTime(1000L * cursor.getInt(4));
           p.setLinks( Arrays.asList( new String[] { routeId.toString() }));
           waypoints.add(p);
         } while ( cursor.moveToNext() );
       }
+      Log.info("loadWaypoints: " + waypoints.size());
       return waypoints;
     } finally {
       cursor.close();

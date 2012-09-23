@@ -25,6 +25,7 @@ public class StopContext extends LocationContext {
   private List<Waypoint> waypoints;
   private int markerIndex;
   private Waypoint marker;
+  private int timeFromStart = -1;
 
   private Path path;
   private PathTracker pathTracker;
@@ -92,18 +93,29 @@ public class StopContext extends LocationContext {
     return adapter;
   }
 
+  public int getTimeFromStart() {
+    if ( timeFromStart == -1 ) {
+      timeFromStart = 0;
+      for( int i = 0; i < markerIndex; i++ ) {
+        timeFromStart += (int) (waypoints.get(i).getTime() / 1000);
+      }
+    }
+    return timeFromStart;    
+  }
   public void setWaypoints(List<Waypoint> waypoints) {
     this.waypoints = waypoints;
     this.path = new Path(waypoints);
     pathTracker = new PathTracker();
     pathTracker.setPath(path);
     speed = new SpeedTracker(pathTracker);
+    timeFromStart = -1;
   }
   
   public void setMarkerIndex(int index) {
     markerIndex = index;
     marker = waypoints.get(index);
     setEnabledLocations(true);
+    timeFromStart = -1;
   }
 
   class StraightDistance {
@@ -123,6 +135,16 @@ public class StopContext extends LocationContext {
       String name = path.getWaypoint(0).getName();
       String label = String.format(context.getString(R.string.position_from_start), name);
       return PropertiesDisplay.formatProperty( label, UI.routeDistance(-getMarkerPosition()));
+    }
+  }
+  
+  class TimeFromStart {
+    public String toString() {
+      String name = path.getWaypoint(0).getName();
+      String label = String.format(context.getString(R.string.time_from_start), name);
+      int seconds = getTimeFromStart();
+      String value = seconds > 0 ? Schedule.formatTime(seconds/60) : "";
+      return PropertiesDisplay.formatProperty( label, value);
     }
   }
   
@@ -221,6 +243,7 @@ public class StopContext extends LocationContext {
     properties.add(new RouteDistance());
     properties.add(new DistanceFromStart());
     properties.add(new DistanceToEnd());
+    properties.add(new TimeFromStart());      
     properties.add(new Latitude());
     properties.add(new Longitude());    
 

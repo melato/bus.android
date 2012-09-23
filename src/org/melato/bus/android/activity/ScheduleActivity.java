@@ -28,14 +28,13 @@ import android.widget.TextView;
  */
 public class ScheduleActivity extends ListActivity {
   public static final String KEY_DAYS = "days";
+  public static final String KEY_STOP_NAME = "stop";
+  public static final String KEY_TIME_OFFSET = "offset";
   protected BusActivities activities;
   private Schedule schedule;
   private Date  currentTime = new Date();
   DaySchedule daySchedule;
 
-  public ScheduleActivity() {    
-  }
-    
   public static String getScheduleName(Context context, int days) {
     int resourceId = 0;
     switch( days ) {
@@ -50,6 +49,9 @@ public class ScheduleActivity extends ListActivity {
         break;
       case DaySchedule.SATURDAY_SUNDAY:
         resourceId = R.string.days_SaSu;
+        break;
+      case DaySchedule.EVERYDAY:
+        resourceId = R.string.days_all;
         break;
       default:
         return "";
@@ -83,10 +85,17 @@ public class ScheduleActivity extends ListActivity {
       if ( daySchedule == null ) {
         daySchedule = schedule.getSchedule(currentTime); 
       }
+      String stopName = (String) getIntent().getSerializableExtra(KEY_STOP_NAME);
+      Integer timeOffset = (Integer) getIntent().getSerializableExtra(KEY_TIME_OFFSET);
       String title = route.getLabel() + "-" + route.getDirection() + " " + getScheduleName();
+      if ( stopName != null ) {
+        title += " " + stopName;
+      }
       setTitle(title);
       if ( daySchedule != null ) {
         TimeOfDayList times = new TimeOfDayList(daySchedule,currentTime);
+        if ( timeOffset != null )
+          times.setTimeOffset(timeOffset);
         ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);
         setListAdapter(scheduleAdapter);
         int pos = times.getDefaultPosition();
