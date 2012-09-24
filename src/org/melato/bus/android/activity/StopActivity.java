@@ -65,6 +65,12 @@ public class StopActivity extends ListActivity {
     */
     setListAdapter(stop.createAdapter(R.layout.list_item));
   }
+  
+  @Override
+  protected void onDestroy() {
+    stop.close();
+    super.onDestroy();
+  }  
 
   static int findWaypointIndex(List<Waypoint> waypoints, Waypoint p) {
     int size = waypoints.size();
