@@ -27,7 +27,6 @@ public class SchedulesActivity extends ListActivity {
   private Route route;
 
   public SchedulesActivity() {
-    Log.setLogger(new AndroidLogger(this));
   }
     
   class SchedulesAdapter extends ArrayAdapter<DaySchedule> {
@@ -51,7 +50,7 @@ public class SchedulesActivity extends ListActivity {
     activities = new BusActivities(this);
     route = activities.getRoute();
     setTitle( route.getFullTitle() );
-    schedule = activities.getRouteManager().loadSchedule(route);
+    schedule = activities.getRouteManager().getSchedule(route);
     schedules = schedule.getSchedules();
     Log.info( "schedule: " + schedule );
     setListAdapter(new SchedulesAdapter());

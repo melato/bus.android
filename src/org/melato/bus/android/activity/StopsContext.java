@@ -39,7 +39,6 @@ public class StopsContext extends LocationContext {
   
   public StopsContext(ListActivity activity) {
     super(activity);
-    Log.setLogger(new AndroidLogger(activity));
     this.list = activity;
   }
 

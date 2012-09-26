@@ -56,7 +56,6 @@ public class TrackActivity extends ScheduleActivity {
   }
   
   public void mark() {
-    Log.setLogger(new AndroidLogger(this));
     Route route = activities.getRoute();
     Point point = location.getLocation();
     if ( route != null && point != null ) {

@@ -9,6 +9,7 @@ import org.melato.bus.android.help.HelpActivity;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
 import org.melato.gpx.Waypoint;
+import org.melato.log.PLog;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -25,11 +26,10 @@ import android.widget.ListView;
  *
  */
 public class StopActivity extends ListActivity {
-  public static final String KEY_MARKER = "marker";
-  public static final String KEY_INDEX = "index";
   private StopContext stop;
   private PropertiesDisplay properties;
   private BusActivities activities;
+  private RouteStop routeStop;
   
   public StopActivity() {
   }
@@ -41,17 +41,18 @@ public class StopActivity extends ListActivity {
     stop = new StopContext(this);
     properties = stop.getProperties();
     activities = new BusActivities(this);
-    String symbol = (String) getIntent().getSerializableExtra(KEY_MARKER);
-    Integer index = (Integer) getIntent().getSerializableExtra(KEY_INDEX);
-    if ( symbol == null ) {
+    IntentHelper intentHelper = new IntentHelper(this);
+    routeStop = intentHelper.getRouteStop();
+    PLog.info(routeStop);
+    if ( routeStop == null || routeStop.getStopSymbol() == null) {
       return;
     }
-    Route route = activities.getRoute();
-    List<Waypoint> waypoints = activities.getRouteManager().loadWaypoints(route);
+    List<Waypoint> waypoints = Info.routeManager(this).getWaypoints(routeStop.getRouteId());
     stop.setWaypoints(waypoints);
     
-    MarkerInfo markerInfo = Info.routeManager(this).loadMarker(symbol);
-    if ( index == null ) {
+    MarkerInfo markerInfo = Info.routeManager(this).loadMarker(routeStop.getStopSymbol());
+    int index = routeStop.getStopIndex();
+    if ( index < 0 ) {
       index = findWaypointIndex(waypoints, markerInfo.getWaypoint());
     }
     stop.setMarkerIndex(index);
@@ -105,13 +106,10 @@ public class StopActivity extends ListActivity {
   }
   /**
    * Start the Schedule activity for the given stop.
-   * Pass:  stop name, time offset
    */
   private void showStopSchedule() {
     Intent intent = new Intent(this, ScheduleActivity.class);
-    new IntentHelper(intent).putRoute(activities.getRoute());
-    intent.putExtra(ScheduleActivity.KEY_STOP_NAME, stop.getMarker().getName());
-    intent.putExtra(ScheduleActivity.KEY_TIME_OFFSET, stop.getTimeFromStart());
+    new IntentHelper(intent).putRouteStop(routeStop);
     startActivity(intent);        
   }
   @Override

@@ -20,10 +20,11 @@ import android.content.Intent;
  * @author Alex Athanasopoulos
  */
 public class IntentHelper  {
+  public static final String KEY_ROUTE_STOP = "org.melato.bus.android.routeStop";
   public static final String KEY_ROUTE = "org.melato.bus.android.route";
   public static final String KEY_ROUTE_COUNT = "org.melato.bus.android.route_count";
-  public static final String KEY_LATITUDE = "org.melato.android.gpx.lat";
-  public static final String KEY_LONGITUDE = "org.melato.android.gpx.lon";
+  public static final String KEY_LOCATION = "org.melato.bus.location";
+  public static final String KEY_STOP = "org.melato.bus.stop";
   
   private Intent    intent;
   private Context   context;
@@ -48,50 +49,76 @@ public class IntentHelper  {
   }
 
   public static void putLocation(Intent intent, Point p) {
-    intent.putExtra(KEY_LATITUDE, p.getLat());
-    intent.putExtra(KEY_LONGITUDE, p.getLon());
+    intent.putExtra(KEY_LOCATION, p);
   }
   
   public static Point getLocation(Intent intent) {
-    Float lat = (Float) intent.getSerializableExtra(KEY_LATITUDE);
-    Float lon = (Float) intent.getSerializableExtra(KEY_LONGITUDE);
-    if ( lat != null && lon != null ) {
-      return new Point(lat, lon);
-    }
-    return null;
+    return (Point) intent.getSerializableExtra(KEY_LOCATION);
   }
   
-  
-  public void putRoute(Route route) {
-    intent.putExtra(KEY_ROUTE, route.getRouteId());
+  public StopInfo getStopInfo() {
+    return (StopInfo) intent.getSerializableExtra(KEY_STOP);
   }
   
+  public void putStopInfo(StopInfo stop) {
+    intent.putExtra(KEY_STOP, stop);
+  }  
+
   public void putRoute(String key, RouteId routeId) {
     intent.putExtra(key, routeId);
   }
   
-  public void putRoute(RouteId routeId) {
-    intent.putExtra(KEY_ROUTE, routeId);
+  /* RouteId vs RouteStop:
+   * We prefer to use route stop, as it has additional information.
+   * Always serialize RouteStop, except in the case of multiple routes.
+   */
+  
+  public Route getRoute() {
+    return getRoute(getRouteId());
+  }
+  
+  private Route getRoute(RouteId routeId) {
+    if ( routeId == null )
+      return null;
+    return getRouteManager().getRoute(routeId);
   }
   
   private Route getRoute(String key) {
     RouteId routeId = (RouteId) intent.getSerializableExtra(key);
-    /*
-    RouteId routeId = null;
-    String textId = (String) intent.getSerializableExtra(key);
-    if ( textId != null ) {
-      routeId = new RouteId(textId);
-    }
-    */
-    if ( routeId != null ) {
-      return getRouteManager().loadRoute(routeId);
-    }
-    return null;
+    return getRoute(routeId);
   }
-  public Route getRoute() {
-    return getRoute(KEY_ROUTE);
+
+  public void putRoute(RouteId routeId) {
+    putRouteStop(new RouteStop(routeId));
   }
   
+  public void putRoute(Route route) {
+    putRoute(route.getRouteId());
+  }
+  
+  public void putRouteStop(RouteStop route) {
+    intent.putExtra(KEY_ROUTE_STOP, route);
+  }
+  
+  public RouteStop getRouteStop() {
+    RouteStop routeStop = (RouteStop) intent.getSerializableExtra(KEY_ROUTE_STOP);
+    /*
+    if ( routeInfo == null ) {
+      RouteId routeId = (RouteId) intent.getSerializableExtra(KEY_ROUTE);
+      if ( routeId != null ) {
+        routeInfo = new RouteInfo(routeId);
+      }
+    }
+    */
+    return routeStop;
+  }
+  
+  public RouteId getRouteId() {
+    RouteStop routeStop = getRouteStop();
+    if ( routeStop != null )
+      return routeStop.getRouteId();
+    return null;
+  }
   private String keyRoute(int index) {
     return KEY_ROUTE + "." + index;
   }

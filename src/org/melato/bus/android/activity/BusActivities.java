@@ -10,6 +10,7 @@ import org.melato.bus.android.R;
 import org.melato.bus.android.help.AboutActivity;
 import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.model.Route;
+import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.xml.RouteHandler;
 import org.melato.bus.model.xml.RouteWriter;
@@ -30,7 +31,6 @@ import android.view.MenuItem;
  */
 public class BusActivities  {
   public static final String NAV_PREFERENCES = "nav";
-  public static final String KEY_ROUTE = "org.melato.bus.android.route";
   
   public static final String VIEW = "view";
   public static final String VIEW_SCHEDULE = "schedule";
@@ -43,17 +43,13 @@ public class BusActivities  {
   MRU<Route> mru;
   
   private Context context;
-  /** The current route, if any. */
-  protected Route route;
 
+  private IntentHelper intentHelper;
+  
   public BusActivities(Activity activity) {
     super();
-    Log.setLogger(new AndroidLogger(activity));
     this.context = activity;    
-    Route route = new IntentHelper(activity).getRoute();
-    if ( route != null ) {
-      setRoute(route);
-    }
+    intentHelper = new IntentHelper(activity);
   }
   
   private RouteManager routeManager;
@@ -67,37 +63,49 @@ public class BusActivities  {
   }
 
   
-  public Route getRoute() {
-    return route;
+  public RouteId getRouteId() {
+    return intentHelper.getRouteId();
   }
-
-  public void setRoute(Route route) {
-    this.route = route;
+  public Route getRoute() {
+    return intentHelper.getRoute();
   }
 
   protected SharedPreferences getNavigationPreferences() {
     return context.getSharedPreferences(NAV_PREFERENCES, Context.MODE_PRIVATE);
   }
   
-  public void showRoute(Route route, Class<? extends Activity> activity) {
+  public void showRoute(Route route, RouteStop stop, Class<? extends Activity> activity) {
     getRecentRoutes().add(route);
     saveRecentRoutes();
     Intent intent = new Intent(context, activity);
-    new IntentHelper(intent).putRoute(route);
+    new IntentHelper(intent).putRouteStop(stop);
     context.startActivity(intent);    
   }
-  
-  public void showRoute(Route route) {    
-    String view = getNavigationPreferences().getString(VIEW, "schedule");
-    if ( VIEW_SCHEDULE.equals(view)) {
-      showRoute(route, ScheduleActivity.class);      
-    } else if ( VIEW_STOPS.equals(view)) {
-      showRoute(route, StopsActivity.class);
-    } else if ( VIEW_MAP.equals(view)) {
-      showRoute(route, RouteMapActivity.class);
-    } else {
-      showRoute(route, ScheduleActivity.class);      
+  public void showRoute(Route route, Class<? extends Activity> activity) {
+    RouteStop stop = intentHelper.getRouteStop();
+    if ( stop != null && ! route.getRouteId().equals(stop.getRouteId())) {
+      stop = new RouteStop(route.getRouteId());
     }
+    showRoute( route, stop, activity);
+  }
+  
+  public void showRoute(Route route, RouteStop stop) {
+    String view = getNavigationPreferences().getString(VIEW, "schedule");
+    Class<? extends Activity> activity = null;
+    if ( VIEW_SCHEDULE.equals(view)) {
+      activity = ScheduleActivity.class;      
+    } else if ( VIEW_STOPS.equals(view)) {
+      activity = StopsActivity.class;
+    } else if ( VIEW_MAP.equals(view)) {
+      activity = RouteMapActivity.class;
+    } else {
+      activity = ScheduleActivity.class;      
+    }
+    if ( activity != null )
+      showRoute(route, stop, activity );      
+  }
+  public void showRoute(Route route) {
+    showRoute(route, new RouteStop(route.getRouteId()));
   }
   
   protected void showRoute(Route route, String view) {

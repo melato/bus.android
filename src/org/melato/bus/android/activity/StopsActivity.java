@@ -1,6 +1,5 @@
 package org.melato.bus.android.activity;
 
-import org.melato.android.AndroidLogger;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.help.HelpActivity;
@@ -35,7 +34,6 @@ public class StopsActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    Log.setLogger(new AndroidLogger(this));
     Log.info("BusActivities");
     activities = new BusActivities(this);
     Log.info("StopContext");
@@ -55,12 +53,12 @@ public class StopsActivity extends ListActivity {
     super.onDestroy();
   }
 
-  private void showStop(Waypoint p, int index) {
+  private void showStop(int index) {
+    Waypoint p = stops.getWaypoints().get(index);
+    RouteStop stop = new RouteStop(activities.getRouteId(), p.getSym(), index);
     Intent intent = new Intent(this, StopActivity.class);
     IntentHelper helper = new IntentHelper(intent);
-    helper.putRoute(activities.getRoute());
-    intent.putExtra(StopActivity.KEY_MARKER, p.getSym() );
-    intent.putExtra(StopActivity.KEY_INDEX, index );
+    helper.putRouteStop(stop);
     startActivity(intent);    
   }
  
@@ -68,7 +66,7 @@ public class StopsActivity extends ListActivity {
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
-    showStop( stops.getWaypoints().get(position), position );
+    showStop( position );
     
   }
 

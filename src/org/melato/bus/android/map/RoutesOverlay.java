@@ -49,7 +49,7 @@ public class RoutesOverlay extends Overlay {
 	public void setRoute(RouteId routeId) {
 	  routes = new ArrayList<RouteId>();
 	  routes.add(routeId);
-    List<Waypoint> waypoints = routeManager.loadWaypoints(routeId);
+    List<Waypoint> waypoints = routeManager.getWaypoints(routeId);
     route = RoutePoints.createFromPoints(Waypoint.asPoints(waypoints));
 	}
 	

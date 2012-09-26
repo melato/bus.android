@@ -1,13 +1,15 @@
 package org.melato.bus.android.activity;
 
 import java.util.Date;
+import java.util.List;
 
+import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.client.TimeOfDay;
 import org.melato.bus.client.TimeOfDayList;
 import org.melato.bus.model.DaySchedule;
-import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
+import org.melato.gpx.Waypoint;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,13 +30,14 @@ import android.widget.TextView;
  */
 public class ScheduleActivity extends Activity {
   public static final String KEY_DAYS = "days";
-  public static final String KEY_STOP_NAME = "stop";
-  public static final String KEY_TIME_OFFSET = "offset";
   protected BusActivities activities;
   private Schedule schedule;
   private Date  currentTime = new Date();
-  DaySchedule daySchedule;
-
+  private DaySchedule daySchedule;
+  private RouteStop routeStop;
+  private String  stopName;
+  private int     timeOffset;
+  
   public static String getScheduleName(Context context, int days) {
     int resourceId = 0;
     switch( days ) {
@@ -66,13 +69,27 @@ public class ScheduleActivity extends Activity {
     return getScheduleName(this, daySchedule.getDays());
   }
   
+  private void setStopInfo(RouteStop stop) {
+    this.routeStop = stop;
+    List<Waypoint> waypoints = Info.routeManager(this).getWaypoints(stop.getRouteId());
+    stopName = stop.getStopName(waypoints);
+    timeOffset = stop.getTimeFromStart(waypoints);
+    if ( timeOffset == 0 && waypoints.size() > 0 ) {
+      stopName = waypoints.get(0).getName();
+    }
+  }
+  
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       activities = new BusActivities(this);
-      Route route = activities.getRoute();
-      schedule = activities.getRouteManager().loadSchedule(route);
+      IntentHelper helper = new IntentHelper(this);
+      RouteStop routeStop = helper.getRouteStop();
+      if ( routeStop == null )
+        return;
+      setStopInfo(routeStop);
+      schedule = activities.getRouteManager().getSchedule(routeStop.getRouteId());
       Integer days = (Integer) getIntent().getSerializableExtra(KEY_DAYS);
       if ( days != null ) {
         for( DaySchedule d: schedule.getSchedules() ) {
@@ -88,19 +105,16 @@ public class ScheduleActivity extends Activity {
       setContentView(R.layout.schedule);
       ListView listView = (ListView) findViewById(R.id.listView);
       TextView textView = (TextView) findViewById(R.id.textView);
-      String stopName = (String) getIntent().getSerializableExtra(KEY_STOP_NAME);
-      Integer timeOffset = (Integer) getIntent().getSerializableExtra(KEY_TIME_OFFSET);
       String scheduleText = getScheduleName();
-      String title = route.getFullTitle();
+      String title = helper.getRoute().getFullTitle();
       if ( stopName != null ) {
-        scheduleText += " " + stopName;
+        scheduleText += " - " + stopName;
       }
       textView.setText(scheduleText);
       setTitle(title);
       if ( daySchedule != null ) {
         TimeOfDayList times = new TimeOfDayList(daySchedule,currentTime);
-        if ( timeOffset != null )
-          times.setTimeOffset(timeOffset);
+        times.setTimeOffset(timeOffset);
         ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);
         listView.setAdapter(scheduleAdapter);
         int pos = times.getDefaultPosition();

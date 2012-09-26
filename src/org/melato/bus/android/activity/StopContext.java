@@ -95,10 +95,7 @@ public class StopContext extends LocationContext {
 
   public int getTimeFromStart() {
     if ( timeFromStart == -1 ) {
-      timeFromStart = 0;
-      for( int i = 0; i <= markerIndex; i++ ) {
-        timeFromStart += (int) (waypoints.get(i).getTime() / 1000);
-      }
+      timeFromStart = new RouteStop(null, null, markerIndex).getTimeFromStart(waypoints);
     }
     return timeFromStart;    
   }

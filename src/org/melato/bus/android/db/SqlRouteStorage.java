@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -292,7 +293,7 @@ public class SqlRouteStorage implements RouteStorage {
         "\nwhere lat > %f and lat < %f and lon > %f and lon < %f" +
         "\norder by markers._id";
     Cursor cursor = db.rawQuery(
-        String.format( sql, lat1, lat2, lon1, lon2),
+        String.format( Locale.US, sql, lat1, lat2, lon1, lon2),
         null);
     Clock clock = new Clock("sql.iterateNearbyStops");
     if ( cursor.moveToFirst() ) {
@@ -346,7 +347,7 @@ public class SqlRouteStorage implements RouteStorage {
         "\njoin routes on routes._id = stops.route" +
         "\nwhere lat > %f and lat < %f and lon > %f and lon < %f";
     Cursor cursor = db.rawQuery(
-        String.format( sql, lat1, lat2, lon1, lon2),
+        String.format( Locale.US, sql, lat1, lat2, lon1, lon2),
         null);
     Clock clock = new Clock("sql.iterateNearbyRoutes");
     if ( cursor.moveToFirst() ) {
