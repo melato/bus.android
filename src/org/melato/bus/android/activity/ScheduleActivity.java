@@ -34,7 +34,6 @@ public class ScheduleActivity extends Activity {
   private Schedule schedule;
   private Date  currentTime = new Date();
   private DaySchedule daySchedule;
-  private RouteStop routeStop;
   private String  stopName;
   private int     timeOffset;
   
@@ -70,7 +69,6 @@ public class ScheduleActivity extends Activity {
   }
   
   private void setStopInfo(RouteStop stop) {
-    this.routeStop = stop;
     List<Waypoint> waypoints = Info.routeManager(this).getWaypoints(stop.getRouteId());
     stopName = stop.getStopName(waypoints);
     timeOffset = stop.getTimeFromStart(waypoints);
@@ -109,6 +107,10 @@ public class ScheduleActivity extends Activity {
       String title = helper.getRoute().getFullTitle();
       if ( stopName != null ) {
         scheduleText += " - " + stopName;
+      }
+      String comment = schedule.getComment();
+      if ( comment != null ) {
+        scheduleText += "\n" + comment;
       }
       textView.setText(scheduleText);
       setTitle(title);

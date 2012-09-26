@@ -158,7 +158,9 @@ public class SqlRouteStorage implements RouteStorage {
   public Schedule loadSchedule(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
     try {
-      return loadSchedule(db, routeId);
+      Schedule schedule = loadSchedule(db, routeId);
+      schedule.setComment(loadScheduleComment(db, routeId));
+      return schedule;
     } finally {
       db.close();
     }
@@ -172,6 +174,19 @@ public class SqlRouteStorage implements RouteStorage {
       return route;
     } finally {
       db.close();
+    }
+  }
+  
+  public String loadScheduleComment(SQLiteDatabase db, RouteId routeId) {
+    String sql = "select schedule_comment from routes where " + whereClause(routeId);
+    Cursor cursor = db.rawQuery(sql,  null);
+    try {
+      if ( cursor.moveToFirst()) {
+        return cursor.getString(0);
+      }
+      return null;
+    } finally {
+      cursor.close();
     }
   }
   
