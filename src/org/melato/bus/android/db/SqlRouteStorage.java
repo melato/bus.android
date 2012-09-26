@@ -17,7 +17,7 @@ import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteStopCallback;
 import org.melato.bus.model.RouteStorage;
 import org.melato.bus.model.Schedule;
-import org.melato.gpx.Point;
+import org.melato.gps.Point;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Clock;
 import org.melato.log.Log;
@@ -94,7 +94,7 @@ public class SqlRouteStorage implements RouteStorage {
   }
 
   private Route readBasic(Cursor cursor) {
-    Route route = new Route(new SqlId(cursor.getInt(4)));
+    Route route = new Route();
     RouteId routeId = new RouteId(cursor.getString(0), cursor.getString(3));
     route.setRouteId(routeId);
     route.setLabel(cursor.getString(1));

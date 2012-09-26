@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteStopCallback;
-import org.melato.gpx.Point;
+import org.melato.gps.Point;
 
 public class RoutePointsCollector implements RouteStopCallback {
   private Map<RouteId,RoutePoints> routes = new HashMap<RouteId,RoutePoints>();

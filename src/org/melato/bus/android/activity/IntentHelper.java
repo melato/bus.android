@@ -8,7 +8,7 @@ import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteGroup;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
-import org.melato.gpx.Point;
+import org.melato.gps.Point;
 
 import android.app.Activity;
 import android.content.Context;
@@ -63,13 +63,27 @@ public class IntentHelper  {
   
   
   public void putRoute(Route route) {
-    intent.putExtra(KEY_ROUTE, route.getRouteId().toString());
+    intent.putExtra(KEY_ROUTE, route.getRouteId());
+  }
+  
+  public void putRoute(String key, RouteId routeId) {
+    intent.putExtra(key, routeId);
+  }
+  
+  public void putRoute(RouteId routeId) {
+    intent.putExtra(KEY_ROUTE, routeId);
   }
   
   private Route getRoute(String key) {
+    RouteId routeId = (RouteId) intent.getSerializableExtra(key);
+    /*
+    RouteId routeId = null;
     String textId = (String) intent.getSerializableExtra(key);
     if ( textId != null ) {
-      RouteId routeId = new RouteId(textId);
+      routeId = new RouteId(textId);
+    }
+    */
+    if ( routeId != null ) {
       return getRouteManager().loadRoute(routeId);
     }
     return null;
@@ -86,7 +100,7 @@ public class IntentHelper  {
     Route[] routes = group.getRoutes();
     intent.putExtra(KEY_ROUTE_COUNT, routes.length );
     for(int i = 0; i < routes.length; i++ ) {
-      intent.putExtra(keyRoute(i), routes[i].getRouteId().toString());
+      putRoute(keyRoute(i), routes[i].getRouteId());
     }
   }
   public List<Route> getRoutes() {

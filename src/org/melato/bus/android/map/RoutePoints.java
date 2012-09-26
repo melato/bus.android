@@ -2,7 +2,7 @@ package org.melato.bus.android.map;
 
 import java.util.List;
 
-import org.melato.gpx.Point;
+import org.melato.gps.Point;
 
 import com.google.android.maps.GeoPoint;
 

@@ -3,7 +3,7 @@ package org.melato.bus.android.activity;
 import org.melato.bus.android.R;
 import org.melato.bus.android.help.HelpActivity;
 import org.melato.bus.client.NearbyStop;
-import org.melato.gpx.Point;
+import org.melato.gps.Point;
 
 import android.app.ListActivity;
 import android.content.Context;

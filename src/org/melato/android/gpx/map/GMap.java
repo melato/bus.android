@@ -1,6 +1,6 @@
 package org.melato.android.gpx.map;
 
-import org.melato.gpx.Point;
+import org.melato.gps.Point;
 
 import android.location.Location;
 

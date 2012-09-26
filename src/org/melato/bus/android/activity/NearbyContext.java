@@ -6,7 +6,7 @@ import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.client.NearbyStop;
 import org.melato.bus.client.WaypointDistance;
-import org.melato.gpx.Point;
+import org.melato.gps.Point;
 import org.melato.log.Clock;
 import org.melato.log.Log;
 

@@ -8,8 +8,8 @@ import org.melato.bus.android.R;
 import org.melato.bus.model.Schedule;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.geometry.gpx.SpeedTracker;
-import org.melato.gpx.Earth;
-import org.melato.gpx.Point;
+import org.melato.gps.Earth;
+import org.melato.gps.Point;
 import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
 
@@ -96,7 +96,7 @@ public class StopContext extends LocationContext {
   public int getTimeFromStart() {
     if ( timeFromStart == -1 ) {
       timeFromStart = 0;
-      for( int i = 0; i < markerIndex; i++ ) {
+      for( int i = 0; i <= markerIndex; i++ ) {
         timeFromStart += (int) (waypoints.get(i).getTime() / 1000);
       }
     }
