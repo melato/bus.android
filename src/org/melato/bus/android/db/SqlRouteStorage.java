@@ -37,7 +37,7 @@ public class SqlRouteStorage implements RouteStorage {
   public String getProperty( String name) {
     SQLiteDatabase db = getDatabase();
     String sql = "select value from properties where name = '%s'";
-    Cursor cursor = db.rawQuery(String.format(sql, quote(name)), null);
+    Cursor cursor = db.rawQuery(String.format(Locale.US, sql, quote(name)), null);
     try {
       if ( cursor.moveToFirst() ) {
         return cursor.getString(0);
@@ -182,7 +182,7 @@ public class SqlRouteStorage implements RouteStorage {
   }
   
   private String format(String sql, RouteId routeId ) {
-    return String.format(sql, quote(routeId.getName()), quote(routeId.getDirection()));
+    return String.format(Locale.US, sql, quote(routeId.getName()), quote(routeId.getDirection()));
   }
   private String whereClause(RouteId routeId) {
     return format("routes.name = '%s' and routes.direction = '%s'", routeId);    
@@ -365,7 +365,7 @@ public class SqlRouteStorage implements RouteStorage {
     String sql = "select lat, lon, symbol, name, _id from markers" +
         "\nwhere symbol = '%s'";
     Cursor cursor = db.rawQuery(
-        String.format( sql, quote(symbol)), null);
+        String.format(Locale.US, sql, quote(symbol)), null);
     try {
       if ( cursor.moveToFirst() ) {
         Waypoint p = new Waypoint(cursor.getFloat(0), cursor.getFloat(1));
@@ -386,7 +386,7 @@ public class SqlRouteStorage implements RouteStorage {
         "\njoin markers on markers._id = stops.marker" +
         "\nwhere markers.symbol = '%s'";
     Cursor cursor = db.rawQuery(
-        String.format( sql, quote(symbol)),
+        String.format( Locale.US, sql, quote(symbol)),
         null);
     try {
       Set<Integer> set = new HashSet<Integer>();
