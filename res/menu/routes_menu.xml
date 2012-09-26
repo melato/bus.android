@@ -6,7 +6,7 @@
           android:title="@string/all_routes" />
     <item android:id="@+id/recent_routes"
           android:title="@string/recent_routes" />
-    <item android:id="@+id/all_map"
+    <item android:id="@+id/map"
           android:title="@string/map" />
     <item android:id="@+id/about"
           android:title="@string/about" />
