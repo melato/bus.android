@@ -9,7 +9,7 @@ import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.Menu;
@@ -26,7 +26,7 @@ import android.widget.TextView;
  * @author Alex Athanasopoulos
  *
  */
-public class ScheduleActivity extends ListActivity {
+public class ScheduleActivity extends Activity {
   public static final String KEY_DAYS = "days";
   public static final String KEY_STOP_NAME = "stop";
   public static final String KEY_TIME_OFFSET = "offset";
@@ -85,28 +85,28 @@ public class ScheduleActivity extends ListActivity {
       if ( daySchedule == null ) {
         daySchedule = schedule.getSchedule(currentTime); 
       }
+      setContentView(R.layout.schedule);
+      ListView listView = (ListView) findViewById(R.id.listView);
+      TextView textView = (TextView) findViewById(R.id.textView);
       String stopName = (String) getIntent().getSerializableExtra(KEY_STOP_NAME);
       Integer timeOffset = (Integer) getIntent().getSerializableExtra(KEY_TIME_OFFSET);
-      String title = route.getLabel() + "-" + route.getDirection() + " " + getScheduleName();
+      String scheduleText = getScheduleName();
+      String title = route.getFullTitle();
       if ( stopName != null ) {
-        title += " " + stopName;
+        scheduleText += " " + stopName;
       }
+      textView.setText(scheduleText);
       setTitle(title);
       if ( daySchedule != null ) {
         TimeOfDayList times = new TimeOfDayList(daySchedule,currentTime);
         if ( timeOffset != null )
           times.setTimeOffset(timeOffset);
         ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);
-        setListAdapter(scheduleAdapter);
+        listView.setAdapter(scheduleAdapter);
         int pos = times.getDefaultPosition();
         if ( pos >= 0 )
-          this.setSelection(pos);
+          listView.setSelection(pos);
       }
-  }
-
-  @Override
-  protected void onListItemClick(ListView l, View v, int position, long id) {
-    super.onListItemClick(l, v, position, id);
   }
 
   class ScheduleAdapter extends ArrayAdapter<TimeOfDay> {
