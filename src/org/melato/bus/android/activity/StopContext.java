@@ -17,7 +17,7 @@ import android.content.Context;
 import android.widget.ArrayAdapter;
 
 public class StopContext extends LocationContext {
-  public static final float WALK_OVERHEAD = 1.25f;
+  public static final float WALK_OVERHEAD = 1.3f;
   public static final float WALK_SPEED = 5f;
   public static final float BIKE_OVERHEAD = 1.35f;
   public static final float BIKE_SPEED = 15f;
@@ -241,12 +241,12 @@ public class StopContext extends LocationContext {
     properties.add(new DistanceFromStart());
     properties.add(new DistanceToEnd());
     properties.add(new TimeFromStart());      
-    properties.add(new Latitude());
-    properties.add(new Longitude());    
 
     properties.add( new PathSpeed());
     properties.add( new PathETA());
     properties.add(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
+    properties.add(new Latitude());
+    properties.add(new Longitude());    
     // properties.add(new StraightETA(R.string.bikeETA, BIKE_SPEED, BIKE_OVERHEAD));
   }
 }

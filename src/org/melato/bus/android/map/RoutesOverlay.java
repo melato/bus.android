@@ -18,7 +18,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
-import android.view.View;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
@@ -37,7 +36,7 @@ public class RoutesOverlay extends Overlay {
   private int latMax6E;
   private int lonMin6E;
   private int lonMax6E;
-  private List<RouteId> routes;
+  private List<RouteId> routes = new ArrayList<RouteId>();
   private RoutePointManager routePointManager;
   private RoutePoints route;
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Melato Transit</string>
+    <string name="app_name">Athens Next Bus</string>
     <string name="about">About</string>
     <string name="routes">Bus Lines</string>
     <string name="all_routes">All</string>
@@ -29,16 +29,10 @@
     <string name="time_from_start">Expected Time from Start (%s)</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
-    <string name="mark">Mark</string>
-    <string name="track">Track</string>
-    <string name="check_updates">Check Updates</string>
-    <string name="update">Update</string>
-    <string name="update_comment"></string>
     <string name="cancel">Cancel</string>
-    <string name="update_url">http://x1Sx0kDqz7qJUUZb63kR.melato.org/updates.xml</string>
-    <string name="available_updates">Available Updates</string>
     <string name="empty"></string>
     <string name="help">Help</string>
     <string name="refresh">Refresh</string>
+    <string name="loading">Loading &#8230;</string>
     
 </resources>

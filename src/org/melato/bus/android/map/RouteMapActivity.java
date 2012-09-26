@@ -5,6 +5,7 @@ import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
 import org.melato.bus.android.help.HelpActivity;
 import org.melato.bus.model.Route;
+import org.melato.log.Log;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -42,6 +43,7 @@ public class RouteMapActivity extends MapActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      Log.info("RouteMapActivity.onCreate()");
       activities = new BusActivities(this);
       routesOverlay = new RoutesOverlay(this);
       Route route = activities.getRoute();
@@ -84,13 +86,13 @@ public class RouteMapActivity extends MapActivity {
   class OnRoutesLoaded implements Runnable {
     @Override
     public void run() {
-      setTitle("Nearby Routes");
+      setTitle(R.string.nearby);
       map.invalidate();
     }    
   }
   void showAllRoutes() {
     if ( ! isShowingAll ) {
-      setTitle("Loading");
+      setTitle(R.string.loading);
     }
     routesOverlay.refresh();
     if ( ! isShowingAll ) {

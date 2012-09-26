@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_url">http://x1Sx0kDqz7qJUUZb63kR.melato.org/updates.xml</string>
+    <string name="update">Ανανέωση</string>
+    <string name="update_comment"></string>
+    <string name="available_updates">Διαθέσιμες Ανανεώσεις</string>
+    <string name="update_required">Υποχρεωτικές Ανανεώσεις</string>
+</resources>
