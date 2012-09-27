@@ -11,13 +11,16 @@ import org.melato.bus.model.RouteGroup;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Displays a list of routes
@@ -119,7 +122,35 @@ public class RoutesActivity extends ListActivity {
     public RoutesAdapter() {
       super(RoutesActivity.this, R.layout.list_item, items);
     }
-  }
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+      TextView view = (TextView) super.getView(position, convertView, parent);
+      Route route = null;
+      if ( items[position] instanceof Route ) {
+        route = (Route) items[position];
+      } else if ( items[position] instanceof RouteGroup ) {
+        RouteGroup group = (RouteGroup) items[position];
+        Route[] routes = group.getRoutes();
+        if ( routes.length > 0 ) {
+          route = routes[0];
+          for( int i = 0; i < routes.length; i++ ) {
+            if ( ! route.isSameColor(routes[i])) {
+              route = null;
+              break;
+            }
+          }
+        }
+      }
+      if ( route != null ) {
+        view.setTextColor(UI.routeColor(route.getColor()));
+        view.setBackgroundColor(UI.routeColor(route.getBackgroundColor()));
+      } else {
+        view.setTextColor(Color.BLACK);
+        view.setBackgroundColor(Color.WHITE);        
+      }
+      return view;
+    }
+}
   
   @Override
   public boolean onCreateOptionsMenu(Menu menu)

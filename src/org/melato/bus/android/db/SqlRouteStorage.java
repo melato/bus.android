@@ -118,6 +118,7 @@ public class SqlRouteStorage implements RouteStorage {
     route.setTitle(cursor.getString(2));
     route.setColor(cursor.getInt(4));
     route.setBackgroundColor(cursor.getInt(5));
+    Log.info( "color=" + route.getColor());
     if ( ! cursor.isNull(6)) {
       int primary = cursor.getInt(6);
       if ( primary == 1 )

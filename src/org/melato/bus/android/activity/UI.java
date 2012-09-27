@@ -43,5 +43,11 @@ public class UI {
   public static String degrees(float degrees) {
     return String.valueOf(degrees);
   }
-
+  
+  public static int routeColor(int color) {
+    // the color is RGB
+    // we need to add opaqueness in the alpha channel, otherwise we won't see anything.
+    color = color | 0xff000000;
+    return color;
+  }
 }
