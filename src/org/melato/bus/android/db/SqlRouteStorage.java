@@ -76,7 +76,10 @@ public class SqlRouteStorage implements RouteStorage {
         null, SQLiteDatabase.OPEN_READONLY);
   }
 
-  static private final String ROUTE_SELECT = "select routes.name, routes.label, routes.title, routes.direction, routes._id from routes";
+  static private final String ROUTE_SELECT = "select routes.name, routes.label, routes.title, routes.direction," +
+      " routes.color, routes.background_color," +
+      " is_primary," +
+      " routes._id from routes";
   
   private List<Route> loadRoutes(String where) {
     List<Route> routes = new ArrayList<Route>();
@@ -113,6 +116,13 @@ public class SqlRouteStorage implements RouteStorage {
     route.setRouteId(routeId);
     route.setLabel(cursor.getString(1));
     route.setTitle(cursor.getString(2));
+    route.setColor(cursor.getInt(4));
+    route.setBackgroundColor(cursor.getInt(5));
+    if ( ! cursor.isNull(6)) {
+      int primary = cursor.getInt(6);
+      if ( primary == 1 )
+        route.setPrimary(true);      
+    }
     return route;
   }
 
