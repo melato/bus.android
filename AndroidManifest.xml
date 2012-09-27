@@ -62,10 +62,6 @@
             android:name=".help.AboutActivity"
             android:label="@string/about" >
         </activity>
-        <activity
-            android:name=".track.TrackActivity"
-            android:label="@string/track" >
-        </activity>
         </application>
 
 </manifest>

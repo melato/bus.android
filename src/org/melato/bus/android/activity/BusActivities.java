@@ -177,11 +177,6 @@ public class BusActivities  {
         benchmark();    
         break;
       */
-      case R.id.track:
-        setDefaultView(VIEW_TRACK);
-        //showRoute(route, TrackActivity.class);
-        handled = true;
-        break;
       case R.id.browse:
         showInBrowser(route);
         handled = true;
