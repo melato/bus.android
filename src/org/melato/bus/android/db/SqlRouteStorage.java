@@ -78,11 +78,14 @@ public class SqlRouteStorage implements RouteStorage {
 
   static private final String ROUTE_SELECT = "select routes.name, routes.label, routes.title, routes.direction, routes._id from routes";
   
-  @Override
-  public List<Route> loadRoutes() {
+  private List<Route> loadRoutes(String where) {
     List<Route> routes = new ArrayList<Route>();
     SQLiteDatabase db = getDatabase();
-    String sql = ROUTE_SELECT + " order by _id";
+    String sql = ROUTE_SELECT;
+    if ( where != null ) {
+      sql += " where " + where;
+    }
+    sql += " order by _id";
     Cursor cursor = db.rawQuery(sql, null);
     if ( cursor.moveToFirst() ) {
       do {
@@ -92,6 +95,16 @@ public class SqlRouteStorage implements RouteStorage {
     cursor.close();
     db.close();
     return routes;
+  }
+
+  @Override
+  public List<Route> loadRoutes() {
+    return loadRoutes(null);
+  }
+
+  @Override
+  public List<Route> loadPrimaryRoutes() {
+    return loadRoutes("routes.is_primary = 1");
   }
 
   private Route readBasic(Cursor cursor) {

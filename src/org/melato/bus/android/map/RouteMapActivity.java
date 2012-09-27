@@ -5,6 +5,7 @@ import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
 import org.melato.bus.android.help.HelpActivity;
 import org.melato.bus.model.Route;
+import org.melato.bus.model.RouteId;
 import org.melato.log.Log;
 
 import android.content.Context;
@@ -49,7 +50,8 @@ public class RouteMapActivity extends MapActivity {
       Route route = activities.getRoute();
       if ( route != null ) {
         setTitle(route.getFullTitle());
-        routesOverlay.setRoute(route.getRouteId());
+        routesOverlay.addRoute(route.getRouteId());
+        routesOverlay.setSelectedRoute(route.getRouteId());
       }
 
       setContentView(R.layout.map);
