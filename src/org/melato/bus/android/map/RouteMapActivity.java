@@ -5,11 +5,9 @@ import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
 import org.melato.bus.android.help.HelpActivity;
 import org.melato.bus.model.Route;
-import org.melato.bus.model.RouteId;
 import org.melato.log.Log;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -24,11 +22,12 @@ import com.google.android.maps.MapView;
 
 /** An activity that displays a map with one or more routes. */
 public class RouteMapActivity extends MapActivity {
-  private static final String KEY_ZOOM_LEVEL = "zoomLevel";
   private BusActivities activities;
   private MapView map;
-  private RoutesOverlay routesOverlay;
+  private BaseRoutesOverlay routesOverlay;
   private boolean isShowingAll;
+  private String title;
+  private static int defaultZoom = 15;
 
   @Override
   protected boolean isRouteDisplayed() {
@@ -49,7 +48,8 @@ public class RouteMapActivity extends MapActivity {
       routesOverlay = new RoutesOverlay(this);
       Route route = activities.getRoute();
       if ( route != null ) {
-        setTitle(route.getFullTitle());
+        title = route.getFullTitle();
+        setTitle(title);
         routesOverlay.addRoute(route.getRouteId());
         routesOverlay.setSelectedRoute(route.getRouteId());
       }
@@ -59,21 +59,21 @@ public class RouteMapActivity extends MapActivity {
       map.setBuiltInZoomControls(true);
       
       MapController mapController = map.getController();
-      int zoom = getSharedPreferences(BusActivities.NAV_PREFERENCES, 0).getInt(KEY_ZOOM_LEVEL, 15 );
-      mapController.setZoom(zoom);
+      mapController.setZoom(defaultZoom);
       GeoPoint center = routesOverlay.getCenter();
       if ( center != null ) {
         mapController.setCenter(center);
       }
       map.getOverlays().add(routesOverlay);
+      setTitle(R.string.loading);
+      RoutePointManager rm = RoutePointManager.getInstance(this);
+      rm.runWhenLoaded(this, new OnRoutesLoaded());
   }
 
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    SharedPreferences.Editor edit = getSharedPreferences(BusActivities.NAV_PREFERENCES, 0).edit();
-    edit.putInt( KEY_ZOOM_LEVEL, map.getZoomLevel());
-    edit.commit();
+    defaultZoom = map.getZoomLevel();
   }
   
     
@@ -88,7 +88,11 @@ public class RouteMapActivity extends MapActivity {
   class OnRoutesLoaded implements Runnable {
     @Override
     public void run() {
-      setTitle(R.string.nearby);
+      if ( title != null )
+        setTitle(title);
+      else {
+        setTitle(R.string.nearby);
+      }
       map.invalidate();
     }    
   }
@@ -96,7 +100,7 @@ public class RouteMapActivity extends MapActivity {
     if ( ! isShowingAll ) {
       setTitle(R.string.loading);
     }
-    routesOverlay.refresh();
+    routesOverlay.refresh(map);
     if ( ! isShowingAll ) {
       isShowingAll = true;
       RoutePointManager rm = RoutePointManager.getInstance(this);

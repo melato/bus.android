@@ -2,14 +2,13 @@ package org.melato.bus.android.map;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.activity.NearbyActivity;
+import org.melato.bus.android.activity.UI;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
@@ -24,14 +23,13 @@ import android.graphics.Point;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
-import com.google.android.maps.Overlay;
 import com.google.android.maps.Projection;
 
 /**
  * A map overlay that displays routes.
  * @author Alex Athanasopoulos
  */
-public class RoutesOverlay extends Overlay {
+public class RoutesOverlay extends BaseRoutesOverlay {
   private RouteManager routeManager;
   private float latDiff; 
   private float lonDiff;
@@ -43,24 +41,22 @@ public class RoutesOverlay extends Overlay {
   private RoutePointManager routePointManager;
   private RouteId selectedRoute;
   private GeoPoint center;
-  private Set<RouteId> primaryRoutes = new HashSet<RouteId>();
+  private List<Route> primaryRoutes;
+  private Map<RouteId,Route> routeIndex;
 
 	public RoutesOverlay(Context context) {
     super();
     routeManager = Info.routeManager(context);
-    for( Route route: routeManager.getPrimaryRoutes() ) {
-      addPrimaryRoute(route.getRouteId());
-    }
+    routeIndex = routeManager.getRouteIndex();
+    primaryRoutes = routeManager.getPrimaryRoutes();
   }
 
-	private void addPrimaryRoute(RouteId routeId) {
-	  addRoute(routeId);
-	  primaryRoutes.add(routeId);
-	}
-	public void addRoute(RouteId routeId) {
+	@Override
+  public void addRoute(RouteId routeId) {
 	  routes.add(routeId);
 	}
 	
+  @Override
   public void setSelectedRoute(RouteId routeId) {
     selectedRoute = routeId;
     List<Waypoint> waypoints = routeManager.getWaypoints(routeId);
@@ -68,7 +64,8 @@ public class RoutesOverlay extends Overlay {
     center = route.getCenterGeoPoint();
   }
   
-	public GeoPoint getCenter() {
+	@Override
+  public GeoPoint getCenter() {
 	  return center;
   }
 
@@ -84,17 +81,14 @@ public class RoutesOverlay extends Overlay {
     lonMax6E = center.getLongitudeE6() + lonSpan / 2;
 	}
 	
-	public void refresh() {
-	  routes = null;
+	public void refresh(MapView view) {
 	  selectedRoute = null;
+    routes = new ArrayList<RouteId>();
+    GeoPoint center = view.getMapCenter();
+    routeManager.iterateNearbyRoutes(GMap.point(center), latDiff, lonDiff, routes);
 	}
 	
 	List<RouteId> getMapRoutes(MapView view) {
-	  if ( routes == null ) {
-      routes = new ArrayList<RouteId>();
-      GeoPoint center = view.getMapCenter();
-      routeManager.iterateNearbyRoutes(GMap.point(center), latDiff, lonDiff, routes);
-	  }
     return routes;
 	}
 	
@@ -155,27 +149,45 @@ public class RoutesOverlay extends Overlay {
     super.draw(canvas, view, shadow);
     findBoundaries(view);
     Paint   paint = new Paint();
-    paint.setDither(true);
+    //paint.setDither(true);
     paint.setStyle(Paint.Style.STROKE);
-    paint.setStrokeJoin(Paint.Join.ROUND);
-    paint.setStrokeCap(Paint.Cap.ROUND);
-    paint.setStrokeWidth(2);
+    if ( routes.size() > 10 ) {
+      paint.setStrokeWidth(2);
+    } else {
+      paint.setStrokeWidth(3);
+      paint.setStrokeCap(Paint.Cap.ROUND);
+      //paint.setStrokeJoin(Paint.Join.ROUND);
+    }
     
     Projection projection = view.getProjection();
     routePointManager = RoutePointManager.getInstance(view.getContext());
+    
+    // paint all primary routes
+    for( Route route: primaryRoutes ) {
+      paint.setColor(UI.routeColor(route.getColor()));      
+      RoutePoints points = routePointManager.getRoutePoints(route.getRouteId());
+      if ( points != null ) {
+        drawPath(canvas, paint, projection, points);
+      }
+    }
+
+    // paint any non-primary routes
     for( RouteId routeId: getMapRoutes(view)) {
+      Route route = routeIndex.get(routeId);
+      if ( route.isPrimary()) {
+        // we've already drawn it
+        continue;
+      }
       int color = 0;
       if ( routeId.equals(selectedRoute)) {
         color = Color.BLUE;
-      } else if ( primaryRoutes.contains(routeId)) {
-        color = Color.BLACK;
       } else {
-        color = getRouteColor(routeId);
+        color = UI.routeColor(route.getColor());
       }
       paint.setColor(color);
-      RoutePoints route = routePointManager.getRoutePoints(routeId);
-      if ( route != null ) {
-        drawPath(canvas, paint, projection, route);
+      RoutePoints points = routePointManager.getRoutePoints(routeId);
+      if ( points != null ) {
+        drawPath(canvas, paint, projection, points);
         // if route is null, the routepoint manager is loading
         // The RouteMapActivity will be waiting for it load
         // and it will invalidate the map view, causing this to draw again.

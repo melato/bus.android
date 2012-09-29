@@ -1,10 +1,7 @@
 package org.melato.bus.android.activity;
 
-import java.util.List;
-
 import org.melato.bus.android.R;
 import org.melato.bus.android.help.HelpActivity;
-import org.melato.bus.android.update.UpdateActivity;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteGroup;
 
@@ -27,73 +24,18 @@ import android.widget.TextView;
  * @author Alex Athanasopoulos
  *
  */
-public class RoutesActivity extends ListActivity {
-  public static final String TYPE_KEY = "routes_type";
-  public static final String RECENT = "recent";
-  public static final String ALL = "all";
-  
-  public BusActivities activities;
+public abstract class RoutesActivity extends ListActivity {
+  protected BusActivities activities;
   private Object[] items = new Object[0];
 
-  private void setRoutes(List<Route> routes) {
-    items = routes.toArray(new Route[0]);    
-  }
+  protected abstract Object[] initialRoutes();
 
-  private boolean initIntentRoutes() {    
-    IntentHelper helper = new IntentHelper(this);
-    List<Route> routes = helper.getRoutes();
-    if ( routes != null && ! routes.isEmpty() ) {
-      setRoutes(routes);
-      setTitle(R.string.routes);
-      return true;
-    }
-    return false;
-  }
-  
-  private boolean initRecentRoutes() {
-    List<Route> routes = activities.getRecentRoutes();
-    /*
-     *  make a copy of the recent routes list.
-     *  otherwise the order of the routes may change without notice
-     *  and may not be in sync with the displayed order.
-     *  toArray() makes a copy.
-     */
-    setRoutes(routes);
-    if ( ! routes.isEmpty() ) {
-      setTitle(R.string.routes);
-      return true;
-    }
-    return false;
-  }
-  
-  private boolean initAllRoutes() {
-    setTitle(R.string.all_routes);
-    List<RouteGroup> groups = RouteGroup.group(activities.getRouteManager().getRoutes());
-    items = groups.toArray(new RouteGroup[0]);
-    setTitle(R.string.all_routes);
-    return true;
-  }
-  
   /** Called when the activity is first created. */
   @Override
-  public void onCreate(Bundle savedInstanceState) {
+  public void onCreate(Bundle savedInstanceState) {      
       super.onCreate(savedInstanceState);
-      if ( ! UpdateActivity.checkUpdates(this) ) {
-        return;
-      }
       activities = new BusActivities(this);
-      String type = (String) getIntent().getSerializableExtra(TYPE_KEY);
-      if ( RECENT.equals(type)) {
-        initRecentRoutes();
-      } else if ( ALL.equals(type)) {
-        initAllRoutes();
-      } else {
-        boolean init = initIntentRoutes();
-        if ( ! init )
-          init = initRecentRoutes();
-        if ( ! init )
-          initAllRoutes();
-      }
+      items = initialRoutes();
       setListAdapter(new RoutesAdapter());
   }
 
@@ -101,7 +43,7 @@ public class RoutesActivity extends ListActivity {
     if ( group.getRoutes().length == 1 ) {
       activities.showRoute(group.getRoutes()[0]);
     } else {
-      Intent intent = new Intent(this, RoutesActivity.class);
+      Intent intent = new Intent(this, RouteGroupActivity.class);
       IntentHelper helper = new IntentHelper(intent);
       helper.putRoutes(group);
       startActivity(intent);
@@ -162,14 +104,12 @@ public class RoutesActivity extends ListActivity {
   }
 
   public static void showRecent(Context context) {
-    Intent intent = new Intent(context, RoutesActivity.class);
-    intent.putExtra(RoutesActivity.TYPE_KEY, RoutesActivity.RECENT);
+    Intent intent = new Intent(context, RecentRoutesActivity.class);
     context.startActivity(intent);        
   }
   
   public static void showAll(Context context) {
-    Intent intent = new Intent(context, RoutesActivity.class);
-    intent.putExtra(RoutesActivity.TYPE_KEY, RoutesActivity.ALL);
+    Intent intent = new Intent(context, AllRoutesActivity.class);
     context.startActivity(intent);        
   }
   
@@ -183,13 +123,11 @@ public class RoutesActivity extends ListActivity {
         handled = true;
         break;
       case R.id.all_routes:
-        initAllRoutes();
-        setListAdapter(new RoutesAdapter());
+        showAll(this);
         handled = true;
         break;
       case R.id.recent_routes:
-        initRecentRoutes();
-        setListAdapter(new RoutesAdapter());
+        showRecent(this);
         handled = true;
         break;
       default:

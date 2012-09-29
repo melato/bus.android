@@ -1,8 +1,14 @@
 package org.melato.bus.android.update;
 
+import java.util.List;
+
 import org.melato.android.progress.ActivityProgressHandler;
 import org.melato.android.progress.ProgressTitleHandler;
 import org.melato.bus.android.R;
+import org.melato.bus.android.activity.BusActivities;
+import org.melato.bus.android.activity.RoutesActivity;
+import org.melato.bus.model.Route;
+import org.melato.log.Log;
 import org.melato.log.PLog;
 import org.melato.progress.CanceledException;
 import org.melato.progress.ProgressGenerator;
@@ -25,11 +31,16 @@ public class UpdateActivity extends Activity implements Runnable {
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
+    Log.info(getClass().getName() + ".onCreate");
     super.onCreate(savedInstanceState);
     progress = new ProgressTitleHandler(this);
-    setContentView(R.layout.update);
     updateManager = new UpdateManager(this);
+    setContentView(R.layout.update);
+    if ( updateManager.isRequired() ) {
+      setTitle(R.string.update_required);
+    }
     StringBuilder buf = new StringBuilder();
+    Log.info( "getAvailable" );
     for(UpdateFile f: updateManager.getAvailableUpdates()) {
       if ( f.getNote() != null ) {
         if ( buf.length() > 0 ) {
@@ -57,7 +68,20 @@ public class UpdateActivity extends Activity implements Runnable {
     progress.cancel();    
     finish();
   }
+
+  void startMain() {
+    BusActivities activities = new BusActivities(this);
+    List<Route> recent = activities.getRecentRoutes();
+    if ( recent.size() > 0 ) {
+      RoutesActivity.showRecent(this);
+    } else {
+      RoutesActivity.showAll(this);
+    }
+  }
   
+  void startUpdate() {
+    
+  }
   @Override
   public void run() {
     if ( progress != null ) {
@@ -65,6 +89,15 @@ public class UpdateActivity extends Activity implements Runnable {
     }
     try {
       updateManager.update(updateManager.getAvailableUpdates());
+      runOnUiThread(new Runnable() {
+
+        @Override
+        public void run() {
+          startMain();
+        }
+        
+      });
+      
     } catch( CanceledException e ) {      
     }
     finish();
@@ -90,20 +123,25 @@ public class UpdateActivity extends Activity implements Runnable {
    */
   static class UpdatesChecker implements Runnable {
     UpdateManager updateManager;
-    Context context;
+    Activity activity;
     
-    public UpdatesChecker(Context context) {
-      this.context = context;
-      updateManager = new UpdateManager(context);
+    public UpdatesChecker(Activity activity) {
+      this.activity = activity;
+      updateManager = new UpdateManager(activity);
     }
     
+    /** Check for updates, if necessary.
+     * Return true if the calling activity can continue.
+     * Return false if the calling activity should exit and let the update activity take over.
+     * @return
+     */
     public boolean checkUpdates() {
-      if ( updateManager.isFirstTime() ) {
+      if ( updateManager.isRequired() ) {
         // assume that we have not data.  We have to update or die.
-        context.startActivity(new Intent(context, UpdateActivity.class));
+        activity.startActivity(new Intent(activity, UpdateActivity.class));
         return false;
       } else {
-        if ( isConnected(context) ) {
+        if ( isConnected(activity) ) {
           if ( updateManager.needsRefresh() ) {
             // refresh in the background
             new Thread(this).start();
@@ -119,7 +157,7 @@ public class UpdateActivity extends Activity implements Runnable {
     
     public void run() {
       if ( ! updateManager.getAvailableUpdates().isEmpty() ) {
-        context.startActivity(new Intent(context, UpdateActivity.class));
+        activity.startActivity(new Intent(activity, UpdateActivity.class));
       }
     }
   }
@@ -128,8 +166,8 @@ public class UpdateActivity extends Activity implements Runnable {
    * return true if the application should proceed normally.
    * false if it should do nothing and let the UpdateActivity take over.
    **/
-  public static boolean checkUpdates(Context context) {
-    UpdatesChecker checker = new UpdatesChecker(context);
+  public static boolean checkUpdates(Activity activity) {
+    UpdatesChecker checker = new UpdatesChecker(activity);
     return checker.checkUpdates();
   }
 

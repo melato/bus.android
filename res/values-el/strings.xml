@@ -33,5 +33,5 @@
     <string name="empty"></string>
     <string name="help">Βοήθεια</string>
     <string name="refresh">Ανανέωση</string>    
-    <string name="loading">Φόρτωμα &#8230;</string>
+    <string name="loading">Φορτώνει &#8230;</string>
 </resources>

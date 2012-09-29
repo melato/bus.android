@@ -20,8 +20,6 @@ import org.melato.util.MRU;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.net.Uri;
 import android.view.MenuItem;
 
@@ -30,15 +28,9 @@ import android.view.MenuItem;
  * @author Alex Athanasopoulos
  */
 public class BusActivities  {
-  public static final String NAV_PREFERENCES = "nav";
-  
-  public static final String VIEW = "view";
-  public static final String VIEW_SCHEDULE = "schedule";
-  public static final String VIEW_STOPS = "stops";
-  public static final String VIEW_MAP = "map";
-  public static final String VIEW_TRACK = "track";
-  
   public static final int MRU_SIZE = 10;
+  
+  private static Class<? extends Activity> defaultView = ScheduleActivity.class;
   
   MRU<Route> mru;
   
@@ -70,10 +62,6 @@ public class BusActivities  {
     return intentHelper.getRoute();
   }
 
-  protected SharedPreferences getNavigationPreferences() {
-    return context.getSharedPreferences(NAV_PREFERENCES, Context.MODE_PRIVATE);
-  }
-  
   public void showRoute(Route route, RouteStop stop, Class<? extends Activity> activity) {
     getRecentRoutes().add(route);
     saveRecentRoutes();
@@ -90,36 +78,10 @@ public class BusActivities  {
   }
   
   public void showRoute(Route route, RouteStop stop) {
-    String view = getNavigationPreferences().getString(VIEW, "schedule");
-    Class<? extends Activity> activity = null;
-    if ( VIEW_SCHEDULE.equals(view)) {
-      activity = ScheduleActivity.class;      
-    } else if ( VIEW_STOPS.equals(view)) {
-      activity = StopsActivity.class;
-    } else if ( VIEW_MAP.equals(view)) {
-      activity = RouteMapActivity.class;
-    } else {
-      activity = ScheduleActivity.class;      
-    }
-    if ( activity != null )
-      showRoute(route, stop, activity );      
+    showRoute(route, stop, defaultView );      
   }
   public void showRoute(Route route) {
     showRoute(route, new RouteStop(route.getRouteId()));
-  }
-  
-  protected void showRoute(Route route, String view) {
-    if ( view != null ) {
-      setDefaultView(view);
-    }
-    showRoute(route);
-  }
-
-  protected void setDefaultView(String view) {
-    SharedPreferences prefs = getNavigationPreferences();
-    Editor editor = prefs.edit();
-    editor.putString(VIEW,  view);
-    editor.commit();
   }
   
   public void showAbout() {
@@ -149,18 +111,18 @@ public class BusActivities  {
         RoutesActivity.showAll(context);
         break;
       case R.id.schedule:
-        setDefaultView(VIEW_SCHEDULE);
+        defaultView = ScheduleActivity.class;
         showRoute(route, ScheduleActivity.class);
         handled = true;
         break;
       case R.id.stops:
-        setDefaultView(VIEW_STOPS);
+        defaultView = StopsActivity.class;
         showRoute(route, StopsActivity.class);
         handled = true;
         break;
       case R.id.map:
         if ( route != null ) {
-          setDefaultView(VIEW_MAP);
+          defaultView = RouteMapActivity.class;
           showRoute(route, RouteMapActivity.class);
         } else {
           context.startActivity(new Intent(context, RouteMapActivity.class));    
@@ -195,7 +157,7 @@ public class BusActivities  {
     File cacheDir = context.getCacheDir();
     return new File(cacheDir, "recent-routes.xml");
   }
-  MRU<Route> getRecentRoutes() {
+  public MRU<Route> getRecentRoutes() {
     if ( mru != null ) {
       return mru;
     }
