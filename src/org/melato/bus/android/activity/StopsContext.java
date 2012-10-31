@@ -2,7 +2,6 @@ package org.melato.bus.android.activity;
 
 import java.util.List;
 
-import org.melato.android.AndroidLogger;
 import org.melato.bus.android.R;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.gps.Earth;
@@ -10,7 +9,6 @@ import org.melato.gps.Point;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
-import org.melato.log.Log;
 
 import android.app.ListActivity;
 import android.view.View;

@@ -1,4 +1,4 @@
-package org.melato.bus.android.update;
+package org.melato.bus.android.app;
 
 import java.util.List;
 

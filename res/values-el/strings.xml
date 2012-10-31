@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Επόμενο Λωφορείο</string>
+    <string name="app_name">Το Επόμενο Λεωφορείο</string>
     <string name="about">Σχετικά</string>
-    <string name="routes">Λωφορεία</string>
-    <string name="all_routes">Όλες</string>
-    <string name="recent_routes">Πρόσφατες</string>
+    <string name="main">Λωφορεία</string>
+    <string name="menu_all_routes">Όλες</string>
+    <string name="menu_recent_routes">Πρόσφατες</string>
+    <string name="menu_nearby_routes">Κοντινές</string>
+    <string name="all_routes">Όλες οι Γραμμές</string>
+    <string name="recent_routes">Πρόσφατες Γραμμές</string>
     <string name="schedule">Ωράριο</string>
-    <string name="all_schedules">Όλες οι μέρες</string>
+    <string name="menu_all_schedules">Όλα</string>
+    <string name="all_schedules">Όλα τα ωράρια</string>
     <string name="days_Su">Κυριακή</string>
     <string name="days_M_F">Δευτέρα-Παρασκευή</string>
     <string name="days_Sa">Σάββατο</string>
@@ -19,7 +23,7 @@
     <string name="ETA">Αναμενόμενη Άφιξη</string>
     <string name="walkETA">Αναμενόμενη Άφιξη περπατώντας</string>
     <string name="bikeETA">Αναμενόμενη Άφιξη με ποδήλατο</string>
-    <string name="nearby">Κοντινές</string>
+    <string name="nearby_routes">Κοντινές Γραμμές</string>
     <string name="map">Χάρτης</string>
     <string name="browse">Ιστοσελίδα</string>
     <string name="straight_distance">Ευθεία Απόσταση</string>

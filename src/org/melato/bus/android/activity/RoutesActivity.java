@@ -1,17 +1,15 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
-import org.melato.bus.android.help.HelpActivity;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteGroup;
 
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +25,11 @@ import android.widget.TextView;
 public abstract class RoutesActivity extends ListActivity {
   protected BusActivities activities;
   private Object[] items = new Object[0];
+  private SharedPreferences prefs;
+  private ColorScheme colors;
 
   protected abstract Object[] initialRoutes();
-
+  
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {      
@@ -37,6 +37,9 @@ public abstract class RoutesActivity extends ListActivity {
       activities = new BusActivities(this);
       items = initialRoutes();
       setListAdapter(new RoutesAdapter());
+      prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      colors = UI.getColorScheme(this);
+      //prefs.registerOnSharedPreferenceChangeListener(this);
   }
 
   void showGroup(RouteGroup group) {
@@ -83,26 +86,12 @@ public abstract class RoutesActivity extends ListActivity {
           }
         }
       }
-      if ( route != null ) {
-        view.setTextColor(UI.routeColor(route.getColor()));
-        view.setBackgroundColor(UI.routeColor(route.getBackgroundColor()));
-      } else {
-        view.setTextColor(Color.BLACK);
-        view.setBackgroundColor(Color.WHITE);        
-      }
+      view.setTextColor(colors.getColor(route));
+      view.setBackgroundColor(colors.getBackground(route));
       return view;
     }
 }
   
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu)
-  {
-     MenuInflater inflater = getMenuInflater();
-     inflater.inflate(R.menu.routes_menu, menu);
-     HelpActivity.addItem(menu, this, R.string.help_routes);
-     return true;
-  }
-
   public static void showRecent(Context context) {
     Intent intent = new Intent(context, RecentRoutesActivity.class);
     context.startActivity(intent);        

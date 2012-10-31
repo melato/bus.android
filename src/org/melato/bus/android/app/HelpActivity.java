@@ -1,4 +1,4 @@
-package org.melato.bus.android.help;
+package org.melato.bus.android.app;
 
 import org.melato.bus.android.R;
 

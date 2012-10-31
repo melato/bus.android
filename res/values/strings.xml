@@ -2,10 +2,15 @@
 <resources>
     <string name="app_name">Athens Next Bus</string>
     <string name="about">About</string>
-    <string name="routes">Bus Lines</string>
-    <string name="all_routes">All</string>
-    <string name="recent_routes">Recent</string>
+    <string name="main">BusLines</string>
+    <string name="menu_all_routes">All</string>
+    <string name="menu_recent_routes">Recent</string>
+    <string name="menu_nearby_routes">Nearby</string>
+    <string name="all_routes">All Routes</string>
+    <string name="recent_routes">Recent Routes</string>
+    <string name="nearby_routes">Nearby Routes</string>
     <string name="schedule">Schedule</string>
+    <string name="menu_all_schedules">All</string>
     <string name="all_schedules">All Schedules</string>
     <string name="days_Su">Sunday</string>
     <string name="days_M_F">Monday-Friday</string>
@@ -19,7 +24,6 @@
     <string name="ETA">ETA</string>
     <string name="walkETA">ETA by walking</string>
     <string name="bikeETA">ETA by bike</string>
-    <string name="nearby">Nearby</string>
     <string name="map">Map</string>
     <string name="browse">Web</string>
     <string name="straight_distance">Straight Distance</string>

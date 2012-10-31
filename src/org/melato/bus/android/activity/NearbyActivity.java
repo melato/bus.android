@@ -1,7 +1,7 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
-import org.melato.bus.android.help.HelpActivity;
+import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.client.NearbyStop;
 import org.melato.gps.Point;
 
@@ -48,7 +48,7 @@ public class NearbyActivity extends ListActivity {
   public boolean onCreateOptionsMenu(Menu menu)
   {
      MenuInflater inflater = getMenuInflater();
-     inflater.inflate(R.menu.nearby_menu, menu);
+     inflater.inflate(R.menu.nearby_routes_menu, menu);
      HelpActivity.addItem(menu, this, R.string.help_nearby);
     return true;
   }

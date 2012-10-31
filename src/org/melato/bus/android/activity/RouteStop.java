@@ -29,10 +29,10 @@ public class RouteStop implements Serializable {
   }
   
   private int findStopIndex(List<Waypoint> waypoints) {
-    if ( stopIndex >= 0 )
+    if ( stopIndex >= 0 && stopIndex < waypoints.size() )
       return stopIndex;
     int size = waypoints.size();
-    for( int i = 0; i <= size; i++ ) {
+    for( int i = 0; i < size; i++ ) {
       if ( stopSymbol.equals(waypoints.get(i).getSym())) {
         return i;
       }

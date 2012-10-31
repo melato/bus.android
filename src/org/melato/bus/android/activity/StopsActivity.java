@@ -2,7 +2,7 @@ package org.melato.bus.android.activity;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.help.HelpActivity;
+import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.Route;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Waypoint;

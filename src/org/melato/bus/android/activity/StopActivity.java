@@ -5,7 +5,7 @@ import java.util.List;
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.help.HelpActivity;
+import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
 import org.melato.gpx.Waypoint;

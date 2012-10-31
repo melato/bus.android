@@ -3,7 +3,7 @@ package org.melato.bus.android.map;
 import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
-import org.melato.bus.android.help.HelpActivity;
+import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.Route;
 import org.melato.log.Log;
 
@@ -28,7 +28,7 @@ public class RouteMapActivity extends MapActivity {
   private boolean isShowingAll;
   private String title;
   private static int defaultZoom = 15;
-
+  
   @Override
   protected boolean isRouteDisplayed() {
     return false;
@@ -91,7 +91,7 @@ public class RouteMapActivity extends MapActivity {
       if ( title != null )
         setTitle(title);
       else {
-        setTitle(R.string.nearby);
+        setTitle(R.string.nearby_routes);
       }
       map.invalidate();
     }    

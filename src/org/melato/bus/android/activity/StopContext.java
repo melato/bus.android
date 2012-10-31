@@ -131,7 +131,7 @@ public class StopContext extends LocationContext {
     public String toString() {
       String name = path.getWaypoint(0).getName();
       String label = String.format(context.getString(R.string.position_from_start), name);
-      return PropertiesDisplay.formatProperty( label, UI.routeDistance(-getMarkerPosition()));
+      return PropertiesDisplay.formatProperty( label, UI.routeDistance(getMarkerPosition()));
     }
   }
   
@@ -142,15 +142,6 @@ public class StopContext extends LocationContext {
       int seconds = getTimeFromStart();
       String value = seconds > 0 ? Schedule.formatTime(seconds/60) : "";
       return PropertiesDisplay.formatProperty( label, value);
-    }
-  }
-  
-  class DistanceToEnd {
-    public String toString() {
-      float distance = path.getLength() - getMarkerPosition();
-      String name = path.getWaypoint(path.size()-1).getName();
-      String label = String.format(context.getString(R.string.position_from_end), name);
-      return PropertiesDisplay.formatProperty( label, UI.routeDistance(distance));
     }
   }
   
@@ -239,7 +230,6 @@ public class StopContext extends LocationContext {
     properties.add(new StraightDistance());
     properties.add(new RouteDistance());
     properties.add(new DistanceFromStart());
-    properties.add(new DistanceToEnd());
     properties.add(new TimeFromStart());      
 
     properties.add( new PathSpeed());

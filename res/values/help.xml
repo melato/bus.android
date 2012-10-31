@@ -6,8 +6,6 @@
         you are taken to a list of routes that have stops near the point that you tapped on.</string>
     <string name="help_nearby">The <b>Nearby</b> screen displays the nearest routes to your current location,
       or to a location that you previously selected by tapping on the map, or from a route stop.</string>
-    <string name="help_routes">The Routes screen displays a list of routes,
-either the routes you most recently looked at, or the list of all routes.</string>    
     <string name="help_stops">
 A distance in parenthesis is a straight line distance from the current location or from a reference location.
 A distance with a + or - sign is a <i>route distance</i>, the distance along the route

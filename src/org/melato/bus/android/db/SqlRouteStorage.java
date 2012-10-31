@@ -22,6 +22,7 @@ import org.melato.gps.Point;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Clock;
 import org.melato.log.Log;
+import org.melato.progress.ProgressGenerator;
 import org.melato.util.IntArrays;
 import org.melato.util.VariableSubstitution;
 
@@ -118,7 +119,6 @@ public class SqlRouteStorage implements RouteStorage {
     route.setTitle(cursor.getString(2));
     route.setColor(cursor.getInt(4));
     route.setBackgroundColor(cursor.getInt(5));
-    Log.info( "color=" + route.getColor());
     if ( ! cursor.isNull(6)) {
       int primary = cursor.getInt(6);
       if ( primary == 1 )
@@ -288,6 +288,8 @@ public class SqlRouteStorage implements RouteStorage {
         "\njoin routes on routes._id = stops.route" +
         "\norder by routes._id, stops.seq";
     Cursor cursor = db.rawQuery( sql, null);
+    ProgressGenerator progress = ProgressGenerator.get();
+    int count = 0;
     try {
       int last_route_id = -1;
       RouteId routeId = null;
@@ -300,6 +302,7 @@ public class SqlRouteStorage implements RouteStorage {
           if ( route_id != last_route_id ) {
             if ( routeId != null) {
               callback.add(routeId, waypoints );
+              progress.setPosition(count++);
             }
             last_route_id = route_id;
             routeId = new RouteId(cursor.getString(3), cursor.getString(4));

@@ -2,8 +2,8 @@ package org.melato.bus.android.activity;
 
 import java.util.List;
 
+import org.melato.bus.android.app.UpdateActivity;
 import org.melato.bus.android.db.SqlRouteStorage;
-import org.melato.bus.android.update.UpdateActivity;
 import org.melato.bus.model.Route;
 
 import android.app.Activity;

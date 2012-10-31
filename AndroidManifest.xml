@@ -19,7 +19,7 @@
         <uses-library android:name="com.google.android.maps" />
         <activity
             android:name=".activity.MainActivity"
-            android:label="@string/routes" >
+            android:label="@string/main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -52,7 +52,7 @@
         </activity>
         <activity
             android:name=".activity.NearbyActivity"
-            android:label="@string/nearby" >
+            android:label="@string/nearby_routes" >
         </activity>        
         <activity
             android:name=".map.RouteMapActivity"
@@ -63,16 +63,20 @@
             android:label="@string/stop" >
         </activity>
         <activity
-            android:name=".update.UpdateActivity"
+            android:name=".app.UpdateActivity"
             android:label="@string/available_updates" >
         </activity>
         <activity
-            android:name=".help.HelpActivity"
+            android:name=".app.HelpActivity"
             android:label="@string/help" >
         </activity>
         <activity
-            android:name=".help.AboutActivity"
+            android:name=".app.AboutActivity"
             android:label="@string/about" >
+        </activity>
+        <activity
+            android:name=".app.BusPreferencesActivity"
+            android:label="@string/pref_title" >
         </activity>
         </application>
 

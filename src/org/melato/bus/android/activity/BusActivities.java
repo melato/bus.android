@@ -4,17 +4,16 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import org.melato.android.AndroidLogger;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.help.AboutActivity;
+import org.melato.bus.android.app.AboutActivity;
+import org.melato.bus.android.app.BusPreferencesActivity;
 import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.xml.RouteHandler;
 import org.melato.bus.model.xml.RouteWriter;
-import org.melato.log.Log;
 import org.melato.util.MRU;
 
 import android.app.Activity;
@@ -94,11 +93,6 @@ public class BusActivities  {
     context.startActivity(browserIntent);   
    }
   
-  private void benchmark() {
-    Log.setLogger(new AndroidLogger(context));
-    getRouteManager().benchmark();
-  }
-  
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
     Route route = getRoute();
@@ -133,10 +127,14 @@ public class BusActivities  {
         handled = true;
         showAbout();
         break;
+      case R.id.pref:
+        handled = true;
+        context.startActivity( new Intent(context, BusPreferencesActivity.class));    
+        break;
       /*
       case R.id.benchmark:
         handled = true;
-        benchmark();    
+        getRouteManager().benchmark();
         break;
       */
       case R.id.browse:
