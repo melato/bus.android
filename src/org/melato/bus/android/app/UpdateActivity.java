@@ -17,25 +17,50 @@ import org.melato.update.UpdateFile;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 public class UpdateActivity extends Activity implements Runnable {
+  public static final String ACCEPTED_TERMS = "accepted_terms";
   private UpdateManager updateManager;
   private ActivityProgressHandler progress;
+  private enum MessageState {
+    TERMS,
+    ERROR,    
+  };
+  private MessageState state;
 
+  private void showMessage(MessageState state, int messageId) {
+    setContentView(R.layout.message);
+    TextView noteView = (TextView) findViewById(R.id.note);
+    this.state = state;
+    noteView.setText(messageId);
+    noteView.setMovementMethod(new ScrollingMovementMethod());    
+  }
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     Log.info(getClass().getName() + ".onCreate");
     super.onCreate(savedInstanceState);
+    if ( ! isConnected(this) ) {
+      showMessage(MessageState.ERROR, R.string.need_network);
+      return;
+    }
+    if ( ! hasAcceptedTerms(this)) {
+      setTitle(R.string.terms_of_use);
+      showMessage(MessageState.TERMS, R.string.eula);
+      return;
+    }
     progress = new ProgressTitleHandler(this);
     updateManager = new UpdateManager(this);
-    setContentView(R.layout.update);
     if ( updateManager.isRequired() ) {
       setTitle(R.string.update_required);
     }
@@ -49,6 +74,7 @@ public class UpdateActivity extends Activity implements Runnable {
         buf.append(f.getNote());
       }
     }
+    setContentView(R.layout.update);
     TextView noteView = (TextView) findViewById(R.id.note);
     noteView.setText(buf.toString());
   }
@@ -67,6 +93,20 @@ public class UpdateActivity extends Activity implements Runnable {
     button.setEnabled(false);
     progress.cancel();    
     finish();
+  }
+
+  /** Called from the ok button */
+  public void ok(View view) {
+    if ( state == MessageState.ERROR )
+      finish();
+    else if ( state == MessageState.TERMS ) {
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+      Editor editor = prefs.edit();
+      editor.putBoolean(ACCEPTED_TERMS, true);
+      editor.commit();
+      finish();
+      startActivity(new Intent(this, UpdateActivity.class));
+    }
   }
 
   void startMain() {
@@ -106,8 +146,14 @@ public class UpdateActivity extends Activity implements Runnable {
   
   @Override
   protected void onDestroy() {
-    progress.cancel();
+    if ( progress != null )
+      progress.cancel();
     super.onDestroy();
+  }
+  
+  public static boolean hasAcceptedTerms(Context context) {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    return prefs.getBoolean(ACCEPTED_TERMS, false);
   }
   
   public static boolean isConnected(Context context) {
