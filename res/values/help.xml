@@ -39,10 +39,8 @@ The average speed of the bus.
 The latitude and longitude of the stop, as published by OASA.
 </string>   
 
-<string name="help_about">
-<b>Athens Next Bus</b>, version %1$s
-Written by Alex Athanasopoulos, Copyright &#169; 2012.\n\n
-The route maps and timetables are provided by OASA and are available to the public from www.oasa.gr.
+<string name="help_about"><b>To Επόμενο Λεωφορείο</b>\nCopyright &#169; 2012\nAlex Athanasopoulos\nalex@melato.org
+\n\nThe route maps and timetables are provided by OASA and are available to the public from www.oasa.gr.
 Contact OASA to fix errors in its timetables and contact me to fix bugs in the application.
 \n
 If you notice a mistake in a route timetable (e.g. the scheduled departure time shown by the application
@@ -52,8 +50,6 @@ does not match the time posted at the start bus stop):
 2. If so, contact OASA directly (by phone or email) and ask them to correct it.\n
 3. If this application does not match the OASA website,
 please contact me so I can fix the bug or update the application with the latest information from OASA.
-\n\n
-I can be contacted at alex@melato.org        
 </string>    
     
 </resources>
