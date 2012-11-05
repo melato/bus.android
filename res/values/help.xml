@@ -40,6 +40,7 @@ The latitude and longitude of the stop, as published by OASA.
 </string>   
 
 <string name="help_about"><b>To Επόμενο Λεωφορείο</b>\nCopyright &#169; 2012\nAlex Athanasopoulos\nalex@melato.org
+\nhttp://metakinisi.melato.org
 \n\nThe route maps and timetables are provided by OASA and are available to the public from www.oasa.gr.
 Contact OASA to fix errors in its timetables and contact me to fix bugs in the application.
 \n
