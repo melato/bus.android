@@ -81,6 +81,9 @@ public class RouteMapActivity extends MapActivity {
       MapController mapController = map.getController();
       mapController.setZoom(defaultZoom);
       GeoPoint center = routesOverlay.getCenter();
+      if ( center == null ) {
+        center = new GeoPoint( 37975086, 23735683); // hardcoded Syntagma Square.  Should move to the database.
+      }
       if ( center != null ) {
         mapController.setCenter(center);
       }
