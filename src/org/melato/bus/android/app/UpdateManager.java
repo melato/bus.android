@@ -49,7 +49,7 @@ public class UpdateManager extends PortableUpdateManager {
     for( UpdateFile f: updates ) {
       if ( ROUTES_UPDATE.equals(f.getName())) {
         File databaseFile = SqlRouteStorage.databaseFile(context);
-        progress.setText("Routes Database");
+        progress.setText(context.getString(R.string.routes_database));
         updateZipedFile(f, ROUTES_ENTRY, databaseFile);
         continue;
       }
