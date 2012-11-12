@@ -80,6 +80,7 @@ public class HelpActivity extends Activity {
   public static void addItem(Menu menu, Context context, int helpId) {
     MenuItem item = menu.add(R.string.help);
     item.setOnMenuItemClickListener(new HelpListener(context, helpId));
+    item.setIcon(R.drawable.help);
   }
   
   @Override
