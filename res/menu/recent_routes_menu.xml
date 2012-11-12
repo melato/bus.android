@@ -6,8 +6,4 @@
           android:title="@string/menu_all_routes" />
     <item android:id="@+id/map"
           android:title="@string/map" />
-    <item android:id="@+id/pref"
-          android:title="@string/pref_menu" />
-    <item android:id="@+id/about"
-          android:title="@string/about" />
 </menu>

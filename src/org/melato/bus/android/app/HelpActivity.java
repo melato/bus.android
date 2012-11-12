@@ -91,11 +91,20 @@ public class HelpActivity extends Activity {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    if ( item.getItemId() == R.id.about ) {
-      startActivity( new Intent(this, AboutActivity.class));
-      return true;
+    switch( item.getItemId() ) {
+      case R.id.about:
+        startActivity( new Intent(this, AboutActivity.class));
+        break;
+      case R.id.terms:
+        HelpActivity.showHelp(this, R.string.eula, R.string.terms_of_use);
+        break;
+      case R.id.pref:
+        startActivity( new Intent(this, BusPreferencesActivity.class));    
+        break;
+      default:
+        return super.onOptionsItemSelected(item);    
     }
-    return super.onOptionsItemSelected(item);
+    return true;    
   }
   
   

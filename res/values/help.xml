@@ -4,8 +4,13 @@
     <string name="help_map">The Map displays one or more routes.
         When you tap on any point on the map,
         you are taken to a list of routes that have stops near the point that you tapped on.</string>
-    <string name="help_nearby">The <b>Nearby</b> screen displays the nearest routes to your current location,
+    <string name="help_all">Displays all routes, alphabetically.</string>
+    <string name="help_recent">Displays the routes that you accessed most recently.</string>
+    <string name="help_nearby">Displays the nearest routes to your current location,
       or to a location that you previously selected by tapping on the map, or from a route stop.</string>
+    <string name="help_schedule">Displays the schedule of the route for today or for a selected day.\n\n
+The schedule begins and ends at midnight.</string>
+    <string name="help_schedules">Select one of the displayed schedules to see the schedule for another day.</string>
     <string name="help_stops">
 A distance in parenthesis is a straight line distance from the current location or from a reference location.
 A distance with a + or - sign is a <i>route distance</i>, the distance along the route
