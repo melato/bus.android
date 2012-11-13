@@ -46,8 +46,12 @@ The latitude and longitude of the stop, as published by OASA.
 
 <string name="help_about"><b>To Επόμενο Λεωφορείο</b>\nCopyright &#169; 2012\nAlex Athanasopoulos\nalex@melato.org
 \nhttp://metakinisi.melato.org
-\n\nThe route maps and timetables are provided by OASA and are available to the public from www.oasa.gr.
-Contact OASA to fix errors in its timetables and contact me to fix bugs in the application.
+\n\n<center><b>Credits</b></center>
+The route maps and timetables are provided by OASA and are available to the public from www.oasa.gr.
+\n\nMost icons are from the bctango icon collection, by Bosky Cinek (http://boskastrona.ovh.org).  License: Creative Commons attribution share-alike
+(http://creativecommons.org/licenses/by-sa/2.5/).
+\n\n<center><b>Errors</b></center>
+\n\nContact OASA to fix errors in its timetables and contact me to fix bugs in the application.
 \n
 If you notice a mistake in a route timetable (e.g. the scheduled departure time shown by the application
 does not match the time posted at the start bus stop):
