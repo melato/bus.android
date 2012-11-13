@@ -40,5 +40,6 @@
     <string name="refresh">Refresh</string>
     <string name="loading">Loading &#8230;</string>
     <string name="ok">Ok</string>
+    <string name="terms_of_use">Terms of Use</string>
     
 </resources>

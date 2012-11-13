@@ -71,10 +71,6 @@
             android:label="@string/help" >
         </activity>
         <activity
-            android:name=".app.AboutActivity"
-            android:label="@string/about" >
-        </activity>
-        <activity
             android:name=".app.BusPreferencesActivity"
             android:label="@string/pref_title" >
         </activity>

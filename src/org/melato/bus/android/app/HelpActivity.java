@@ -36,6 +36,8 @@ import android.widget.TextView;
 public class HelpActivity extends Activity {
   public static final String KEY_ID = "help_id";
   public static final String KEY_TITLE = "help_title";
+  public static final String KEY_MENU = "help_menu";
+  private boolean hasMenu = true;
   
   protected void setHelpText(TextView view) {
     int helpId = getIntent().getIntExtra(KEY_ID, R.string.help_default);
@@ -48,18 +50,25 @@ public class HelpActivity extends Activity {
     setContentView(R.layout.help);
     int titleId = getIntent().getIntExtra(KEY_TITLE, R.string.help);
     setTitle(titleId);
+    hasMenu = getIntent().getBooleanExtra(KEY_MENU, true);
     TextView helpView = (TextView) findViewById(R.id.help);
     setHelpText(helpView);
     helpView.setMovementMethod(new ScrollingMovementMethod());    
   }
   
   public static void showHelp(Context context, int helpId) {
-    showHelp(context, helpId, R.string.help);
+    showHelp(context, helpId, R.string.help, true);
   }
   public static void showHelp(Context context, int helpId, int titleId) {
+    showHelp(context, helpId, titleId, true);
+  }
+  
+  public static void showHelp(Context context, int helpId, int titleId, boolean useMenu) {
     Intent intent = new Intent(context, HelpActivity.class);
     intent.putExtra(KEY_ID, helpId);
     intent.putExtra(KEY_TITLE, titleId);
+    if ( ! useMenu )
+      intent.putExtra(KEY_MENU, false);
     context.startActivity(intent);
   }
   static class HelpListener implements OnMenuItemClickListener {
@@ -85,8 +94,10 @@ public class HelpActivity extends Activity {
   
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.help_menu, menu);
+    if ( hasMenu ) {
+      MenuInflater inflater = getMenuInflater();
+      inflater.inflate(R.menu.help_menu, menu);
+    }
     return true;
   }
 
@@ -94,10 +105,11 @@ public class HelpActivity extends Activity {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch( item.getItemId() ) {
       case R.id.about:
-        startActivity( new Intent(this, AboutActivity.class));
+        HelpActivity.showHelp(this, R.string.help_about, R.string.about, false);
+        //startActivity( new Intent(this, AboutActivity.class));
         break;
       case R.id.terms:
-        HelpActivity.showHelp(this, R.string.eula, R.string.terms_of_use);
+        HelpActivity.showHelp(this, R.string.eula, R.string.terms_of_use, false);
         break;
       case R.id.pref:
         startActivity( new Intent(this, BusPreferencesActivity.class));    
