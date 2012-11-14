@@ -202,7 +202,6 @@ public class UpdateActivity extends Activity implements Runnable {
      * @return
      */
     public boolean checkUpdates() {
-      if ( true) return true;
       if ( updateManager.isRequired() ) {
         // assume that we have not data.  We have to update or die.
         activity.startActivity(new Intent(activity, UpdateActivity.class));
