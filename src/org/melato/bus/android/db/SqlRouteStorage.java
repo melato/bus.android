@@ -49,6 +49,7 @@ import org.melato.util.VariableSubstitution;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 
 public class SqlRouteStorage implements RouteStorage {
   public static final String DATABASE_NAME = "ROUTES.db";
@@ -92,9 +93,21 @@ public class SqlRouteStorage implements RouteStorage {
     this.databaseFile = databaseFile.toString();
   }
 
-  SQLiteDatabase getDatabase() {
-    return SQLiteDatabase.openDatabase(databaseFile,
-        null, SQLiteDatabase.OPEN_READONLY);
+  SQLiteDatabase getDatabase() {    
+    try {
+      return SQLiteDatabase.openDatabase(databaseFile,
+          null, SQLiteDatabase.OPEN_READONLY);
+    } catch (SQLiteException e) {
+      String message = e.getMessage();
+      if ( message != null && message.contains("attempt to write a readonly database")) {
+        // see http://metakinisi.melato.org/node/554
+        SQLiteDatabase database = SQLiteDatabase.openDatabase(databaseFile, null, SQLiteDatabase.OPEN_READWRITE);
+        database.close();
+        return SQLiteDatabase.openDatabase(databaseFile,
+            null, SQLiteDatabase.OPEN_READONLY);
+      }
+      throw e;
+    }
   }
 
   static private final String ROUTE_SELECT = "select routes.name, routes.label, routes.title, routes.direction," +
