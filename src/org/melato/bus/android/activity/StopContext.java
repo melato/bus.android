@@ -29,7 +29,7 @@ import org.melato.bus.model.Schedule;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.geometry.gpx.SpeedTracker;
 import org.melato.gps.Earth;
-import org.melato.gps.Point;
+import org.melato.gps.PointTime;
 import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
 
@@ -87,7 +87,7 @@ public class StopContext extends LocationContext {
   }
   
   @Override
-  public void setLocation(Point point) {
+  public void setLocation(PointTime point) {
     super.setLocation(point);
     if ( point == null )
       return;
@@ -149,7 +149,7 @@ public class StopContext extends LocationContext {
   
   class DistanceFromStart {
     public String toString() {
-      String name = path.getWaypoint(0).getName();
+      String name = waypoints.get(0).getName();
       String label = String.format(context.getString(R.string.position_from_start), name);
       return PropertiesDisplay.formatProperty( label, UI.routeDistance(getMarkerPosition()));
     }
@@ -157,7 +157,7 @@ public class StopContext extends LocationContext {
   
   class TimeFromStart {
     public String toString() {
-      String name = path.getWaypoint(0).getName();
+      String name = waypoints.get(0).getName();
       String label = String.format(context.getString(R.string.time_from_start), name);
       int seconds = getTimeFromStart();
       String value = seconds > 0 ? Schedule.formatTime(seconds/60) : "";

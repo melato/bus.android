@@ -38,7 +38,7 @@ import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteStopCallback;
 import org.melato.bus.model.RouteStorage;
 import org.melato.bus.model.Schedule;
-import org.melato.gps.Point;
+import org.melato.gps.Point2D;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Clock;
 import org.melato.log.Log;
@@ -326,11 +326,11 @@ public class SqlRouteStorage implements RouteStorage {
     try {
       int last_route_id = -1;
       RouteId routeId = null;
-      List<Point> waypoints = null;
+      List<Point2D> waypoints = null;
       if ( cursor.moveToFirst() ) {
         Log.info( clock.lap( "all.RouteStops.moveToFirst"));
         do {
-          Point p = new Point(cursor.getFloat(0), cursor.getFloat(1));
+          Point2D p = new Point2D(cursor.getFloat(0), cursor.getFloat(1));
           int route_id = cursor.getInt(2);
           if ( route_id != last_route_id ) {
             if ( routeId != null) {
@@ -339,7 +339,7 @@ public class SqlRouteStorage implements RouteStorage {
             }
             last_route_id = route_id;
             routeId = new RouteId(cursor.getString(3), cursor.getString(4));
-            waypoints = new ArrayList<Point>();
+            waypoints = new ArrayList<Point2D>();
           }
           waypoints.add(p);
         } while ( cursor.moveToNext() );
@@ -355,7 +355,7 @@ public class SqlRouteStorage implements RouteStorage {
   }
 
   @Override
-  public void iterateNearbyStops(Point point, float latDiff, float lonDiff,
+  public void iterateNearbyStops(Point2D point, float latDiff, float lonDiff,
       Collection<Waypoint> collector) {
     float lat1 = point.getLat() - latDiff;
     float lat2 = point.getLat() + latDiff;
@@ -410,7 +410,7 @@ public class SqlRouteStorage implements RouteStorage {
   }
 
   @Override
-  public void iterateNearbyRoutes(Point point, float latDiff, float lonDiff,
+  public void iterateNearbyRoutes(Point2D point, float latDiff, float lonDiff,
       Collection<RouteId> collector) {
     float lat1 = point.getLat() - latDiff;
     float lat2 = point.getLat() + latDiff;

@@ -21,7 +21,7 @@
 package org.melato.bus.android.activity;
 
 import org.melato.android.location.Locations;
-import org.melato.gps.Point;
+import org.melato.gps.PointTime;
 
 import android.content.Context;
 import android.location.Location;
@@ -38,7 +38,7 @@ import android.os.Bundle;
  */
 public class LocationContext implements LocationListener {
   protected Context context;
-  private Point   location;
+  private PointTime   location;
   private boolean enabledLocations;
   
 
@@ -70,13 +70,13 @@ public class LocationContext implements LocationListener {
     setEnabledLocations(false);
   }
 
-  public void setLocation(Point point) {
+  public void setLocation(PointTime point) {
     if ( point == null )
       return;
     location = point;
   }
     
-  public Point getLocation() {
+  public PointTime getLocation() {
     return location;
   }
   

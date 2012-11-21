@@ -25,7 +25,7 @@ import java.util.List;
 import org.melato.bus.android.R;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.gps.Earth;
-import org.melato.gps.Point;
+import org.melato.gps.PointTime;
 import org.melato.gpx.GPX;
 import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
@@ -61,7 +61,7 @@ public class StopsContext extends LocationContext {
   }
 
   @Override
-  public void setLocation(Point point) {
+  public void setLocation(PointTime point) {
     super.setLocation(point);
     if ( point != null) {
       pathTracker.setLocation(point);
@@ -93,7 +93,7 @@ public class StopsContext extends LocationContext {
       TextView view = (TextView) super.getView(position, convertView, parent);
       Waypoint waypoint = waypoints.get(position);
       String text = waypoint.getName();
-      Point here = getLocation();
+      PointTime here = getLocation();
       if ( here != null && closestStop == position ) {
         float straightDistance = Earth.distance(here, waypoint); 
         text += " " + UI.straightDistance(straightDistance);

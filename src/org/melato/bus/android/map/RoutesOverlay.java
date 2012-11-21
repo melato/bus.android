@@ -32,7 +32,9 @@ import org.melato.bus.android.activity.UI;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
+import org.melato.gps.Point2D;
 import org.melato.gpx.Waypoint;
+import org.melato.util.DelegateList;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -80,7 +82,7 @@ public class RoutesOverlay extends BaseRoutesOverlay {
   public void setSelectedRoute(RouteId routeId) {
     selectedRoute = routeId;
     List<Waypoint> waypoints = routeManager.getWaypoints(routeId);
-    RoutePoints route = RoutePoints.createFromPoints(Waypoint.asPoints(waypoints));
+    RoutePoints route = RoutePoints.createFromPoints(new DelegateList<Waypoint,Point2D>(waypoints));
     center = route.getCenterGeoPoint();
   }
   
