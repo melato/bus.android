@@ -37,6 +37,10 @@ public class RouteStop implements Serializable {
     this.routeId = routeId;
   }
   
+  /** Get the time from the start of the route.
+   * @param waypoints
+   * @return time in seconds.
+   */
   public int getTimeFromStart(List<Waypoint> waypoints) {
     if ( stopIndex == -1 && stopSymbol == null )
       return 0;
