@@ -28,8 +28,6 @@ import org.melato.bus.client.NearbyStop;
 import org.melato.bus.client.WaypointDistance;
 import org.melato.gps.Point2D;
 import org.melato.gps.PointTime;
-import org.melato.log.Clock;
-import org.melato.log.Log;
 
 import android.app.ListActivity;
 import android.view.View;
@@ -76,44 +74,33 @@ public class NearbyContext extends LocationContext {
     }
   }
   void load(Point2D location) {
-    Clock clock = new Clock("NearbyContext.load()" );
     stops = Info.nearbyManager(context).getNearby(location);
     colorStops(stops);
-    Log.info(clock);
   }
     
   public NearbyStop getStop(int index) {
     return stops[index];
   }
   
-  private void setLocation(Point2D p) {
-    PointTime location = new PointTime(p);
-    location.setTime(System.currentTimeMillis());
-    super.setLocation(location);
-  }
-  
   public NearbyContext(ListActivity activity) {
     super(activity);
     this.activity = activity;
     Point2D center = IntentHelper.getLocation(activity.getIntent());
-    Log.info( "NearbyContext center=" + center);
     if ( center != null) {
-      setLocation(center);
+      setCenter(center);
     } else {
       Point2D p = Info.nearbyManager(activity).getLastLocation();
       if ( p != null ) {
-        setLocation(p);
+        setCenter(p);
       }
       haveLocation = false;
       setEnabledLocations(true);
     }
   }
 
-  public void setLocation(PointTime point) {
-    super.setLocation(point);
+  private void setCenter(Point2D point) {
     if ( point == null )
       return;
-    //Log.info( "setLocation point=" + point + " haveLocation=" + haveLocation );
     if ( haveLocation ) {
       WaypointDistance.setDistance(stops, point);
       Arrays.sort(stops);
@@ -121,9 +108,13 @@ public class NearbyContext extends LocationContext {
    } else {
       haveLocation = true;
       load(point);
-      Log.info( "activity: " + activity );
       activity.setListAdapter(adapter = new NearbyAdapter());    
     }
+  }
+  
+  public void setLocation(PointTime point) {
+    super.setLocation(point);
+    setCenter(point);
   }
  
 
