@@ -21,7 +21,6 @@
 package org.melato.bus.android.activity;
 
 import java.util.Date;
-import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
@@ -30,7 +29,7 @@ import org.melato.bus.client.TimeOfDay;
 import org.melato.bus.client.TimeOfDayList;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Schedule;
-import org.melato.gpx.Waypoint;
+import org.melato.bus.model.Stop;
 
 import android.app.Activity;
 import android.content.Context;
@@ -90,11 +89,11 @@ public class ScheduleActivity extends Activity {
   }
   
   private void setStopInfo(RouteStop stop) {
-    List<Waypoint> waypoints = Info.routeManager(this).getWaypoints(stop.getRouteId());
-    stopName = stop.getStopName(waypoints);
-    timeOffset = stop.getTimeFromStart(waypoints);
-    if ( timeOffset == 0 && waypoints.size() > 0 ) {
-      stopName = waypoints.get(0).getName();
+    Stop[] stops = Info.routeManager(this).getStops(stop.getRouteId());
+    stopName = stop.getStopName(stops);
+    timeOffset = stop.getTimeFromStart(stops);
+    if ( timeOffset == 0 && stops.length > 0 ) {
+      stopName = stops[0].getName();
     }
   }
   

@@ -20,16 +20,13 @@
  */
 package org.melato.bus.android.activity;
 
-import java.util.List;
-
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
-import org.melato.gpx.Waypoint;
-import org.melato.log.PLog;
+import org.melato.bus.model.Stop;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -63,17 +60,16 @@ public class StopActivity extends ListActivity {
     activities = new BusActivities(this);
     IntentHelper intentHelper = new IntentHelper(this);
     routeStop = intentHelper.getRouteStop();
-    PLog.info(routeStop);
     if ( routeStop == null || routeStop.getStopSymbol() == null) {
       return;
     }
-    List<Waypoint> waypoints = Info.routeManager(this).getWaypoints(routeStop.getRouteId());
+    Stop[] waypoints = Info.routeManager(this).getStops(routeStop.getRouteId());
     stop.setWaypoints(waypoints);
     
     MarkerInfo markerInfo = Info.routeManager(this).loadMarker(routeStop.getStopSymbol());
     int index = routeStop.getStopIndex();
     if ( index < 0 ) {
-      index = findWaypointIndex(waypoints, markerInfo.getWaypoint());
+      index = findWaypointIndex(waypoints, markerInfo.getStop());
     }
     stop.setMarkerIndex(index);
     setTitle(stop.getMarker().getName());
@@ -93,10 +89,10 @@ public class StopActivity extends ListActivity {
     super.onDestroy();
   }  
 
-  static int findWaypointIndex(List<Waypoint> waypoints, Waypoint p) {
-    int size = waypoints.size();
+  static int findWaypointIndex(Stop[] waypoints, Stop p) {
+    int size = waypoints.length;
     for( int i = 0; i < size; i++ ) {
-      if ( p.equals(waypoints.get(i))) {
+      if ( p.equals(waypoints[i])) {
         return i;
       }
     }
@@ -121,7 +117,7 @@ public class StopActivity extends ListActivity {
   }
  
   private void showNearby() {
-    Waypoint point = stop.getMarker();
+    Stop point = stop.getMarker();
     NearbyActivity.start(this, point);
   }
   /**

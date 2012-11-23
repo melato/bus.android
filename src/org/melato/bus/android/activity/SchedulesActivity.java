@@ -74,7 +74,6 @@ public class SchedulesActivity extends ListActivity {
     setTitle( route.getFullTitle() );
     schedule = activities.getRouteManager().getSchedule(route);
     schedules = schedule.getSchedules();
-    Log.info( "schedule: " + schedule );
     setListAdapter(new SchedulesAdapter());
   }
 

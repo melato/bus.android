@@ -22,7 +22,6 @@ package org.melato.bus.android.db;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -38,6 +37,7 @@ import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteStopCallback;
 import org.melato.bus.model.RouteStorage;
 import org.melato.bus.model.Schedule;
+import org.melato.bus.model.Stop;
 import org.melato.gps.Point2D;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Clock;
@@ -183,7 +183,6 @@ public class SqlRouteStorage implements RouteStorage {
         "\njoin routes on routes._id = schedules.route" +
         "\nwhere " + whereClause(routeId) +
         "\norder by days, minutes";
-    Log.info( "loadSchedule sql=" + sql );
     Cursor cursor = db.rawQuery( sql, null);
     List<DaySchedule> daySchedules = new ArrayList<DaySchedule>(); 
     try {
@@ -283,29 +282,26 @@ public class SqlRouteStorage implements RouteStorage {
   }
 
   @Override
-  public List<Waypoint> loadWaypoints(RouteId routeId) {
+  public List<Stop> loadStops(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
     String sql = "select lat, lon, markers.symbol, markers.name, stops.duration from markers" +
         "\njoin stops on markers._id = stops.marker" +
         "\njoin routes on routes._id = stops.route" +
         "\nwhere " + whereClause(routeId) + 
         "\norder by stops._id";
-    Log.info(sql );
     Cursor cursor = db.rawQuery( sql, null);
     try {
-      List<Waypoint> waypoints = new ArrayList<Waypoint>();
+      List<Stop> stops = new ArrayList<Stop>();
       if ( cursor.moveToFirst() ) {
         do {
-          Waypoint p = new Waypoint(cursor.getFloat(0), cursor.getFloat(1));
-          p.setSym(cursor.getString(2));
+          Stop p = new Stop(cursor.getFloat(0), cursor.getFloat(1));
+          p.setSymbol(cursor.getString(2));
           p.setName(cursor.getString(3));
           p.setTime(1000L * cursor.getInt(4));
-          p.setLinks( Arrays.asList( new String[] { routeId.toString() }));
-          waypoints.add(p);
+          stops.add(p);
         } while ( cursor.moveToNext() );
       }
-      Log.info("loadWaypoints: " + waypoints.size());
-      return waypoints;
+      return stops;
     } finally {
       cursor.close();
       db.close();
@@ -328,7 +324,7 @@ public class SqlRouteStorage implements RouteStorage {
       RouteId routeId = null;
       List<Point2D> waypoints = null;
       if ( cursor.moveToFirst() ) {
-        Log.info( clock.lap( "all.RouteStops.moveToFirst"));
+        //Log.info( clock.lap( "all.RouteStops.moveToFirst"));
         do {
           Point2D p = new Point2D(cursor.getFloat(0), cursor.getFloat(1));
           int route_id = cursor.getInt(2);
@@ -347,7 +343,7 @@ public class SqlRouteStorage implements RouteStorage {
           callback.add(routeId, waypoints );
         }
       }
-      Log.info( clock.lap( "all.RouteStops.cursor"));
+      //Log.info( clock.lap( "all.RouteStops.cursor"));
     } finally {
       cursor.close();
       db.close();
@@ -406,7 +402,7 @@ public class SqlRouteStorage implements RouteStorage {
     }
     cursor.close();
     db.close();
-    Log.info(clock);    
+    //Log.info(clock);    
   }
 
   @Override
@@ -433,27 +429,9 @@ public class SqlRouteStorage implements RouteStorage {
     }
     cursor.close();
     db.close();
-    Log.info(clock);    
+    //Log.info(clock);    
   }
 
-  private Waypoint loadWaypoint(SQLiteDatabase db, String symbol) {
-    String sql = "select lat, lon, symbol, name, _id from markers" +
-        "\nwhere symbol = '%s'";
-    Cursor cursor = db.rawQuery(
-        String.format(Locale.US, sql, quote(symbol)), null);
-    try {
-      if ( cursor.moveToFirst() ) {
-        Waypoint p = new Waypoint(cursor.getFloat(0), cursor.getFloat(1));
-        p.setSym(cursor.getString(2));
-        p.setName(cursor.getString(3));
-        return p;
-      }
-      return null;
-    } finally {
-      cursor.close();
-    }
-  }
-  
   private List<Route> loadRoutesForMarker(SQLiteDatabase db, String symbol) {    
     List<Route> routes = new ArrayList<Route>();
     String sql = ROUTE_SELECT +
@@ -480,19 +458,32 @@ public class SqlRouteStorage implements RouteStorage {
     return routes;
   }
   
+  private Stop loadStop(SQLiteDatabase db, String symbol) {
+    String sql = "select lat, lon, symbol, name, _id from markers" +
+        "\nwhere symbol = '%s'";
+    Cursor cursor = db.rawQuery(
+        String.format(Locale.US, sql, quote(symbol)), null);
+    try {
+      if ( cursor.moveToFirst() ) {
+        Stop p = new Stop(cursor.getFloat(0), cursor.getFloat(1));
+        p.setSymbol(cursor.getString(2));
+        p.setName(cursor.getString(3));
+        return p;
+      }
+      return null;
+    } finally {
+      cursor.close();
+    }
+  }
+  
   @Override
   public MarkerInfo loadMarker(String symbol) {
     SQLiteDatabase db = getDatabase();
     try {
-      Waypoint waypoint = loadWaypoint(db, symbol);
+      Stop waypoint = loadStop(db, symbol);
       if ( waypoint == null )
         return null;
       List<Route> routes = loadRoutesForMarker(db, symbol);
-      String[] links = new String[routes.size()];
-          for(int i = 0; i < links.length; i++) {
-            links[i] = routes.get(i).getRouteId().toString();
-          }
-      waypoint.setLinks( Arrays.asList(links));
       return new MarkerInfo(waypoint, routes);      
     } finally {
       db.close();

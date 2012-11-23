@@ -23,10 +23,10 @@ package org.melato.bus.android.activity;
 import java.util.List;
 
 import org.melato.bus.android.R;
+import org.melato.bus.model.Stop;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.gps.Earth;
 import org.melato.gps.PointTime;
-import org.melato.gpx.GPX;
 import org.melato.gpx.Waypoint;
 import org.melato.gpx.util.Path;
 
@@ -37,7 +37,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 public class StopsContext extends LocationContext {
-  private List<Waypoint> waypoints;
+  private Stop[] waypoints;
   private Path path;
   private PathTracker pathTracker;
   private int closestStop = -1;
@@ -46,9 +46,9 @@ public class StopsContext extends LocationContext {
 
   private ListActivity list;
 
-  public void setGPX(GPX gpx) {
-    waypoints = gpx.getRoutes().get(0).getWaypoints();
-    path = new Path(waypoints);
+  public void setStops(Stop[] stops) {
+    this.waypoints = stops;
+    path = new Path(stops);
     pathTracker = new PathTracker();
     pathTracker.setPath(path);
     list.setListAdapter(adapter = new StopsAdapter());
@@ -76,12 +76,12 @@ public class StopsContext extends LocationContext {
   }
 
   
-  public List<Waypoint> getWaypoints() {
+  public Stop[] getStops() {
     return waypoints;
   }
 
 
-  class StopsAdapter extends ArrayAdapter<Waypoint> {
+  class StopsAdapter extends ArrayAdapter<Stop> {
     TextView view;
 
     public StopsAdapter() {
@@ -91,7 +91,7 @@ public class StopsContext extends LocationContext {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
       TextView view = (TextView) super.getView(position, convertView, parent);
-      Waypoint waypoint = waypoints.get(position);
+      Stop waypoint = waypoints[position];
       String text = waypoint.getName();
       PointTime here = getLocation();
       if ( here != null && closestStop == position ) {
