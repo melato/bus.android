@@ -53,7 +53,6 @@ public class LocationContext implements LocationListener {
     LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     if ( enabled ) {
       this.enabledLocations = true;
-      locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000L, 100f, this );
       locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000L, 1f, this);
       Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
       if ( location == null )

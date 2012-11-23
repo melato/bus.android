@@ -127,10 +127,13 @@ public class ScheduleActivity extends Activity {
       String title = helper.getRoute().getFullTitle();
       if ( stopName != null ) {
         scheduleText += " - " + stopName;
+        if ( timeOffset > 0 ) {
+          scheduleText += " (+" + Schedule.formatDuration(timeOffset) + ")";
+        }
       }
       String comment = schedule.getComment();
       if ( comment != null ) {
-        scheduleText += "\n" + comment;
+        scheduleText += "\n" + comment; 
       }
       textView.setText(scheduleText);
       setTitle(title);
@@ -145,17 +148,43 @@ public class ScheduleActivity extends Activity {
       }
   }
 
+  static class TextColor {
+    int text;
+    int background;
+    TextColor( Context context, int textId, int backgroundId ) {
+      text = context.getResources().getColor(textId);
+      background = context.getResources().getColor(backgroundId);
+    }
+    public void apply(TextView view) {
+      view.setBackgroundColor(background);
+      view.setTextColor(text);
+    }
+  }
   class ScheduleAdapter extends ArrayAdapter<TimeOfDay> {
     TimeOfDayList times;
     int currentPosition;
+    TextColor normalColor;
+    TextColor selectedColor;
     public ScheduleAdapter(TimeOfDayList times) {
       super(ScheduleActivity.this, R.layout.list_item, times);
+      this.times = times;
       currentPosition = times.getDefaultPosition();
+      selectedColor = new TextColor(ScheduleActivity.this, R.color.list_highlighted_text, R.color.list_highlighted_background);
+      if ( times.hasOffset() ) {
+        normalColor = new TextColor(ScheduleActivity.this, R.color.stop_text, R.color.stop_background);
+      } else {
+        normalColor = new TextColor(ScheduleActivity.this, R.color.list_text, R.color.list_background);
+        
+      }
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
       TextView view = (TextView) super.getView(position, convertView, parent);
-      UI.highlight(view, position == currentPosition );
+      if ( position == currentPosition ) {
+        selectedColor.apply(view);
+      } else {
+        normalColor.apply(view);
+      }
       return view;
     }
   }

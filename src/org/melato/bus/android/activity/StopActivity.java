@@ -80,7 +80,7 @@ public class StopActivity extends ListActivity {
       properties.add( r );
     }
     */
-    setListAdapter(stop.createAdapter(R.layout.list_item));
+    setListAdapter(stop.createAdapter(R.layout.stop_item));
   }
   
   @Override
