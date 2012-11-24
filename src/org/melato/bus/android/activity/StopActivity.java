@@ -72,7 +72,8 @@ public class StopActivity extends ListActivity {
       index = findWaypointIndex(waypoints, markerInfo.getStop());
     }
     stop.setMarkerIndex(index);
-    setTitle(stop.getMarker().getName());
+    Route route = Info.routeManager(this).getRoute(routeStop.getRouteId());
+    setTitle(route.getLabel() + " " + stop.getMarker().getName());
    
     /*
     properties.add(getResources().getString(R.string.routes));
