@@ -143,8 +143,11 @@ public class ScheduleActivity extends Activity {
         ScheduleAdapter scheduleAdapter = new ScheduleAdapter(times);
         listView.setAdapter(scheduleAdapter);
         int pos = times.getDefaultPosition();
-        if ( pos >= 0 )
+        if ( pos >= 0 ) {
+          if ( pos > 0 )
+            pos--;
           listView.setSelection(pos);
+        }
       }
   }
 
