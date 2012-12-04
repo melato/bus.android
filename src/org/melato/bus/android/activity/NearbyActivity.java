@@ -61,7 +61,7 @@ public class NearbyActivity extends ListActivity {
     super.onListItemClick(l, v, position, id);
     NearbyStop p = nearby.getStop(position);
     RouteStop stop = new RouteStop(p.getRoute().getRouteId(), p.getWaypoint().getSym(), -1);
-    activities.showRoute(p.getRoute(), stop);
+    activities.showRoute(stop);
  }
 
   @Override
