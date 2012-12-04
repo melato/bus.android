@@ -4,21 +4,38 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/routeFilter"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="5dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/white"
-        android:inputType="text|textFilter|textCapCharacters"
-        android:padding="5sp"
-        android:textSize="16sp"
-        android:textColor="@color/black"
-        android:text=""
-        />
+        android:background="@color/search_background"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/routeFilter"
+            android:layout_width="250dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_weight="0.46"
+            android:background="@color/white"
+            android:ems="10"
+            android:inputType="text|textFilter|textCapCharacters"
+            android:padding="5sp"
+            android:textColor="@color/black"
+            android:textSize="16sp" >
+
+            <requestFocus />
+        </EditText>
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:src="@drawable/nearby" />
+    </LinearLayout>
 
     <ListView
         android:id="@android:id/list"
