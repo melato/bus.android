@@ -20,14 +20,25 @@
  */
 package org.melato.bus.android.activity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.RouteGroup;
+import org.melato.log.Log;
 
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.view.View.OnKeyListener;
+import android.widget.EditText;
+import android.widget.ListView;
 
 /**
  * Displays the list of all routes
@@ -35,10 +46,88 @@ import android.view.MenuInflater;
  *
  */
 public class AllRoutesActivity extends RoutesActivity {
-  protected Object[] initialRoutes() {
-    List<RouteGroup> groups = RouteGroup.group(activities.getRouteManager().getRoutes());
-    return groups.toArray(new RouteGroup[0]);
+  private RouteGroup[] all_groups;
+  private EditText editView;
+  
+  class TextListener implements TextWatcher {
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count,
+        int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+      String text = s.toString();
+      int position = findPosition(text);
+      List<RouteGroup> list = filter(text);
+      int size = all_groups.length;
+      if ( list != null )
+        size = list.size();
+      Log.info( "filter: text=" + text + " position=" + position + " size=" + size );
+      if ( position >= 0 ) {
+        ListView listView = getListView();
+        //listView.smoothScrollToPosition(position);
+        listView.setSelectionFromTop(position, 0);
+      }
+    }
+    
   }
+  protected Object[] initialRoutes() {
+    if ( all_groups == null ) {
+      List<RouteGroup> groups = RouteGroup.group(activities.getRouteManager().getRoutes());
+      all_groups = groups.toArray(new RouteGroup[0]);
+    }
+    return all_groups;
+  }
+  
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.all_routes);
+    editView = (EditText) findViewById(R.id.routeFilter);
+    editView.addTextChangedListener(new TextListener());    
+  }
+  
+  private List<RouteGroup> filter( String text ) {
+    if ( text != null ) {
+      text = text.trim();
+    }
+    if ( text.length() == 0 )
+      text = null;
+    if ( text == null ) {
+      return Arrays.asList(all_groups);
+    }
+    List<RouteGroup> list = new ArrayList<RouteGroup>();
+    for( RouteGroup group: all_groups ) {
+      if ( group.toString().startsWith(text)) {
+        list.add(group);
+      }      
+    }
+    return list;
+  }
+  
+  private int findPosition( String text ) {
+    if ( text != null ) {
+      text = text.trim();
+    }
+    if ( text.length() == 0 )
+      text = null;
+    if ( text == null ) {
+      return -1;
+    }
+    for( int i = 0; i < all_groups.length; i++ ) {
+      if ( all_groups[i].toString().startsWith(text)) {
+        return i;
+      }      
+    }
+    return -1;
+  }
+  
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
