@@ -8,12 +8,17 @@
         android:id="@+id/routeFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="5dp"
         android:background="@color/white"
-        android:inputType="text|textFilter"
+        android:inputType="text|textFilter|textCapCharacters"
+        android:padding="5sp"
+        android:textSize="16sp"
+        android:textColor="@color/black"
         android:text=""
-        android:padding="20sp"
-        android:textSize="20sp"
-        android:textColor="@color/black" />
+        />
 
     <ListView
         android:id="@android:id/list"
