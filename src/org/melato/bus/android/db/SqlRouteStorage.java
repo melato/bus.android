@@ -40,8 +40,6 @@ import org.melato.bus.model.Schedule;
 import org.melato.bus.model.Stop;
 import org.melato.gps.Point2D;
 import org.melato.gpx.Waypoint;
-import org.melato.log.Clock;
-import org.melato.log.Log;
 import org.melato.progress.ProgressGenerator;
 import org.melato.util.IntArrays;
 import org.melato.util.VariableSubstitution;
@@ -308,14 +306,15 @@ public class SqlRouteStorage implements RouteStorage {
     }
   }
 
-  @Override
-  public void iterateAllRouteStops(RouteStopCallback callback) {
-    Clock clock = new Clock();
-    SQLiteDatabase db = getDatabase();
+  private void iterateRouteStops(String where, RouteStopCallback callback) {
+    //Clock clock = new Clock();
     String sql = "select lat, lon, routes._id, routes.name, routes.direction from markers" +
         "\njoin stops on markers._id = stops.marker" +
-        "\njoin routes on routes._id = stops.route" +
+        "\njoin routes on routes._id = stops.route " +
+        where +
         "\norder by routes._id, stops.seq";
+    
+    SQLiteDatabase db = getDatabase();
     Cursor cursor = db.rawQuery( sql, null);
     ProgressGenerator progress = ProgressGenerator.get();
     int count = 0;
@@ -351,6 +350,16 @@ public class SqlRouteStorage implements RouteStorage {
   }
 
   @Override
+  public void iterateAllRouteStops(RouteStopCallback callback) {
+    iterateRouteStops("", callback);
+  }
+
+  @Override
+  public void iteratePrimaryRouteStops(RouteStopCallback callback) {
+    iterateRouteStops("where routes.is_primary = 1", callback);
+  }
+
+  @Override
   public void iterateNearbyStops(Point2D point, float latDiff, float lonDiff,
       Collection<Waypoint> collector) {
     float lat1 = point.getLat() - latDiff;
@@ -366,7 +375,7 @@ public class SqlRouteStorage implements RouteStorage {
     Cursor cursor = db.rawQuery(
         String.format( Locale.US, sql, lat1, lat2, lon1, lon2),
         null);
-    Clock clock = new Clock("sql.iterateNearbyStops");
+    //Clock clock = new Clock("sql.iterateNearbyStops");
     if ( cursor.moveToFirst() ) {
       int lastMarkerId = -1;
       Waypoint p = null;
@@ -420,7 +429,7 @@ public class SqlRouteStorage implements RouteStorage {
     Cursor cursor = db.rawQuery(
         String.format( Locale.US, sql, lat1, lat2, lon1, lon2),
         null);
-    Clock clock = new Clock("sql.iterateNearbyRoutes");
+    //Clock clock = new Clock("sql.iterateNearbyRoutes");
     if ( cursor.moveToFirst() ) {
       do {
         RouteId routeId = new RouteId( cursor.getString(0), cursor.getString(1));

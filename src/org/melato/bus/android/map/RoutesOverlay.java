@@ -54,14 +54,21 @@ public class RoutesOverlay extends BaseRoutesOverlay {
   private RouteManager routeManager;
   private float latDiff; 
   private float lonDiff;
+  /** The minimum displayed latitude, in 6E format */
   private int latMin6E;
+  /** The maximum displayed latitude, in 6E format */
   private int latMax6E;
+  /** The minimum displayed longitude, in 6E format */
   private int lonMin6E;
+  /** The maximum displayed longitude, in 6E format */
   private int lonMax6E;
+  /** The routes currently displayed. */
   private List<RouteId> routes = new ArrayList<RouteId>();
   private RoutePointManager routePointManager;
+  /** The single route that is displayed more prominently. */
   private RouteId selectedRoute;
   private GeoPoint center;
+  /** The primary routes, which are always displayed. */
   private List<Route> primaryRoutes;
   private Map<RouteId,Route> routeIndex;
 

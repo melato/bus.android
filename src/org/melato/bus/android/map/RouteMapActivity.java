@@ -86,9 +86,7 @@ public class RouteMapActivity extends MapActivity {
         mapController.setCenter(center);
       }
       map.getOverlays().add(routesOverlay);
-      setTitle(R.string.loading);
-      RoutePointManager rm = RoutePointManager.getInstance(this);
-      rm.runWhenLoaded(this, new OnRoutesLoaded());
+      RoutePointManager.getInstance(this);
   }
 
   @Override
@@ -125,7 +123,8 @@ public class RouteMapActivity extends MapActivity {
     if ( ! isShowingAll ) {
       isShowingAll = true;
       RoutePointManager rm = RoutePointManager.getInstance(this);
-      rm.runWhenLoaded(this, new OnRoutesLoaded());
+      rm.setLoadListener(this, new OnRoutesLoaded());
+      rm.loadAll();
     }
   }
   
