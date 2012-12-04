@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.melato.bus.model.DaySchedule;
+import org.melato.bus.model.Marker;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
@@ -39,7 +40,6 @@ import org.melato.bus.model.RouteStorage;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.Stop;
 import org.melato.gps.Point2D;
-import org.melato.gpx.Waypoint;
 import org.melato.progress.ProgressGenerator;
 import org.melato.util.IntArrays;
 import org.melato.util.VariableSubstitution;
@@ -361,7 +361,7 @@ public class SqlRouteStorage implements RouteStorage {
 
   @Override
   public void iterateNearbyStops(Point2D point, float latDiff, float lonDiff,
-      Collection<Waypoint> collector) {
+      Collection<Marker> collector) {
     float lat1 = point.getLat() - latDiff;
     float lat2 = point.getLat() + latDiff;
     float lon1 = point.getLon() - lonDiff;
@@ -378,18 +378,20 @@ public class SqlRouteStorage implements RouteStorage {
     //Clock clock = new Clock("sql.iterateNearbyStops");
     if ( cursor.moveToFirst() ) {
       int lastMarkerId = -1;
-      Waypoint p = null;
+      List<RouteId> routes = new ArrayList<RouteId>();
+      Marker marker = null;
       do {
         int markerId = cursor.getInt(6);
         if ( markerId != lastMarkerId) {
           lastMarkerId = markerId;
-          if ( p != null ) {
-            collector.add(p);
-            p = null;
+          if ( marker != null ) {
+            marker.setRoutes(routes.toArray(new RouteId[0]));
+            collector.add(marker);
+            marker = null;
           }
         }
-        if ( p == null ) {
-          p = new Waypoint(cursor.getFloat(0), cursor.getFloat(1));
+        if ( marker == null ) {
+          marker = new Marker(cursor.getFloat(0), cursor.getFloat(1));
           // can check the filter here.
           /*
           if ( Earth.distance(point,  p) > distance ) {
@@ -397,16 +399,17 @@ public class SqlRouteStorage implements RouteStorage {
             continue;
           } 
           */         
-          p.setSym(cursor.getString(2));
-          p.setName(cursor.getString(3));
-          p.setLinks( new ArrayList<String>() );
+          marker.setSymbol(cursor.getString(2));
+          marker.setName(cursor.getString(3));
+          routes.clear();
         }
         String routeName = cursor.getString(4);
         String direction = cursor.getString(5);
-        p.getLinks().add( new RouteId(routeName, direction).toString());
+        routes.add(new RouteId(routeName, direction));
       } while ( cursor.moveToNext() );
-      if ( p != null ) {
-        collector.add(p);
+      if ( marker != null ) {
+        marker.setRoutes(routes.toArray(new RouteId[0]));
+        collector.add(marker);
       }
     }
     cursor.close();

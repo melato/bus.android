@@ -21,13 +21,10 @@
 package org.melato.bus.android.activity;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import org.melato.bus.client.Serialization;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
@@ -70,24 +67,14 @@ public class RecentRoute implements Serializable {
     }
   }  
   public static RecentRoute[] read(File file) {
-    try {
-      ObjectInputStream in = new ObjectInputStream(new FileInputStream(file));
-      try {
-        return (RecentRoute[]) in.readObject();
-      } finally {
-        in.close();
-      }
-    } catch( Exception e ) {
-      return new RecentRoute[0];
+    RecentRoute[] routes = (RecentRoute[]) Serialization.read(RecentRoute[].class, file);
+    if ( routes == null ) {
+      routes = new RecentRoute[0];
     }
+    return routes;
   }
   
   public static void write(RecentRoute[] routes, File file) throws IOException {
-    ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file));
-    try {
-      out.writeObject(routes);
-    } finally {
-      out.close();
-    }
+    Serialization.write(routes, file);
   }
 }
