@@ -21,10 +21,15 @@
 package org.melato.bus.android.map;
 
 import org.melato.android.gpx.map.GMap;
+import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
+import org.melato.bus.android.activity.IntentHelper;
+import org.melato.bus.android.activity.RouteStop;
 import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.Route;
+import org.melato.bus.model.Stop;
+import org.melato.gps.Point2D;
 
 import android.content.Context;
 import android.location.Location;
@@ -70,8 +75,14 @@ public class RouteMapActivity extends MapActivity {
         setTitle(title);
         routesOverlay.addRoute(route.getRouteId());
         routesOverlay.setSelectedRoute(route.getRouteId());
+        IntentHelper intentHelper = new IntentHelper(this);
+        RouteStop routeStop = intentHelper.getRouteStop();
+        Stop[] stops = Info.routeManager(this).getStops(route);
+        int index = routeStop.getStopIndex(stops);
+        if ( index >= 0 ) {
+          routesOverlay.setSelectedStop(stops[index]);
+        }
       }
-
       setContentView(R.layout.map);
       map = (MapView) findViewById(R.id.mapview);
       map.setBuiltInZoomControls(true);
@@ -80,7 +91,10 @@ public class RouteMapActivity extends MapActivity {
       mapController.setZoom(defaultZoom);
       GeoPoint center = routesOverlay.getCenter();
       if ( center == null ) {
-        center = new GeoPoint( 37975086, 23735683); // hardcoded Syntagma Square.  Should move to the database.
+        Point2D dbCenter = activities.getRouteManager().getCenter();
+        if ( dbCenter != null) {
+          center = GMap.geoPoint(dbCenter);
+        }
       }
       if ( center != null ) {
         mapController.setCenter(center);

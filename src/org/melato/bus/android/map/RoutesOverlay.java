@@ -67,6 +67,7 @@ public class RoutesOverlay extends BaseRoutesOverlay {
   private RoutePointManager routePointManager;
   /** The single route that is displayed more prominently. */
   private RouteId selectedRoute;
+  private Point2D selectedPoint;
   private GeoPoint center;
   /** The primary routes, which are always displayed. */
   private List<Route> primaryRoutes;
@@ -92,7 +93,13 @@ public class RoutesOverlay extends BaseRoutesOverlay {
     center = route.getCenterGeoPoint();
   }
   
+  
 	@Override
+  public void setSelectedStop(Point2D point) {
+	  selectedPoint = point;
+  }
+
+  @Override
   public GeoPoint getCenter() {
 	  return center;
   }
@@ -220,6 +227,11 @@ public class RoutesOverlay extends BaseRoutesOverlay {
         // The RouteMapActivity will be waiting for it load
         // and it will invalidate the map view, causing this to draw again.
       }
+    }
+    if ( selectedPoint != null ) {
+      Point p = new Point();
+      projection.toPixels(GMap.geoPoint(selectedPoint), p);
+      canvas.drawCircle(p.x, p.y, 3, paint);      
     }
 	}
 

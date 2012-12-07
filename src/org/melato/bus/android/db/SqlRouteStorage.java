@@ -67,6 +67,16 @@ public class SqlRouteStorage implements RouteStorage {
       cursor.close();
     }
   }
+
+  @Override
+  public Point2D getCenter() {
+    String s_lat = getProperty( "center_lat");
+    String s_lon = getProperty( "center_lat");
+    if ( s_lat != null && s_lon != null ) {
+      return new Point2D( Float.parseFloat(s_lat), Float.parseFloat(s_lon));
+    }
+    return null;
+  }
   
   @Override
   public String getUri(RouteId routeId) {
