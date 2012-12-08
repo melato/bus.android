@@ -52,20 +52,30 @@ import android.database.sqlite.SQLiteException;
 public class SqlRouteStorage implements RouteStorage {
   public static final String DATABASE_NAME = "ROUTES.db";
   private String databaseFile;
+  private Map<String,String> properties;
   
-  
-  public String getProperty( String name) {
+  private Map<String,String> loadProperties() {
     SQLiteDatabase db = getDatabase();
-    String sql = "select value from properties where name = '%s'";
-    Cursor cursor = db.rawQuery(String.format(Locale.US, sql, quote(name)), null);
+    String sql = "select name, value from properties";
+    Cursor cursor = db.rawQuery(sql, null);
+    Map<String,String> properties = new HashMap<String,String>();
     try {
       if ( cursor.moveToFirst() ) {
-        return cursor.getString(0);
+        do {
+          properties.put( cursor.getString(0), cursor.getString(1));          
+        } while( cursor.moveToNext());
       }
-      return null;
     } finally {
       cursor.close();
     }
+    return properties;
+  }
+  
+  public String getProperty( String name) {
+    if ( properties == null ) {
+      properties = loadProperties();
+    }
+    return properties.get(name);
   }
 
   @Override
