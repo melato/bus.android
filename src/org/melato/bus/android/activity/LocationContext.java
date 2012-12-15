@@ -21,7 +21,9 @@
 package org.melato.bus.android.activity;
 
 import org.melato.android.location.Locations;
+import org.melato.bus.android.Info;
 import org.melato.gps.PointTime;
+import org.melato.gpx.Metric;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -42,10 +44,18 @@ public class LocationContext implements LocationListener {
   protected Context context;
   private PointTime   location;
   private boolean enabledLocations;
+  private Metric metric;
 
   public LocationContext(Context context) {
     super();
     this.context = context;
+  }
+  
+  public Metric getMetric() {
+    if ( metric == null ) {
+      metric = Info.routeManager(context).getMetric();
+    }
+    return metric;    
   }
   
   public void setEnabledLocations(boolean enabled) {
