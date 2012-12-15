@@ -120,7 +120,8 @@ public class StopContext extends LocationContext {
   }
   public void setWaypoints(Stop[] waypoints) {
     this.waypoints = waypoints;
-    this.path = new Path(waypoints);
+    path = new Path(getMetric());
+    path.setWaypoints(waypoints);
     pathTracker = new PathTracker();
     pathTracker.setPath(path);
     speed = new SpeedTracker(pathTracker);
