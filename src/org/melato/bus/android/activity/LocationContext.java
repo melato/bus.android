@@ -22,8 +22,8 @@ package org.melato.bus.android.activity;
 
 import org.melato.android.location.Locations;
 import org.melato.bus.android.Info;
+import org.melato.gps.Metric;
 import org.melato.gps.PointTime;
-import org.melato.gpx.Metric;
 
 import android.content.Context;
 import android.content.SharedPreferences;
