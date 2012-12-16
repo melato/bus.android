@@ -136,14 +136,18 @@ public class BusActivities  {
         RoutesActivity.showAll(context);
         break;
       case R.id.schedule:
-        defaultView = ScheduleActivity.class;
-        showRoute(route, ScheduleActivity.class);
-        handled = true;
+        if ( route != null ) {
+          defaultView = ScheduleActivity.class;
+          showRoute(route, ScheduleActivity.class);
+          handled = true;
+        }
         break;
       case R.id.stops:
-        defaultView = StopsActivity.class;
-        showRoute(route, StopsActivity.class);
-        handled = true;
+        if ( route != null ) {
+          defaultView = StopsActivity.class;
+          showRoute(route, StopsActivity.class);
+          handled = true;
+        }
         break;
       case R.id.map:
         if ( route != null ) {

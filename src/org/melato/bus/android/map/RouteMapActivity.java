@@ -118,6 +118,15 @@ public class RouteMapActivity extends MapActivity {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.map_menu, menu);
     HelpActivity.addItem(menu, this, R.string.help_map);
+    if ( activities.getRoute() == null) {
+      int[] ids = new int[] { R.id.schedule, R.id.stops };
+      for( int id: ids ) {
+        MenuItem item = menu.findItem(id);
+        if ( item != null ) {
+          item.setEnabled(false);
+        }
+      }
+    }
     return true;
   }
   
