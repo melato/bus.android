@@ -21,7 +21,6 @@
 package org.melato.bus.android.map;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,7 +67,6 @@ public class RoutesOverlay extends BaseRoutesOverlay {
   /** The single route that is displayed more prominently. */
   private RouteId selectedRoute;
   private Point2D selectedPoint;
-  private GeoPoint center;
   /** The primary routes, which are always displayed. */
   private List<Route> primaryRoutes;
   private Map<RouteId,Route> routeIndex;
@@ -88,20 +86,12 @@ public class RoutesOverlay extends BaseRoutesOverlay {
   @Override
   public void setSelectedRoute(RouteId routeId) {
     selectedRoute = routeId;
-    Point2D[] waypoints = routeManager.getStops(routeId);
-    RoutePoints route = RoutePoints.createFromPoints(Arrays.asList(waypoints));
-    center = route.getCenterGeoPoint();
   }
   
   
 	@Override
   public void setSelectedStop(Point2D point) {
 	  selectedPoint = point;
-  }
-
-  @Override
-  public GeoPoint getCenter() {
-	  return center;
   }
 
   private void findBoundaries(MapView view) {
@@ -179,7 +169,14 @@ public class RoutesOverlay extends BaseRoutesOverlay {
     }
     return color;
   }
-  
+
+  void drawStart(Canvas canvas, Point p, Paint paint) {
+    int size = 8;
+    canvas.drawLine(p.x - size, p.y, p.x, p.y - size, paint);
+    canvas.drawLine(p.x, p.y - size, p.x + size, p.y, paint);
+    canvas.drawLine(p.x + size, p.y, p.x, p.y + size, paint);
+    canvas.drawLine(p.x, p.y + size, p.x - size, p.y, paint);
+  }
   public void draw(Canvas canvas, MapView view, boolean shadow){
     super.draw(canvas, view, shadow);
     findBoundaries(view);
@@ -226,12 +223,18 @@ public class RoutesOverlay extends BaseRoutesOverlay {
         // if route is null, the routepoint manager is loading
         // The RouteMapActivity will be waiting for it load
         // and it will invalidate the map view, causing this to draw again.
+        
+        if ( routeId.equals(selectedRoute) && points.size() > 0 ) {
+          Point p = new Point();
+          projection.toPixels(points.getGeoPoint(0), p);
+          drawStart(canvas, p, paint);      
+        }
       }
     }
     if ( selectedPoint != null ) {
       Point p = new Point();
       projection.toPixels(GMap.geoPoint(selectedPoint), p);
-      canvas.drawCircle(p.x, p.y, 3, paint);      
+      canvas.drawCircle(p.x, p.y, 4, paint);      
     }
 	}
 

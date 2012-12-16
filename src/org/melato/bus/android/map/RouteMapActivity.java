@@ -70,6 +70,7 @@ public class RouteMapActivity extends MapActivity {
       activities = new BusActivities(this);
       routesOverlay = new RoutesOverlay(this);
       Route route = activities.getRoute();
+      GeoPoint center = null;
       if ( route != null ) {
         title = route.getFullTitle();
         setTitle(title);
@@ -81,6 +82,9 @@ public class RouteMapActivity extends MapActivity {
         int index = routeStop.getStopIndex(stops);
         if ( index >= 0 ) {
           routesOverlay.setSelectedStop(stops[index]);
+          center = GMap.geoPoint(stops[index]);
+        } else if ( stops.length > 0 ) {
+          center = GMap.geoPoint(stops[0]);
         }
       }
       setContentView(R.layout.map);
@@ -89,7 +93,6 @@ public class RouteMapActivity extends MapActivity {
       
       MapController mapController = map.getController();
       mapController.setZoom(defaultZoom);
-      GeoPoint center = routesOverlay.getCenter();
       if ( center == null ) {
         Point2D dbCenter = activities.getRouteManager().getCenter();
         if ( dbCenter != null) {
