@@ -45,6 +45,7 @@ public class SchedulesActivity extends ListActivity {
   protected BusActivities activities;
   private Schedule schedule;
   private DaySchedule[] schedules;
+  private RouteStop routeStop;
   private Route route;
 
   public SchedulesActivity() {
@@ -68,6 +69,8 @@ public class SchedulesActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    IntentHelper helper = new IntentHelper(this);
+    routeStop = helper.getRouteStop();
     activities = new BusActivities(this);
     route = activities.getRoute();
     setTitle( route.getFullTitle() );
@@ -81,7 +84,12 @@ public class SchedulesActivity extends ListActivity {
     super.onListItemClick(l, v, position, id);
     int days = schedules[position].getDays();
     Intent intent = new Intent(this, ScheduleActivity.class);
-    new IntentHelper(intent).putRoute(route);
+    IntentHelper helper = new IntentHelper(intent);
+    if ( routeStop != null) {
+      helper.putRouteStop(routeStop);
+    } else {
+      helper.putRoute(route);
+    }
     intent.putExtra(ScheduleActivity.KEY_DAYS, days);
     startActivity(intent);        
   }
