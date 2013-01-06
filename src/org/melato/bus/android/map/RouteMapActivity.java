@@ -70,7 +70,6 @@ public class RouteMapActivity extends MapActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
-      Log.info("onCreate");
       activities = new BusActivities(this);
       routesOverlay = new RoutesOverlay(this);
       route = activities.getRoute();
@@ -119,7 +118,6 @@ public class RouteMapActivity extends MapActivity {
     
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    Log.info("onCreateOptionsMenu");
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.map_menu, menu);
     HelpActivity.addItem(menu, this, R.string.help_map);
@@ -137,7 +135,6 @@ public class RouteMapActivity extends MapActivity {
   }
   
   private void configurePinMenu(MenuItem pinMenu) {
-    Log.info("configurePinMenu");
     if ( route != null ) {
       boolean isPinned = BaseRoutesOverlay.isPinned(route.getRouteId());
       pinMenu.setEnabled(true);
