@@ -23,6 +23,7 @@ package org.melato.bus.android.db;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -39,6 +40,7 @@ import org.melato.bus.model.RouteStopCallback;
 import org.melato.bus.model.RouteStorage;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.ScheduleId;
+import org.melato.bus.model.ScheduleSummary;
 import org.melato.bus.model.Stop;
 import org.melato.gps.Point2D;
 import org.melato.progress.ProgressGenerator;
@@ -61,24 +63,34 @@ public class SqlRouteStorage implements RouteStorage {
   public static final String PROPERTY_LON = "center_lon";
   public static final String PROPERTY_DAY_CHANGE = "day_change";
   
+  private Map<String,String> loadProperties(SQLiteDatabase db) {
+    String sql = "select name, value from properties";
+    Cursor cursor = db.rawQuery(sql, null);
+    Map<String,String> properties = new HashMap<String,String>();
+    try {
+      if ( cursor.moveToFirst() ) {
+        do {
+          properties.put( cursor.getString(0), cursor.getString(1));          
+        } while( cursor.moveToNext());
+      }
+      return properties;
+    } finally {
+      cursor.close();
+    }
+  }
+  
   private Map<String,String> loadProperties() {
     SQLiteDatabase db = getDatabase();
     try {
-      String sql = "select name, value from properties";
-      Cursor cursor = db.rawQuery(sql, null);
-      Map<String,String> properties = new HashMap<String,String>();
-      try {
-        if ( cursor.moveToFirst() ) {
-          do {
-            properties.put( cursor.getString(0), cursor.getString(1));          
-          } while( cursor.moveToNext());
-        }
-        return properties;
-      } finally {
-        cursor.close();
-      }
+      return loadProperties(db);
     } finally {
       db.close();
+    }
+  }
+  
+  private void ensurePropertiesLoaded(SQLiteDatabase db) {
+    if ( properties == null) {
+      properties = loadProperties(db);
     }
   }
   
@@ -294,6 +306,45 @@ public class SqlRouteStorage implements RouteStorage {
     return schedule;
   }
 
+  private ScheduleId[] loadScheduleIds(SQLiteDatabase db, RouteId routeId) {
+    String sql = "select days from schedules" +
+        "\njoin routes on routes._id = schedules.route" +
+        "\nwhere days <> 0 AND " + whereClause(routeId) +
+        "\norder by schedules._id";
+    Cursor cursor = db.rawQuery( sql, null);
+    List<ScheduleId> scheduleIds = new ArrayList<ScheduleId>();
+    try {
+      if ( cursor.moveToFirst() ) {
+        do {
+          int days = cursor.getInt(0);
+          ScheduleId scheduleId = ScheduleId.forWeek(days);
+          scheduleIds.add(scheduleId);
+        } while ( cursor.moveToNext() );
+      }
+    } finally {
+      cursor.close();
+    }    
+    if ( getVersion() >= VERSION_HOLIDAYS ) {
+      sql = "select date_id from schedule_exceptions" +
+          "\njoin routes on routes._id = schedule_exceptions.route" +
+          "\nwhere " + whereClause(routeId) +
+          "\norder by date_id";
+      cursor = db.rawQuery( sql, null);
+      try {
+        if ( cursor.moveToFirst() ) {
+          do {
+            int dateId = cursor.getInt(0);
+            ScheduleId scheduleId = ScheduleId.forDate(dateId);
+            scheduleIds.add(scheduleId);
+          } while ( cursor.moveToNext() );
+        }
+      } finally {
+        cursor.close();
+      }
+    }
+    return scheduleIds.toArray(new ScheduleId[0]);
+  }
+
   public Schedule loadSchedule(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
     try {
@@ -303,6 +354,79 @@ public class SqlRouteStorage implements RouteStorage {
     } finally {
       db.close();
     }
+  }
+  
+  private ScheduleSummary loadScheduleSummary(SQLiteDatabase db, RouteId routeId) {
+    ensurePropertiesLoaded(db);
+    ScheduleId[] scheduleIds = loadScheduleIds(db, routeId);
+    return new ScheduleSummary(scheduleIds, getDayChange());
+  }
+
+  @Override
+  public ScheduleSummary loadScheduleSummary(RouteId routeId) {
+    SQLiteDatabase db = getDatabase();
+    try {
+      return loadScheduleSummary(db, routeId);
+    } finally {
+      db.close();
+    }
+  }
+
+  private DaySchedule loadDaySchedule(SQLiteDatabase db, RouteId routeId, ScheduleId scheduleId) {
+    String sql = null;
+    int days = scheduleId.getDays();
+    if ( days != 0 ) {
+      sql = "select minutes from schedule_times" +
+          "\njoin schedules on schedules._id = schedule_times.schedule" +
+          "\njoin routes on routes._id = schedules.route" +
+          "\nwhere days = " + days + " AND " + whereClause(routeId) +
+          "\norder by minutes";
+    } else {
+      sql = "select minutes from schedule_times" +
+          "\njoin schedules on schedules._id = schedule_times.schedule" +
+          "\njoin schedule_exceptions on schedule_exceptions.schedule = schedule._id" +
+          "\njoin routes on routes._id = schedules.route" +
+          "\nwhere date_id = " + scheduleId.getDateId() + " AND " + whereClause(routeId) +
+          "\norder by minutes";
+    }
+    Cursor cursor = db.rawQuery( sql, null);
+    try {
+      List<Integer> times = new ArrayList<Integer>();
+      if ( cursor.moveToFirst() ) {
+        do {
+          times.add(cursor.getInt(0));
+        } while ( cursor.moveToNext() );
+      }
+      return new DaySchedule(IntArrays.toArray(times), scheduleId);
+    } finally {
+      cursor.close();
+    }
+  }
+  
+  @Override
+  public DaySchedule loadDaySchedule(RouteId routeId, ScheduleId scheduleId) {
+    SQLiteDatabase db = getDatabase();
+    try {
+      return loadDaySchedule(db, routeId, scheduleId);
+    } finally {
+      db.close();
+    }
+  }
+  
+  @Override
+  public DaySchedule loadDaySchedule(RouteId routeId, Date date) {
+    SQLiteDatabase db = getDatabase();
+    try {
+      ScheduleSummary summary = loadScheduleSummary(db, routeId);
+      ScheduleId scheduleId = summary.getScheduleId(date);
+      if ( scheduleId != null) {
+        return loadDaySchedule(db, routeId, scheduleId);
+      }
+      return null;
+    } finally {
+      db.close();
+    }
+    
   }
   
   @Override
