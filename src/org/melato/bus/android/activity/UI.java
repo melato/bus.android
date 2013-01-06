@@ -56,6 +56,10 @@ public class UI {
     return "(" + distance(distance) + ")";
   }
 
+  public static String bearing(float bearing) {
+    return Math.round(bearing) + "°"; // degrees, unicode "\u00B0"
+  }
+
   public static String routeDistance(float distance) {
     if ( Float.isNaN(distance)) {
       return "";
