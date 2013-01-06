@@ -25,6 +25,7 @@ import java.io.File;
 import org.melato.android.AndroidLogger;
 import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.client.NearbyManager;
+import org.melato.bus.client.TrackHistory;
 import org.melato.bus.model.RouteManager;
 import org.melato.log.Log;
 
@@ -33,6 +34,7 @@ import android.content.Context;
 public class Info {
   public static final float MARK_PROXIMITY = 200f;
   private static RouteManager routeManager;
+  private static TrackHistory trackHistory;
   
   public static RouteManager routeManager(Context context) {
     if ( routeManager == null ) {
@@ -47,6 +49,17 @@ public class Info {
     return routeManager;
   }
   
+  public static TrackHistory trackHistory(Context context) {
+    if ( trackHistory == null ) {
+      synchronized(Info.class) {
+        if ( trackHistory == null ) {
+          context = context.getApplicationContext();
+          trackHistory = new AndroidTrackHistory(context);          
+        }
+      }
+    }
+    return trackHistory;
+  }  
   
   public static NearbyManager nearbyManager(Context context) {
     File cacheDir = context.getCacheDir();

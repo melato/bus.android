@@ -24,9 +24,9 @@ import java.util.Date;
 
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.bus.android.R;
+import org.melato.bus.client.TrackContext;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.Stop;
-import org.melato.geometry.gpx.Path;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.geometry.gpx.SpeedTracker;
 import org.melato.gps.Earth;
@@ -40,15 +40,14 @@ public class StopContext extends LocationContext {
   public static final float WALK_SPEED = 5f;
   public static final float BIKE_OVERHEAD = 1.35f;
   public static final float BIKE_SPEED = 15f;
+  public static final float MIN_SPEED = 1f / (3600f/1000f); // 1 Km/h
 
-  private Stop[] waypoints;
+  private TrackContext track;
+  private SpeedTracker speed;
   private int markerIndex;
   private Stop marker;
   private int timeFromStart = -1;
 
-  private Path path;
-  private PathTracker pathTracker;
-  private SpeedTracker speed;
   private PropertiesDisplay properties;
   private ArrayAdapter<Object> adapter;
   
@@ -69,15 +68,15 @@ public class StopContext extends LocationContext {
   }
 
   public PathTracker getPathTracker() {
-    return pathTracker;
+    return track.getPathTracker();
   }
 
   public float getMarkerPosition() {
-    return path.getLength(markerIndex);
+    return track.getPath().getLength(markerIndex);
   }
 
   public float getRouteDistance() {
-    return path.getLength(markerIndex) - pathTracker.getPosition();
+    return track.getPath().getLength(markerIndex) - track.getPathTracker().getPosition();
   }
   
   public void refresh() {
@@ -91,7 +90,7 @@ public class StopContext extends LocationContext {
     if ( point == null )
       return;
     straightDistance = Earth.distance(point, marker);
-    pathTracker.setLocation(point);
+    track.setLocation(point);
     speed.compute();
     refresh();
   }
@@ -114,30 +113,39 @@ public class StopContext extends LocationContext {
 
   public int getTimeFromStart() {
     if ( timeFromStart == -1 ) {
-      timeFromStart = new RouteStop(null, null, markerIndex).getTimeFromStart(waypoints);
+      timeFromStart = new RouteStop(null, null, markerIndex).getTimeFromStart(track.getStops());
     }
     return timeFromStart;    
   }
   public void setWaypoints(Stop[] waypoints) {
-    this.waypoints = waypoints;
-    path = new Path(getMetric());
-    path.setWaypoints(waypoints);
-    pathTracker = new PathTracker();
-    pathTracker.setPath(path);
-    speed = new SpeedTracker(pathTracker);
+    track = new TrackContext(history.getMetric());
+    track.setStops(waypoints);
+    speed = new SpeedTracker(track.getPathTracker());
     timeFromStart = -1;
   }
   
   public void setMarkerIndex(int index) {
     markerIndex = index;
-    marker = waypoints[index];
-    setEnabledLocations(true);
+    marker = track.getStops()[index];
+    start();
     timeFromStart = -1;
   }
 
   class StraightDistance {
     public String toString() {
       return properties.formatProperty( R.string.straight_distance, UI.straightDistance(getStraightDistance()));
+    }
+  }
+  
+  class Bearing {
+    public String toString() {
+      String bearing = "";
+      float travelBearing = history.getBearing();
+      if ( ! Float.isNaN(travelBearing)) {
+        float markerBearing = Earth.bearing(getLocation(), marker);
+        bearing = UI.bearing(markerBearing - travelBearing); 
+      }
+      return properties.formatProperty( R.string.bearing, bearing);
     }
   }
   
@@ -149,7 +157,7 @@ public class StopContext extends LocationContext {
   
   class DistanceFromStart {
     public String toString() {
-      String name = waypoints[0].getName();
+      String name = track.getStops()[0].getName();
       String label = String.format(context.getString(R.string.position_from_start), name);
       return PropertiesDisplay.formatProperty( label, UI.routeDistance(getMarkerPosition()));
     }
@@ -157,7 +165,7 @@ public class StopContext extends LocationContext {
   
   class TimeFromStart {
     public String toString() {
-      String name = waypoints[0].getName();
+      String name = track.getStops()[0].getName();
       String label = String.format(context.getString(R.string.time_from_start), name);
       int seconds = getTimeFromStart();
       String value = seconds > 0 ? Schedule.formatTime(seconds/60) : "";
@@ -177,22 +185,36 @@ public class StopContext extends LocationContext {
     }
   }
 
-  float getSpeed() {
+  private float getPathSpeed() {
     float speed = this.speed.getSpeed();
-    if ( speed > 0.3f ) {
-      // don't show speeds smaller than 0.3 m/s (about 1 Km/h)
-      return speed;
+    if ( speed < MIN_SPEED ) {
+      return Float.NaN;
     }
-    return Float.NaN;
+    return speed;
   }
   
   class PathSpeed {
     public String toString() {
       String label = context.getResources().getString(R.string.speed);
       String value = "";
-      float speed = getSpeed() * 3600f/1000f;
+      float speed = getPathSpeed() * 3600f/1000f;
       if ( ! Float.isNaN(speed)) {
         value = String.valueOf(Math.round(speed)) + " Km/h";
+      }
+      return PropertiesDisplay.formatProperty( label, value);
+    }
+  }
+  
+  class Speed60 {
+    public String toString() {
+      String label = context.getResources().getString(R.string.speed);
+      String value = "";
+      float speed = history.getSpeed60().getSpeed();
+      if ( speed < MIN_SPEED ) {
+        speed = Float.NaN;
+      }
+      if ( ! Float.isNaN(speed)) {
+        value = String.valueOf(Math.round(speed * 3600f/1000f)) + " Km/h";
       }
       return PropertiesDisplay.formatProperty( label, value);
     }
@@ -202,7 +224,7 @@ public class StopContext extends LocationContext {
     public String toString() {
       String label = context.getResources().getString(R.string.ETA);
       String value = "";
-      float speed = getSpeed();
+      float speed = getPathSpeed();
       if ( ! Float.isNaN(speed)) {
         float time = StopContext.this.speed.getRemainingTime(getMarkerIndex());
         value = formatTime(time);
@@ -248,11 +270,13 @@ public class StopContext extends LocationContext {
   
   public void addProperties() {
     properties.add(new StraightDistance());
+    properties.add(new Bearing());
     properties.add(new RouteDistance());
     properties.add(new DistanceFromStart());
     properties.add(new TimeFromStart());      
 
-    properties.add( new PathSpeed());
+    //properties.add( new PathSpeed());
+    properties.add( new Speed60());
     properties.add( new PathETA());
     properties.add(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
     properties.add(new Latitude());

@@ -21,9 +21,8 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
+import org.melato.bus.client.TrackContext;
 import org.melato.bus.model.Stop;
-import org.melato.geometry.gpx.Path;
-import org.melato.geometry.gpx.PathTracker;
 import org.melato.gps.Earth;
 import org.melato.gps.PointTime;
 
@@ -34,22 +33,27 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 public class StopsContext extends LocationContext {
-  private Stop[] waypoints;
-  private Path path;
-  private PathTracker pathTracker;
+  private TrackContext track;
   private int closestStop = -1;
   private boolean isSelected;
   private StopsAdapter adapter;
+  private RouteStop markedStop;
+  private int markedIndex = -1;
 
   private ListActivity list;
 
   public void setStops(Stop[] stops) {
-    this.waypoints = stops;
-    path = new Path(stops);
-    pathTracker = new PathTracker();
-    pathTracker.setPath(path);
+    track = new TrackContext(history.getMetric());
+    track.setStops(stops);
     list.setListAdapter(adapter = new StopsAdapter());
-    setEnabledLocations(true);
+    start();
+  }
+  
+  public void setStop(RouteStop stop) {
+    markedStop = stop;
+    if ( stop != null) {
+      markedIndex = stop.getStopIndex(track.getStops());
+    }
   }
   
   public StopsContext(ListActivity activity) {
@@ -61,8 +65,8 @@ public class StopsContext extends LocationContext {
   public void setLocation(PointTime point) {
     super.setLocation(point);
     if ( point != null) {
-      pathTracker.setLocation(point);
-      closestStop = pathTracker.getNearestIndex();
+      track.setLocation(point);
+      closestStop = track.getPathTracker().getNearestIndex();
     }
     adapter.notifyDataSetChanged();
     // scroll to the nearest stop, if we haven't done it yet.
@@ -71,31 +75,34 @@ public class StopsContext extends LocationContext {
       list.setSelection(closestStop);
     }
   }
-
   
   public Stop[] getStops() {
-    return waypoints;
+    return track.getStops();
   }
-
 
   class StopsAdapter extends ArrayAdapter<Stop> {
     TextView view;
 
     public StopsAdapter() {
-      super(context, R.layout.list_item, waypoints); 
+      super(context, R.layout.list_item, track.getStops()); 
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
       TextView view = (TextView) super.getView(position, convertView, parent);
-      Stop waypoint = waypoints[position];
+      Stop waypoint = track.getStops()[position];
       String text = waypoint.getName();
       PointTime here = getLocation();
       if ( here != null && closestStop == position ) {
         float straightDistance = Earth.distance(here, waypoint); 
         text += " " + UI.straightDistance(straightDistance);
       }
-      UI.highlight(view, position == closestStop );
+      if ( position == markedIndex ) {
+        view.setBackgroundColor(context.getResources().getColor(R.color.stop_background));
+        view.setTextColor(context.getResources().getColor(R.color.list_highlighted_text));
+      } else {
+        UI.highlight(view, position == closestStop );        
+      }
       view.setText( text );
       return view;
     }

@@ -56,9 +56,11 @@ public class StopsActivity extends ListActivity {
     stops = new StopsContext(this);
     Route route = activities.getRoute();
     setTitle(route.getFullTitle());
-
     Stop[] waypoints = Info.routeManager(this).getStops(route);
     stops.setStops(waypoints);
+    IntentHelper helper = new IntentHelper(this);
+    RouteStop routeStop = helper.getRouteStop();
+    stops.setStop(routeStop);
   }
   
   @Override
