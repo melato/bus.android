@@ -28,4 +28,5 @@ public class Pref {
   public static final String COLOR_ORIGINAL = "original";
   public static final String COLOR_BLACK_ON_WHITE = "black_on_white";
   public static final String COLOR_WHITE_ON_BLACK = "white_on_black";
+  public static final String NEARBY_TIMES = "nearby_times";
 }

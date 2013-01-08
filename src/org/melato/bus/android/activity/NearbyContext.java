@@ -21,18 +21,27 @@
 package org.melato.bus.android.activity;
 
 import java.util.Arrays;
+import java.util.Date;
 
+import org.melato.android.ui.BackgroundAdapter;
+import org.melato.android.ui.ListLoader;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.client.NearbyStop;
 import org.melato.bus.client.WaypointDistance;
+import org.melato.bus.model.DaySchedule;
+import org.melato.bus.model.RouteManager;
+import org.melato.bus.model.Schedule;
+import org.melato.bus.model.Stop;
 import org.melato.gps.Point2D;
 import org.melato.gps.PointTime;
+import org.melato.log.Log;
 
 import android.app.ListActivity;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 public class NearbyContext extends LocationContext {
@@ -40,10 +49,81 @@ public class NearbyContext extends LocationContext {
   private boolean haveLocation;
   private ListActivity activity;
   private NearbyAdapter adapter;
+  private Date stopDate = new Date();
 
-  class NearbyAdapter extends ArrayAdapter<NearbyStop> {
+  class NearbyTimeLoader implements ListLoader {
+    private RouteManager routeManager = Info.routeManager(context);
+    private boolean loadTimes;
+    
+    
+    public NearbyTimeLoader() {
+      SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+      loadTimes = prefs.getBoolean(Pref.NEARBY_TIMES, true);
+      //loadTimes = Boolean.parseBoolean(prefs.getString(Pref.NEARBY_TIMES, "true"));
+    }
+
+    @Override
+    public boolean isLoaded(int position) {
+      if ( ! loadTimes )
+        return true;
+      return stops[position].getNearestTimes() != null;
+    }
+
+    /** Return the time difference from the route start to the given stop.
+     * @param stop
+     * @return The time difference in seconds, or -1 if unknown.
+     */
+    int getTimeOffset(NearbyStop stop) {
+      Stop[] stops = routeManager.getStops(stop.getRoute());
+      int timeOffset = 0;
+      int stopCount = 0;
+      String symbol = stop.getWaypoint().getSymbol(); 
+      for( Stop s: stops ) {
+        timeOffset += (int) (s.getTime() / 1000);
+        if (symbol.equals(s.getSymbol())) {
+          if ( timeOffset == 0 && stopCount > 0 )
+            return -1;
+          return timeOffset;
+        }
+        stopCount++;
+      }
+      return -1;
+    }
+    
+    @Override
+    public void load(int position) {
+      NearbyStop stop = stops[position];
+      int timeOffset = getTimeOffset(stop);
+      int[] times = null;
+      if ( timeOffset >= 0 ) {        
+        Date date = new Date(stopDate.getTime() - timeOffset * 1000L);
+        DaySchedule daySchedule = routeManager.getDaySchedule(stop.getRoute(), date);
+        if ( daySchedule != null ) {
+          int[] dayTimes = daySchedule.getTimes();
+          int index = DaySchedule.getClosestIndex(dayTimes, date);
+          if ( index < 0 ) {
+            times = new int[0];
+          } else if ( index == 0 ) {
+            times = new int[] { dayTimes[0] }; 
+          } else if ( index == dayTimes.length-1) {
+            times = new int[] { dayTimes[dayTimes.length-1] };
+          } else {
+            times = new int[] {dayTimes[index], dayTimes[index+1]}; 
+          }
+          for(int i = 0; i < times.length; i++ ) {
+            times[i] += timeOffset / 60;
+          }
+        }
+      }
+      if ( times == null)
+        times = new int[0];
+      stop.setNearestTimes(times);
+    }
+    
+  }
+  class NearbyAdapter extends BackgroundAdapter<NearbyStop> {
     public NearbyAdapter() {
-      super(context, R.layout.list_item, stops);
+      super(activity, new NearbyTimeLoader(), R.layout.list_item, stops);
     }
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
@@ -82,6 +162,7 @@ public class NearbyContext extends LocationContext {
     return stops[index];
   }
   
+
   public NearbyContext(ListActivity activity) {
     super(activity);
     this.activity = activity;
@@ -94,7 +175,7 @@ public class NearbyContext extends LocationContext {
         setCenter(p);
       }
       haveLocation = false;
-      setEnabledLocations(true);
+      start();
     }
   }
 
