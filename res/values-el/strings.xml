@@ -31,6 +31,7 @@
     <string name="browse">Ιστοσελίδα</string>
     <string name="oasa">www.oasa.gr</string>
     <string name="straight_distance">Ευθεία Απόσταση</string>
+    <string name="bearing">Κατεύθυνση</string>
     <string name="route_distance">Απόσταση Διαδρομής</string>
     <string name="position_from_start">Απόσταση από Αφετηρία (%s)</string>
     <string name="position_from_end">Απόσταση από Τέρμα (%s)</string>
