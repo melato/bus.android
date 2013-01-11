@@ -31,11 +31,9 @@ import org.melato.bus.client.NearbyStop;
 import org.melato.bus.client.WaypointDistance;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.RouteManager;
-import org.melato.bus.model.Schedule;
 import org.melato.bus.model.Stop;
 import org.melato.gps.Point2D;
 import org.melato.gps.PointTime;
-import org.melato.log.Log;
 
 import android.app.ListActivity;
 import android.content.SharedPreferences;
@@ -79,7 +77,7 @@ public class NearbyContext extends LocationContext {
       int stopCount = 0;
       String symbol = stop.getWaypoint().getSymbol(); 
       for( Stop s: stops ) {
-        timeOffset += (int) (s.getTime() / 1000);
+        timeOffset = (int) (s.getTime() / 1000);
         if (symbol.equals(s.getSymbol())) {
           if ( timeOffset == 0 && stopCount > 0 )
             return -1;

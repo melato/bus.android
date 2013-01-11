@@ -491,7 +491,7 @@ public class SqlRouteStorage implements RouteStorage {
   @Override
   public List<Stop> loadStops(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
-    String sql = "select lat, lon, markers.symbol, markers.name, stops.duration from markers" +
+    String sql = "select lat, lon, markers.symbol, markers.name, stops.time_offset from markers" +
         "\njoin stops on markers._id = stops.marker" +
         "\njoin routes on routes._id = stops.route" +
         "\nwhere " + whereClause(routeId) + 
