@@ -36,6 +36,7 @@ import org.melato.gps.Point2D;
 import org.melato.gps.PointTime;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.view.View;
@@ -162,9 +163,13 @@ public class NearbyContext extends LocationContext {
   
 
   public NearbyContext(ListActivity activity) {
-    super(activity);
+    super(activity);    
     this.activity = activity;
-    Point2D center = IntentHelper.getLocation(activity.getIntent());
+    Intent intent = activity.getIntent();
+    Point2D center = IntentHelper.getLocation(intent);
+    if (center == null) {
+      center = IntentHelper.getGeoUriPoint(intent);
+    }
     if ( center != null) {
       setCenter(center);
     } else {
