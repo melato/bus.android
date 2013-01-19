@@ -40,7 +40,7 @@ public class StopContext extends LocationContext {
   public static final float WALK_SPEED = 5f;
   public static final float BIKE_OVERHEAD = 1.35f;
   public static final float BIKE_SPEED = 15f;
-  public static final float MIN_SPEED = 1f / (3600f/1000f); // 1 Km/h
+  public static final float MIN_SPEED = 1f / (3600f / 1000f); // 1 Km/h
 
   private TrackContext track;
   private SpeedTracker speed;
@@ -50,9 +50,8 @@ public class StopContext extends LocationContext {
 
   private PropertiesDisplay properties;
   private ArrayAdapter<Object> adapter;
-  
-  private float straightDistance;
 
+  private float straightDistance;
 
   public float getStraightDistance() {
     return straightDistance;
@@ -61,8 +60,7 @@ public class StopContext extends LocationContext {
   public Stop getMarker() {
     return marker;
   }
-  
-  
+
   public int getMarkerIndex() {
     return markerIndex;
   }
@@ -76,18 +74,19 @@ public class StopContext extends LocationContext {
   }
 
   public float getRouteDistance() {
-    return track.getPath().getLength(markerIndex) - track.getPathTracker().getPosition();
+    return track.getPath().getLength(markerIndex)
+        - track.getPathTracker().getPosition();
   }
-  
+
   public void refresh() {
-    if ( adapter != null )
+    if (adapter != null)
       adapter.notifyDataSetChanged();
   }
-  
+
   @Override
   public void setLocation(PointTime point) {
     super.setLocation(point);
-    if ( point == null )
+    if (point == null)
       return;
     straightDistance = Earth.distance(point, marker);
     track.setLocation(point);
@@ -101,7 +100,6 @@ public class StopContext extends LocationContext {
     addProperties();
   }
 
-  
   public PropertiesDisplay getProperties() {
     return properties;
   }
@@ -112,18 +110,20 @@ public class StopContext extends LocationContext {
   }
 
   public int getTimeFromStart() {
-    if ( timeFromStart == -1 ) {
-      timeFromStart = new RouteStop(null, null, markerIndex).getTimeFromStart(track.getStops());
+    if (timeFromStart == -1) {
+      timeFromStart = new RouteStop(null, null, markerIndex)
+          .getTimeFromStart(track.getStops());
     }
-    return timeFromStart;    
+    return timeFromStart;
   }
+
   public void setWaypoints(Stop[] waypoints) {
     track = new TrackContext(history.getMetric());
     track.setStops(waypoints);
     speed = new SpeedTracker(track.getPathTracker());
     timeFromStart = -1;
   }
-  
+
   public void setMarkerIndex(int index) {
     markerIndex = index;
     marker = track.getStops()[index];
@@ -133,111 +133,118 @@ public class StopContext extends LocationContext {
 
   class StraightDistance {
     public String toString() {
-      return properties.formatProperty( R.string.straight_distance, UI.straightDistance(getStraightDistance()));
+      return properties.formatProperty(R.string.straight_distance,
+          UI.straightDistance(getStraightDistance()));
     }
   }
-  
+
   class Bearing {
     public String toString() {
       String bearing = "";
       float travelBearing = history.getBearing();
-      if ( ! Float.isNaN(travelBearing)) {
+      if (!Float.isNaN(travelBearing)) {
         float markerBearing = Earth.bearing(getLocation(), marker);
-        bearing = UI.bearing(markerBearing - travelBearing); 
+        bearing = UI.bearing(markerBearing - travelBearing);
       }
-      return properties.formatProperty( R.string.bearing, bearing);
+      return properties.formatProperty(R.string.bearing, bearing);
     }
   }
-  
+
   class RouteDistance {
     public String toString() {
-      return properties.formatProperty( R.string.route_distance, UI.routeDistance(getRouteDistance()));
+      return properties.formatProperty(R.string.route_distance,
+          UI.routeDistance(getRouteDistance()));
     }
   }
-  
+
   class DistanceFromStart {
     public String toString() {
       String name = track.getStops()[0].getName();
-      String label = String.format(context.getString(R.string.position_from_start), name);
-      return PropertiesDisplay.formatProperty( label, UI.routeDistance(getMarkerPosition()));
+      String label = String.format(
+          context.getString(R.string.position_from_start), name);
+      return PropertiesDisplay.formatProperty(label,
+          UI.routeDistance(getMarkerPosition()));
     }
   }
-  
+
   class TimeFromStart {
     public String toString() {
       String name = track.getStops()[0].getName();
-      String label = String.format(context.getString(R.string.time_from_start), name);
+      String label = String.format(context.getString(R.string.time_from_start),
+          name);
       int seconds = getTimeFromStart();
-      String value = seconds > 0 ? Schedule.formatTime(seconds/60) : "";
-      return PropertiesDisplay.formatProperty( label, value);
+      String value = seconds > 0 ? Schedule.formatTime(seconds / 60) : "";
+      return PropertiesDisplay.formatProperty(label, value);
     }
   }
-  
+
   class Latitude {
     public String toString() {
-      return properties.formatProperty( R.string.latitude, UI.degrees(getMarker().getLat()));
+      return properties.formatProperty(R.string.latitude,
+          UI.degrees(getMarker().getLat()));
     }
   }
-  
-  class Longitude{
+
+  class Longitude {
     public String toString() {
-      return properties.formatProperty( R.string.longitude, UI.degrees(getMarker().getLon()));
+      return properties.formatProperty(R.string.longitude,
+          UI.degrees(getMarker().getLon()));
     }
   }
 
   private float getPathSpeed() {
     float speed = this.speed.getSpeed();
-    if ( speed < MIN_SPEED ) {
+    if (speed < MIN_SPEED) {
       return Float.NaN;
     }
     return speed;
   }
-  
+
   class PathSpeed {
     public String toString() {
       String label = context.getResources().getString(R.string.speed);
       String value = "";
-      float speed = getPathSpeed() * 3600f/1000f;
-      if ( ! Float.isNaN(speed)) {
+      float speed = getPathSpeed() * 3600f / 1000f;
+      if (!Float.isNaN(speed)) {
         value = String.valueOf(Math.round(speed)) + " Km/h";
       }
-      return PropertiesDisplay.formatProperty( label, value);
+      return PropertiesDisplay.formatProperty(label, value);
     }
   }
-  
+
   class Speed60 {
     public String toString() {
       String label = context.getResources().getString(R.string.speed);
       String value = "";
       float speed = history.getSpeed60().getSpeed();
-      if ( speed < MIN_SPEED ) {
+      if (speed < MIN_SPEED) {
         speed = Float.NaN;
       }
-      if ( ! Float.isNaN(speed)) {
-        value = String.valueOf(Math.round(speed * 3600f/1000f)) + " Km/h";
+      if (!Float.isNaN(speed)) {
+        value = String.valueOf(Math.round(speed * 3600f / 1000f)) + " Km/h";
       }
-      return PropertiesDisplay.formatProperty( label, value);
+      return PropertiesDisplay.formatProperty(label, value);
     }
   }
-  
+
   class PathETA {
     public String toString() {
       String label = context.getResources().getString(R.string.ETA);
       String value = "";
       float speed = getPathSpeed();
-      if ( ! Float.isNaN(speed)) {
+      if (!Float.isNaN(speed)) {
         float time = StopContext.this.speed.getRemainingTime(getMarkerIndex());
         value = formatTime(time);
       }
-      return PropertiesDisplay.formatProperty( label, value);
+      return PropertiesDisplay.formatProperty(label, value);
     }
   }
-  
+
   class StraightETA {
     int labelId;
     float speed;
     float overhead;
-    
+
     public StraightETA(int labelId, float speed, float overhead) {
       super();
       this.labelId = labelId;
@@ -247,40 +254,42 @@ public class StopContext extends LocationContext {
 
     public String toString() {
       String label = context.getResources().getString(labelId);
-      float time = getStraightDistance() / (speed *1000/3600);
-      return PropertiesDisplay.formatProperty( label, formatTime(time));
+      float time = getStraightDistance() / (speed * 1000 / 3600);
+      return PropertiesDisplay.formatProperty(label, formatTime(time));
     }
   }
-  
-  String formatTime( float secondsFromNow ) {
-    Date eta = new Date(System.currentTimeMillis() + (int) (secondsFromNow*1000));
-    int minutes = Math.round(secondsFromNow/60);
+
+  String formatTime(float secondsFromNow) {
+    Date eta = new Date(System.currentTimeMillis()
+        + (int) (secondsFromNow * 1000));
+    int minutes = Math.round(secondsFromNow / 60);
     String sign = "";
-    if ( minutes < 0 ) {
+    if (minutes < 0) {
       // we may have negative times, such as the time to a previous stop.
       minutes = -minutes;
       sign = "-";
     }
-      
-    return Schedule.formatTime(Schedule.getTime(eta)) +
-        " (" + sign + Schedule.formatTime(minutes) + ")";
-    
+
+    return Schedule.formatTime(Schedule.getTime(eta)) + " (" + sign
+        + Schedule.formatTime(minutes) + ")";
+
   }
-  
-  
+
   public void addProperties() {
     properties.add(new StraightDistance());
     properties.add(new Bearing());
     properties.add(new RouteDistance());
     properties.add(new DistanceFromStart());
-    properties.add(new TimeFromStart());      
+    properties.add(new TimeFromStart());
 
-    //properties.add( new PathSpeed());
-    properties.add( new Speed60());
-    properties.add( new PathETA());
-    properties.add(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
+    // properties.add( new PathSpeed());
+    properties.add(new Speed60());
+    properties.add(new PathETA());
+    properties
+        .add(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
     properties.add(new Latitude());
-    properties.add(new Longitude());    
-    // properties.add(new StraightETA(R.string.bikeETA, BIKE_SPEED, BIKE_OVERHEAD));
+    properties.add(new Longitude());
+    // properties.add(new StraightETA(R.string.bikeETA, BIKE_SPEED,
+    // BIKE_OVERHEAD));
   }
 }
