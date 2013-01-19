@@ -28,10 +28,10 @@ import org.melato.android.ui.ListLoader;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.client.NearbyStop;
-import org.melato.bus.client.WaypointDistance;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.Stop;
+import org.melato.gps.Metric;
 import org.melato.gps.Point2D;
 import org.melato.gps.PointTime;
 
@@ -73,20 +73,11 @@ public class NearbyContext extends LocationContext {
      * @return The time difference in seconds, or -1 if unknown.
      */
     int getTimeOffset(NearbyStop stop) {
-      Stop[] stops = routeManager.getStops(stop.getRoute());
-      int timeOffset = 0;
-      int stopCount = 0;
-      String symbol = stop.getWaypoint().getSymbol(); 
-      for( Stop s: stops ) {
-        timeOffset = (int) (s.getTime() / 1000);
-        if (symbol.equals(s.getSymbol())) {
-          if ( timeOffset == 0 && stopCount > 0 )
-            return -1;
-          return timeOffset;
-        }
-        stopCount++;
-      }
-      return -1;
+      Stop s = stop.getRStop().getStop();
+      int timeOffset = (int) (s.getTime() / 1000);
+      if ( timeOffset == 0 && stop.getRStop().getStopIndex() > 0 )
+        return -1;
+      return timeOffset;
     }
     
     @Override
@@ -99,14 +90,14 @@ public class NearbyContext extends LocationContext {
         DaySchedule daySchedule = routeManager.getDaySchedule(stop.getRoute(), date);
         if ( daySchedule != null ) {
           int[] dayTimes = daySchedule.getTimes();
-          int index = DaySchedule.getClosestIndex(dayTimes, date);
+          int index = daySchedule.getClosestIndex(date);
           if ( index < 0 ) {
             times = new int[0];
           } else if ( index == 0 ) {
             times = new int[] { dayTimes[0] }; 
           } else if ( index == dayTimes.length-1) {
             times = new int[] { dayTimes[dayTimes.length-1] };
-          } else {
+          } else {  
             times = new int[] {dayTimes[index], dayTimes[index+1]}; 
           }
           for(int i = 0; i < times.length; i++ ) {
@@ -144,7 +135,7 @@ public class NearbyContext extends LocationContext {
     int group = 0;
     String groupSymbol = null;
     for( int i = 0; i < stops.length; i++ ) {
-      String symbol = stops[i].getWaypoint().getSymbol();
+      String symbol = stops[i].getRStop().getStop().getSymbol();
       if ( ! symbol.equals(groupSymbol)) {
         group++;
         groupSymbol = symbol;
@@ -186,8 +177,12 @@ public class NearbyContext extends LocationContext {
     if ( point == null )
       return;
     if ( haveLocation ) {
-      WaypointDistance.setDistance(stops, point);
-      Arrays.sort(stops);
+      RouteManager routeManager = Info.routeManager(context);
+      Metric metric = routeManager.getMetric();
+      for(NearbyStop p: stops) {
+        p.getRStop().setDistance(metric.distance(p.getRStop().getStop(), point));
+      }
+      Arrays.sort(stops, new NearbyStop.Comparer());
       adapter.notifyDataSetChanged();
    } else {
       haveLocation = true;
