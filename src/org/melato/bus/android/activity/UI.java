@@ -56,7 +56,17 @@ public class UI {
     return "(" + distance(distance) + ")";
   }
 
+  public static float normalizeBearing(float degrees) {
+    if (degrees > 180) {
+      degrees -= 360;
+    } else if (degrees < -180) {
+      degrees += 360;
+    }
+    return degrees;
+  }
+  
   public static String bearing(float bearing) {
+    bearing = normalizeBearing(bearing);
     return Math.round(bearing) + "°"; // degrees, unicode "\u00B0"
   }
 
