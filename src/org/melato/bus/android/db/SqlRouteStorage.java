@@ -32,8 +32,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.melato.bus.model.DaySchedule;
-import org.melato.bus.model.Marker;
 import org.melato.bus.model.MarkerInfo;
+import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteStopCallback;
@@ -239,6 +239,11 @@ public class SqlRouteStorage implements RouteStorage {
     return loadBasic(cursor);
   }  
   
+  private DaySchedule createDaySchedule(int[] times, ScheduleId scheduleId) {
+    DaySchedule daySchedule = new DaySchedule(times, scheduleId);
+    daySchedule.setDayChange(getDayChange());
+    return daySchedule;
+  }
   private Schedule loadSchedule(SQLiteDatabase db, RouteId routeId) {
     String sql = "select schedules._id, days, minutes from schedule_times" +
         "\njoin schedules on schedules._id = schedule_times.schedule" +
@@ -259,7 +264,7 @@ public class SqlRouteStorage implements RouteStorage {
           int minutes = cursor.getInt(2);
           if ( scheduleId != lastScheduleId ) {
             if ( ! times.isEmpty() ) {
-              DaySchedule daySchedule = new DaySchedule(IntArrays.toArray(times), ScheduleId.forWeek(lastDays));
+              DaySchedule daySchedule = createDaySchedule(IntArrays.toArray(times), ScheduleId.forWeek(lastDays));
               scheduleIds.put(lastScheduleId, daySchedule);
               if ( lastDays != 0 ) {
                 daySchedules.add( daySchedule );
@@ -272,7 +277,7 @@ public class SqlRouteStorage implements RouteStorage {
           times.add(minutes);
         } while ( cursor.moveToNext() );
         if ( ! times.isEmpty() ) {
-          DaySchedule daySchedule = new DaySchedule(IntArrays.toArray(times), ScheduleId.forWeek(lastDays));
+          DaySchedule daySchedule = createDaySchedule(IntArrays.toArray(times), ScheduleId.forWeek(lastDays));
           scheduleIds.put(lastScheduleId, daySchedule);
           if ( lastDays != 0 ) {
             daySchedules.add( daySchedule );
@@ -294,7 +299,7 @@ public class SqlRouteStorage implements RouteStorage {
             int dateId = cursor.getInt(0);
             int scheduleId = cursor.getInt(1);
             DaySchedule daySchedule = scheduleIds.get(scheduleId);
-            daySchedules.add(new DaySchedule(daySchedule.getTimes(), ScheduleId.forDate(dateId)));
+            daySchedules.add(createDaySchedule(daySchedule.getTimes(), ScheduleId.forDate(dateId)));
           } while ( cursor.moveToNext() );
         }
       } finally {
@@ -397,7 +402,7 @@ public class SqlRouteStorage implements RouteStorage {
           times.add(cursor.getInt(0));
         } while ( cursor.moveToNext() );
       }
-      return new DaySchedule(IntArrays.toArray(times), scheduleId);
+      return createDaySchedule(IntArrays.toArray(times), scheduleId);
     } finally {
       cursor.close();
     }
@@ -570,13 +575,16 @@ public class SqlRouteStorage implements RouteStorage {
 
   @Override
   public void iterateNearbyStops(Point2D point, float latDiff, float lonDiff,
-      Collection<Marker> collector) {
+      Collection<RStop> collector) {
     float lat1 = point.getLat() - latDiff;
     float lat2 = point.getLat() + latDiff;
     float lon1 = point.getLon() - lonDiff;
     float lon2 = point.getLon() + lonDiff;
     SQLiteDatabase db = getDatabase();
-    String sql = "select lat, lon, markers.symbol, markers.name, routes.name, routes.direction, markers._id from markers" +
+    String sql = "select routes.name, routes.direction," +
+        " lat, lon, markers.symbol, markers.name, stops.time_offset, stops.seq" +
+        ", markers._id" +
+        " from markers" +
         "\njoin stops on markers._id = stops.marker" +
         "\njoin routes on routes._id = stops.route" +
         "\nwhere lat > %f and lat < %f and lon > %f and lon < %f" +
@@ -586,44 +594,24 @@ public class SqlRouteStorage implements RouteStorage {
         null);
     //Clock clock = new Clock("sql.iterateNearbyStops");
     if ( cursor.moveToFirst() ) {
-      int lastMarkerId = -1;
-      List<RouteId> routes = new ArrayList<RouteId>();
-      Marker marker = null;
       do {
-        int markerId = cursor.getInt(6);
-        if ( markerId != lastMarkerId) {
-          lastMarkerId = markerId;
-          if ( marker != null ) {
-            marker.setRoutes(routes.toArray(new RouteId[0]));
-            collector.add(marker);
-            marker = null;
-          }
-        }
-        if ( marker == null ) {
-          marker = new Marker(cursor.getFloat(0), cursor.getFloat(1));
-          // can check the filter here.
-          /*
-          if ( Earth.distance(point,  p) > distance ) {
-            p = null;
-            continue;
-          } 
-          */         
-          marker.setSymbol(cursor.getString(2));
-          marker.setName(cursor.getString(3));
-          routes.clear();
-        }
-        String routeName = cursor.getString(4);
-        String direction = cursor.getString(5);
-        routes.add(new RouteId(routeName, direction));
+        int i = 0;
+        RouteId routeId = new RouteId(cursor.getString(i), cursor.getString(i+1));
+        i += 2;
+        Stop stop = new Stop(cursor.getFloat(i), cursor.getFloat(i+1));
+        i += 2;
+        stop.setSymbol(cursor.getString(i++));
+        stop.setName(cursor.getString(i++));
+        stop.setTime(1000L * cursor.getInt(i++));
+        int stopIndex = cursor.getInt(i++);        
+        //int markerId = cursor.getInt(i++);
+        RStop rstop = new RStop(routeId, stop, stopIndex);
+        collector.add(rstop);
       } while ( cursor.moveToNext() );
-      if ( marker != null ) {
-        marker.setRoutes(routes.toArray(new RouteId[0]));
-        collector.add(marker);
-      }
     }
     cursor.close();
     db.close();
-    //Log.info(clock);    
+    //Log.info(clock);
   }
 
   @Override
