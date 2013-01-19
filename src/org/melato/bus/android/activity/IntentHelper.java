@@ -167,6 +167,8 @@ public class IntentHelper  {
   
   public static Point2D getGeoUriPoint(Intent intent) {
     Uri uri = intent.getData();
+    if ( uri == null )
+      return null;
     String scheme = uri.getScheme();
     if ( ! "geo".equals(scheme)) {
       return null;
