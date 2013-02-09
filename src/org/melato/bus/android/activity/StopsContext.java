@@ -22,6 +22,7 @@ package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
 import org.melato.bus.client.TrackContext;
+import org.melato.bus.model.Route;
 import org.melato.bus.model.Stop;
 import org.melato.gps.Earth;
 import org.melato.gps.PointTime;
@@ -42,9 +43,9 @@ public class StopsContext extends LocationContext {
 
   private ListActivity list;
 
-  public void setStops(Stop[] stops) {
-    track = new TrackContext(history.getMetric());
-    track.setStops(stops);
+  public void setRoute(Route route) {
+    history.setRoute(route.getRouteId());
+    track = history.getTrackContext();
     list.setListAdapter(adapter = new StopsAdapter());
     start();
   }
