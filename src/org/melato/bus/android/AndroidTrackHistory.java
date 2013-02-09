@@ -41,7 +41,7 @@ public class AndroidTrackHistory extends TrackHistory implements LocationListene
   private Context context;
   
   public AndroidTrackHistory(Context context) {
-    super(Info.routeManager(context).getMetric());
+    super(Info.routeManager(context));
     this.context = context.getApplicationContext();
   }
   
