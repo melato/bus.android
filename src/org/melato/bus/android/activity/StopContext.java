@@ -25,6 +25,7 @@ import java.util.Date;
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.bus.android.R;
 import org.melato.bus.client.TrackContext;
+import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.Stop;
 import org.melato.geometry.gpx.PathTracker;
@@ -117,13 +118,14 @@ public class StopContext extends LocationContext {
     return timeFromStart;
   }
 
-  public void setWaypoints(Stop[] waypoints) {
-    track = new TrackContext(history.getMetric());
-    track.setStops(waypoints);
-    speed = new SpeedTracker(track.getPathTracker());
+  public void setRoute(Route route) {
+    history.setRoute(route.getRouteId());
+    track = history.getTrackContext();
+    speed = history.getSpeedTracker();
     timeFromStart = -1;
   }
-
+  
+  
   public void setMarkerIndex(int index) {
     markerIndex = index;
     marker = track.getStops()[index];
