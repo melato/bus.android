@@ -53,20 +53,6 @@ public class UpdateManager extends PortableUpdateManager {
         updateZipedFile(f, ROUTES_ENTRY, databaseFile);
         continue;
       }
-      if ( "test".equals(f.getName())) {
-        progress.setText("Test");
-        int n = 100;
-        progress.setLimit(n);
-        for( int i = 0; i < n; i++ ) {
-          try {
-            Thread.sleep(50);
-            progress.setPosition(i);
-          } catch (InterruptedException e) {
-          }
-        }
-        setInstalled(f);
-        continue;
-      }
     }
   }
 }
