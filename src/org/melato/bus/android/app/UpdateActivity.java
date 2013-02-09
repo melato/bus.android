@@ -54,10 +54,9 @@ public class UpdateActivity extends Activity implements Runnable {
   };
   private MessageState state;
 
-  private void showMessage(MessageState state, int messageId) {
+  private void showMessage(int messageId) {
     setContentView(R.layout.message);
     TextView noteView = (TextView) findViewById(R.id.note);
-    this.state = state;
     noteView.setText(messageId);
     noteView.setMovementMethod(new ScrollingMovementMethod());    
   }
@@ -65,12 +64,14 @@ public class UpdateActivity extends Activity implements Runnable {
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     if ( ! isConnected(this) ) {
-      showMessage(MessageState.ERROR, R.string.need_network);
+      this.state = MessageState.ERROR;
+      showMessage(R.string.need_network);
       return;
     }
     if ( ! hasAcceptedTerms(this)) {
+      this.state = MessageState.TERMS;
       setTitle(R.string.terms_of_use);
-      showMessage(MessageState.TERMS, R.string.eula);
+      showMessage(R.string.eula);
       return;
     }
     progress = new ProgressTitleHandler(this);
