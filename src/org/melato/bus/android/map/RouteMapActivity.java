@@ -31,7 +31,6 @@ import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.Stop;
 import org.melato.gps.Point2D;
-import org.melato.log.Log;
 
 import android.content.Context;
 import android.location.Location;
