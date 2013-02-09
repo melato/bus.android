@@ -22,10 +22,8 @@ package org.melato.bus.android.map;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.Info;
