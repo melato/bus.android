@@ -62,8 +62,9 @@ public class StopActivity extends ListActivity {
     if ( routeStop == null || routeStop.getStopSymbol() == null) {
       return;
     }
+    Route route = activities.getRoute();
+    stop.setRoute(route);
     Stop[] waypoints = Info.routeManager(this).getStops(routeStop.getRouteId());
-    stop.setWaypoints(waypoints);
     
     MarkerInfo markerInfo = Info.routeManager(this).loadMarker(routeStop.getStopSymbol());
     int index = routeStop.getStopIndex();
@@ -71,15 +72,8 @@ public class StopActivity extends ListActivity {
       index = findWaypointIndex(waypoints, markerInfo.getStop());
     }
     stop.setMarkerIndex(index);
-    Route route = Info.routeManager(this).getRoute(routeStop.getRouteId());
     setTitle(route.getLabel() + " " + stop.getMarker().getName());
    
-    /*
-    properties.add(getResources().getString(R.string.routes));
-    for( Route r: markerInfo.getRoutes() ) {
-      properties.add( r );
-    }
-    */
     setListAdapter(stop.createAdapter(R.layout.stop_item));
   }
   
