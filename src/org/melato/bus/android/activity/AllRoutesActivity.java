@@ -25,7 +25,6 @@ import java.util.List;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.RouteGroup;
-import org.melato.log.Log;
 
 import android.os.Bundle;
 import android.text.Editable;
