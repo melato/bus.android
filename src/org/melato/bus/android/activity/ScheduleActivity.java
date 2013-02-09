@@ -27,11 +27,11 @@ import org.melato.bus.android.R;
 import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.client.TimeOfDay;
 import org.melato.bus.client.TimeOfDayList;
-import org.melato.bus.model.DateId;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.ScheduleId;
 import org.melato.bus.model.Stop;
+import org.melato.util.DateId;
 
 import android.app.Activity;
 import android.content.Context;
