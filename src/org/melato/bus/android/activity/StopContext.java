@@ -24,6 +24,7 @@ import java.util.Date;
 
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.bus.android.R;
+import org.melato.bus.client.Formatting;
 import org.melato.bus.client.TrackContext;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
@@ -136,7 +137,7 @@ public class StopContext extends LocationContext {
   class StraightDistance {
     public String toString() {
       return properties.formatProperty(R.string.straight_distance,
-          UI.straightDistance(getStraightDistance()));
+          Formatting.straightDistance(getStraightDistance()));
     }
   }
 
@@ -146,7 +147,7 @@ public class StopContext extends LocationContext {
       float travelBearing = history.getBearing();
       if (!Float.isNaN(travelBearing)) {
         float markerBearing = Earth.bearing(getLocation(), marker);
-        bearing = UI.bearing(markerBearing - travelBearing);
+        bearing = Formatting.bearing(markerBearing - travelBearing);
       }
       return properties.formatProperty(R.string.bearing, bearing);
     }
@@ -155,7 +156,7 @@ public class StopContext extends LocationContext {
   class RouteDistance {
     public String toString() {
       return properties.formatProperty(R.string.route_distance,
-          UI.routeDistance(getRouteDistance()));
+          Formatting.routeDistance(getRouteDistance()));
     }
   }
 
@@ -165,7 +166,7 @@ public class StopContext extends LocationContext {
       String label = String.format(
           context.getString(R.string.position_from_start), name);
       return PropertiesDisplay.formatProperty(label,
-          UI.routeDistance(getMarkerPosition()));
+          Formatting.routeDistance(getMarkerPosition()));
     }
   }
 
@@ -183,14 +184,14 @@ public class StopContext extends LocationContext {
   class Latitude {
     public String toString() {
       return properties.formatProperty(R.string.latitude,
-          UI.degrees(getMarker().getLat()));
+          Formatting.degrees(getMarker().getLat()));
     }
   }
 
   class Longitude {
     public String toString() {
       return properties.formatProperty(R.string.longitude,
-          UI.degrees(getMarker().getLon()));
+          Formatting.degrees(getMarker().getLon()));
     }
   }
 

@@ -22,8 +22,8 @@ package org.melato.bus.android.activity;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.client.TrackHistory;
-import org.melato.geometry.gpx.PointTimeListener;
 import org.melato.gps.PointTime;
+import org.melato.gps.PointTimeListener;
 
 import android.content.Context;
 

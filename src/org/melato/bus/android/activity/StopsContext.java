@@ -21,6 +21,7 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
+import org.melato.bus.client.Formatting;
 import org.melato.bus.client.TrackContext;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Stop;
@@ -96,7 +97,7 @@ public class StopsContext extends LocationContext {
       PointTime here = getLocation();
       if ( here != null && closestStop == position ) {
         float straightDistance = Earth.distance(here, waypoint); 
-        text += " " + UI.straightDistance(straightDistance);
+        text += " " + Formatting.straightDistance(straightDistance);
       }
       if ( position == markedIndex ) {
         view.setBackgroundColor(context.getResources().getColor(R.color.stop_background));
