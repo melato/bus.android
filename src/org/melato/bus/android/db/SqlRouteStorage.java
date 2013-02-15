@@ -51,6 +51,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
+import android.util.SparseArray;
 
 public class SqlRouteStorage implements RouteStorage {
   public static final String DATABASE_NAME = "ROUTES.db";
@@ -197,6 +198,22 @@ public class SqlRouteStorage implements RouteStorage {
   }
 
   @Override
+  public List<RouteId> loadRouteIds() {
+    List<RouteId> routeIds = new ArrayList<RouteId>();
+    SQLiteDatabase db = getDatabase();
+    String sql = "select routes.name, routes.direction from routes";
+    Cursor cursor = db.rawQuery(sql, null);
+    if ( cursor.moveToFirst() ) {
+      do {
+        routeIds.add(new RouteId(cursor.getString(0), cursor.getString(1)));
+      } while( cursor.moveToNext() );
+    }
+    cursor.close();
+    db.close();
+    return routeIds;
+  }
+  
+  @Override
   public List<Route> loadRoutes() {
     return loadRoutes(null);
   }
@@ -252,7 +269,7 @@ public class SqlRouteStorage implements RouteStorage {
         "\norder by schedules._id, minutes";
     Cursor cursor = db.rawQuery( sql, null);
     List<DaySchedule> daySchedules = new ArrayList<DaySchedule>();
-    Map<Integer,DaySchedule> scheduleIds = new HashMap<Integer,DaySchedule>();
+    SparseArray<DaySchedule> scheduleIds = new SparseArray<DaySchedule>();
     try {
       if ( cursor.moveToFirst() ) {
         int lastScheduleId = 0;
