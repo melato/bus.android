@@ -35,6 +35,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+/** Displays lines near a location. */
 public class NearbyActivity extends ListActivity {
   private BusActivities activities;
   private NearbyContext nearby;
