@@ -130,8 +130,9 @@ public class StopContext extends LocationContext {
   public void setMarkerIndex(int index) {
     markerIndex = index;
     marker = track.getStops()[index];
-    start();
     timeFromStart = -1;
+    setLocation(history.getLocation());
+    start();
   }
 
   class StraightDistance {
