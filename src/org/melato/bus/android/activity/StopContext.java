@@ -23,6 +23,8 @@ package org.melato.bus.android.activity;
 import java.util.Date;
 
 import org.melato.android.ui.PropertiesDisplay;
+import org.melato.android.util.LatitudeField;
+import org.melato.android.util.LongitudeField;
 import org.melato.bus.android.R;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.client.TrackContext;
@@ -99,7 +101,6 @@ public class StopContext extends LocationContext {
   public StopContext(Context context) {
     super(context);
     properties = new PropertiesDisplay(context);
-    addProperties();
   }
 
   public PropertiesDisplay getProperties() {
@@ -107,7 +108,7 @@ public class StopContext extends LocationContext {
   }
 
   public ArrayAdapter<Object> createAdapter(int listItemId) {
-    adapter = properties.createAdapter(listItemId);
+    adapter = properties.createAdapter(listItemId, R.color.black, R.color.stop_link);
     return adapter;
   }
 
@@ -179,20 +180,6 @@ public class StopContext extends LocationContext {
       int seconds = getTimeFromStart();
       String value = seconds > 0 ? Schedule.formatTime(seconds / 60) : "";
       return PropertiesDisplay.formatProperty(label, value);
-    }
-  }
-
-  class Latitude {
-    public String toString() {
-      return properties.formatProperty(R.string.latitude,
-          Formatting.degrees(getMarker().getLat()));
-    }
-  }
-
-  class Longitude {
-    public String toString() {
-      return properties.formatProperty(R.string.longitude,
-          Formatting.degrees(getMarker().getLon()));
     }
   }
 
@@ -291,8 +278,8 @@ public class StopContext extends LocationContext {
     properties.add(new PathETA());
     properties
         .add(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
-    properties.add(new Latitude());
-    properties.add(new Longitude());
+    properties.add(new LatitudeField(context.getString(R.string.latitude), getMarker()));
+    properties.add(new LongitudeField(context.getString(R.string.longitude), getMarker()));
     // properties.add(new StraightETA(R.string.bikeETA, BIKE_SPEED,
     // BIKE_OVERHEAD));
   }
