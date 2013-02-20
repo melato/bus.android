@@ -90,8 +90,9 @@ public class AllRoutesActivity extends RoutesActivity {
     if ( text == null ) {
       return -1;
     }
+    text = text.toUpperCase();
     for( int i = 0; i < all_groups.length; i++ ) {
-      if ( all_groups[i].toString().startsWith(text)) {
+      if ( all_groups[i].getTitle().startsWith(text)) {
         return i;
       }      
     }
