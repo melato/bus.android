@@ -23,6 +23,7 @@ package org.melato.bus.android.app;
 import java.io.File;
 import java.util.List;
 
+import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.progress.ProgressGenerator;
@@ -55,4 +56,15 @@ public class UpdateManager extends PortableUpdateManager {
       }
     }
   }
+
+  @Override
+  public boolean isRequired() {
+    if ( super.isRequired() )
+      return true;
+    if ( ! Info.isValidDatabase(context) )
+      return true;
+    return false;
+  }
+  
+  
 }
