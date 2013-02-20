@@ -20,11 +20,13 @@
  */
 package org.melato.bus.android.app;
 
+import org.melato.android.AndroidLogger;
 import org.melato.android.progress.ActivityProgressHandler;
 import org.melato.android.progress.ProgressTitleHandler;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
 import org.melato.bus.android.activity.RoutesActivity;
+import org.melato.log.Log;
 import org.melato.progress.CanceledException;
 import org.melato.progress.ProgressGenerator;
 import org.melato.update.UpdateFile;
@@ -37,6 +39,7 @@ import android.content.SharedPreferences.Editor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.NetworkInfo.State;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.method.ScrollingMovementMethod;
@@ -179,15 +182,37 @@ public class UpdateActivity extends Activity implements Runnable {
    * Otherwise it checks in the ui thread.
    * @author Alex Athanasopoulos
    */
-  static class UpdatesChecker implements Runnable {
+  static class UpdatesChecker extends AsyncTask<Void,Integer,Boolean>{
     UpdateManager updateManager;
-    Activity activity;
+    Context context;
     
     public UpdatesChecker(Activity activity) {
-      this.activity = activity;
+      this.context = activity.getApplication();
       updateManager = new UpdateManager(activity);
     }
-    
+
+    /*
+    * Return true if the update activity should start.
+    */
+    @Override
+    protected Boolean doInBackground(Void... params) {
+      return ! updateManager.getAvailableUpdates().isEmpty();
+      
+    }
+
+    @Override
+    protected void onPostExecute(Boolean result) {
+      super.onPostExecute(result);
+      if ( result ) {
+        startUpdateActivity();
+      }
+    }
+
+    private void startUpdateActivity() {
+      Intent intent = new Intent(context, UpdateActivity.class);
+      intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      context.startActivity(intent);
+    }
     /** Check for updates, if necessary.
      * Return true if the calling activity can continue.
      * Return false if the calling activity should exit and let the update activity take over.
@@ -195,27 +220,15 @@ public class UpdateActivity extends Activity implements Runnable {
      */
     public boolean checkUpdates() {
       if ( updateManager.isRequired() ) {
+        Log.info("update required");
         // assume that we have not data.  We have to update or die.
-        activity.startActivity(new Intent(activity, UpdateActivity.class));
+        startUpdateActivity();
         return false;
+      } else if ( isConnected(context) ) {
+        execute();
+        return true;
       } else {
-        if ( isConnected(activity) ) {
-          if ( updateManager.needsRefresh() ) {
-            // refresh in the background
-            new Thread(this).start();
-          }
-          else {
-            // check here
-            run();
-          }
-        }
-      }
-      return true;
-    }
-    
-    public void run() {
-      if ( ! updateManager.getAvailableUpdates().isEmpty() ) {
-        activity.startActivity(new Intent(activity, UpdateActivity.class));
+        return true;
       }
     }
   }
@@ -225,6 +238,7 @@ public class UpdateActivity extends Activity implements Runnable {
    * false if it should do nothing and let the UpdateActivity take over.
    **/
   public static boolean checkUpdates(Activity activity) {
+    Log.setLogger(new AndroidLogger(activity));
     UpdatesChecker checker = new UpdatesChecker(activity);
     return checker.checkUpdates();
   }
