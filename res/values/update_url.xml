@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="update_url">http://x1Sx0kDqz7qJUUZb63kR.melato.org/updates.xml</string>
+    <!-- 
+    <string name="update_url">http://transit.test.melato.org.s3-website-us-east-1.amazonaws.com/updates.xml</string>
+    <string name="update_url">http://x1Sx0kDqz7qJUUZb63kR.melato.org.s3-website-us-east-1.amazonaws.com/updates.xml</string>
+    <string name="update_url">http://rippbpioch.test.transit.melato.org.s3-website-us-east-1.amazonaws.com/updates.xml</string>
+    <string name="update_url">http://rippbpioch.test.transit.melato.org/updates.xml</string>
+     -->
+</resources>
