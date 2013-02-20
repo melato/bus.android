@@ -23,6 +23,7 @@ package org.melato.bus.android.activity;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.melato.android.location.Locations;
 import org.melato.android.ui.BackgroundAdapter;
 import org.melato.android.ui.ListLoader;
 import org.melato.bus.android.Info;
@@ -159,7 +160,7 @@ public class NearbyContext extends LocationContext {
     Intent intent = activity.getIntent();
     Point2D center = IntentHelper.getLocation(intent);
     if (center == null) {
-      center = IntentHelper.getGeoUriPoint(intent);
+      center = Locations.getGeoUriPoint(intent);
     }
     if ( center != null) {
       setCenter(center);

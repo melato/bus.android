@@ -165,26 +165,4 @@ public class IntentHelper  {
     return routes;
   }
   
-  public static Point2D getGeoUriPoint(Intent intent) {
-    Uri uri = intent.getData();
-    if ( uri == null )
-      return null;
-    String scheme = uri.getScheme();
-    if ( ! "geo".equals(scheme)) {
-      return null;
-    }
-    String value = uri.getSchemeSpecificPart();
-    String[] fields = value.split(",");
-    if ( fields.length == 2 ) {
-      float lat = Float.parseFloat(fields[0]);
-      float lon = Float.parseFloat(fields[1]);
-      return new Point2D(lat,lon);
-    }
-    return null;
-  }
-  public Point2D getGeoUriPoint() {
-    return getGeoUriPoint(intent);
-  }
-  
-  
 }
