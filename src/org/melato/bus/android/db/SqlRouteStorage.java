@@ -60,7 +60,7 @@ public class SqlRouteStorage implements RouteStorage {
   private int version;
   public static final int VERSION_HOLIDAYS = 2;
   public static final int VERSION_TIME_OFFSET = 3;
-  public static final int MIN_VERSION = 4;
+  public static final int MIN_VERSION = 3;
   public static final String PROPERTY_VERSION = "version";
   public static final String PROPERTY_DATE = "build_date";
   public static final String PROPERTY_LAT = "center_lat";
