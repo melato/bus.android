@@ -21,6 +21,7 @@
 package org.melato.bus.android.activity;
 
 import org.melato.android.ui.PropertiesDisplay;
+import org.melato.android.util.Invokable;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.HelpActivity;
@@ -34,6 +35,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 /**
@@ -41,7 +44,8 @@ import android.widget.ListView;
  * @author Alex Athanasopoulos
  *
  */
-public class StopActivity extends ListActivity {
+public class StopActivity extends ListActivity implements OnItemClickListener
+ {
   private StopContext stop;
   private PropertiesDisplay properties;
   private BusActivities activities;
@@ -72,9 +76,11 @@ public class StopActivity extends ListActivity {
       index = findWaypointIndex(waypoints, markerInfo.getStop());
     }
     stop.setMarkerIndex(index);
+    stop.addProperties();
     setTitle(route.getLabel() + " " + stop.getMarker().getName());
    
     setListAdapter(stop.createAdapter(R.layout.stop_item));
+    getListView().setOnItemClickListener(this);
   }
   
   @Override
@@ -138,6 +144,14 @@ public class StopActivity extends ListActivity {
     if ( handled )
       return true;
     return activities.onOptionsItemSelected(item);
-  }  
+  }
   
+  @Override
+  public void onItemClick(AdapterView<?> parent, View view, int position,
+      long id) {
+    Object value = properties.getItem(position);
+    if ( value instanceof Invokable) {
+      ((Invokable)value).invoke(this);
+    }
+  }
 }
