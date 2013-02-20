@@ -59,7 +59,10 @@ public class SqlRouteStorage implements RouteStorage {
   private Map<String,String> properties;
   private int version;
   public static final int VERSION_HOLIDAYS = 2;
+  public static final int VERSION_TIME_OFFSET = 3;
+  public static final int MIN_VERSION = 4;
   public static final String PROPERTY_VERSION = "version";
+  public static final String PROPERTY_DATE = "build_date";
   public static final String PROPERTY_LAT = "center_lat";
   public static final String PROPERTY_LON = "center_lon";
   public static final String PROPERTY_DAY_CHANGE = "day_change";
@@ -114,6 +117,10 @@ public class SqlRouteStorage implements RouteStorage {
     if ( version == 0 )
       version = Integer.parseInt(getProperty(PROPERTY_VERSION, "1"));
     return version;
+  }
+
+  public String getBuildDate() {
+    return getProperty(PROPERTY_DATE, null);
   }
 
   @Override
@@ -714,5 +721,9 @@ public class SqlRouteStorage implements RouteStorage {
     } finally {
       db.close();
     }
+  }
+  
+  public boolean checkVersion() {
+    return getVersion() >= MIN_VERSION;
   }
 }

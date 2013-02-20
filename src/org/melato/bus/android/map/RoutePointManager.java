@@ -76,6 +76,10 @@ public class RoutePointManager {
     return instance;
   }
   
+  public static void reload() {
+    instance = null;
+  }
+  
   private void load(boolean all) {
     RoutePointsCollector collector = new RoutePointsCollector();
     if (all) {

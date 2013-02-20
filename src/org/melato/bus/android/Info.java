@@ -24,6 +24,7 @@ import java.io.File;
 
 import org.melato.android.AndroidLogger;
 import org.melato.bus.android.db.SqlRouteStorage;
+import org.melato.bus.android.map.RoutePointManager;
 import org.melato.bus.client.NearbyManager;
 import org.melato.bus.client.TrackHistory;
 import org.melato.bus.model.RouteManager;
@@ -49,6 +50,17 @@ public class Info {
     return routeManager;
   }
   
+  public static boolean isValidDatabase(Context context) {
+    File file = SqlRouteStorage.databaseFile(context);
+    if ( ! file.exists() )
+      return false;
+    SqlRouteStorage storage = (SqlRouteStorage) routeManager(context).getStorage();
+    if ( storage.checkVersion() )
+      return true;
+    reload();
+    return false;
+  }
+  
   public static TrackHistory trackHistory(Context context) {
     if ( trackHistory == null ) {
       synchronized(Info.class) {
@@ -65,5 +77,10 @@ public class Info {
     File cacheDir = context.getCacheDir();
     return new NearbyManager(routeManager(context), cacheDir); 
   }
-
+  /** Uncacne any database data, in order to use a newly downloaded database. */
+  public static void reload() {
+    routeManager = null;
+    trackHistory = null;
+    RoutePointManager.reload();
+  }
 }
