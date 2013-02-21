@@ -61,8 +61,10 @@ public class UpdateManager extends PortableUpdateManager {
   public boolean isRequired() {
     if ( super.isRequired() )
       return true;
-    if ( ! Info.isValidDatabase(context) )
+    if ( ! Info.isValidDatabase(context) ) {
+      forceUpdates();
       return true;
+    }
     return false;
   }
   
