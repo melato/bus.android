@@ -32,6 +32,7 @@ import org.melato.log.Log;
 
 import android.content.Context;
 
+/** Provides access to global (static) objects. */
 public class Info {
   public static final float MARK_PROXIMITY = 200f;
   private static RouteManager routeManager;
