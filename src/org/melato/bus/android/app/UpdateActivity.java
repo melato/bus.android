@@ -46,8 +46,9 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class UpdateActivity extends Activity implements Runnable {
+public class UpdateActivity extends Activity {
   public static final String ACCEPTED_TERMS = "accepted_terms";
   private UpdateManager updateManager;
   private ActivityProgressHandler progress;
@@ -100,7 +101,7 @@ public class UpdateActivity extends Activity implements Runnable {
   public void update(View view) {
     Button button = (Button) findViewById(R.id.update);
     button.setEnabled(false);
-    new Thread(this).start();
+    new UpdateTask().execute();
   }
   
   /** Called from the cancel button */
@@ -134,30 +135,40 @@ public class UpdateActivity extends Activity implements Runnable {
     }
   }
   
-  void startUpdate() {
-    
-  }
-  @Override
-  public void run() {
-    if ( progress != null ) {
-      ProgressGenerator.setHandler(progress);
-    }
-    try {
-      updateManager.update(updateManager.getAvailableUpdates());
-      runOnUiThread(new Runnable() {
-
-        @Override
-        public void run() {
-          startMain();
-        }
-        
-      });
-      
-    } catch( CanceledException e ) {      
-    }
-    finish();
+  void startUpdate() {   
   }
   
+  class UpdateTask extends AsyncTask<Void,Integer,Boolean> {
+    private Exception exception;
+
+    @Override
+    protected Boolean doInBackground(Void... params) {
+      if ( progress != null ) {
+        ProgressGenerator.setHandler(progress);
+      }
+      try {
+        updateManager.update(updateManager.getAvailableUpdates());
+        return true;
+      } catch( CanceledException e ) {
+      } catch( Exception e ) {
+        exception = e;
+      }
+      return false;
+    }
+
+    @Override
+    protected void onPostExecute(Boolean result) {
+      super.onPostExecute(result);
+      if ( result ) {
+        startMain();
+      } else if ( exception != null) {
+        Toast toast = Toast.makeText(UpdateActivity.this, exception.getMessage(), Toast.LENGTH_SHORT);
+        toast.show();        
+      }
+      finish();
+    }
+    
+  }
   
   @Override
   protected void onDestroy() {
