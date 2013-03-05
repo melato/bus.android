@@ -10,6 +10,10 @@
     <string name="recent_routes">Recent Routes</string>
     <string name="nearby_routes">Nearby Routes</string>
     <string name="schedule">Schedule</string>
+    <string name="fast_gps">Fast GPS</string>
+    <string name="gps_speed">GPS Updates</string>
+    <string name="gps_fast">Fast</string>
+    <string name="gps_normal">Normal</string>
     <string name="menu_all_schedules">Other Days</string>
     <string name="all_schedules">All Schedules</string>
     <string name="days_Su">Sunday</string>
