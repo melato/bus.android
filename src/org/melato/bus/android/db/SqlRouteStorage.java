@@ -31,6 +31,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.melato.bus.model.Agency;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.RStop;
@@ -725,5 +726,53 @@ public class SqlRouteStorage implements RouteStorage {
   
   public boolean checkVersion() {
     return getVersion() >= MIN_VERSION;
+  }
+
+  @Override
+  public List<Agency> loadAgencies() {
+    String sql = "select name, label, url, route_url, icon from agencies";
+    List<Agency> agencies = new ArrayList<Agency>();
+    SQLiteDatabase db = getDatabase();
+    try {
+      Cursor cursor = db.rawQuery(sql, null);
+      try {
+        if ( cursor.moveToFirst() ) {
+          do {
+            Agency agency = new Agency();        
+            agency.setName( cursor.getString(0));
+            agency.setLabel( cursor.getString(1));
+            agency.setUrl( cursor.getString(2));
+            agency.setRouteUrl( cursor.getString(3));
+            agency.setIcon(cursor.getBlob(4));
+            agencies.add(agency);
+          } while( cursor.moveToNext() );
+        }
+      } finally {
+        cursor.close();
+      }
+    } finally {
+      db.close();
+    }
+    return agencies;
+  }
+
+  @Override
+  public String loadAgencyName(RouteId routeId) {
+    String sql = "select agencies.name from agencies join routes on routes.agency = agencies._id" +
+        " where " + whereClause(routeId);
+    SQLiteDatabase db = getDatabase();
+    try {
+      Cursor cursor = db.rawQuery( sql, null);
+      try {
+        if ( cursor.moveToFirst() ) {
+          return cursor.getString(0);
+        }
+      } finally {
+        cursor.close();
+      }
+    } finally {
+      db.close();
+    }
+    return null;
   }
 }
