@@ -36,7 +36,7 @@ import android.content.Context;
 public class Info {
   public static final float MARK_PROXIMITY = 200f;
   private static RouteManager routeManager;
-  private static TrackHistory trackHistory;
+  private static AndroidTrackHistory trackHistory;
   
   public static RouteManager routeManager(Context context) {
     if ( routeManager == null ) {
@@ -62,7 +62,7 @@ public class Info {
     return false;
   }
   
-  public static TrackHistory trackHistory(Context context) {
+  public static AndroidTrackHistory trackHistory(Context context) {
     if ( trackHistory == null ) {
       synchronized(Info.class) {
         if ( trackHistory == null ) {
