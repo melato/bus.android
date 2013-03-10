@@ -248,13 +248,12 @@ public class ScheduleActivity extends Activity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
+     Log.i("aa", "onCreateOptionsMenu");
      MenuInflater inflater = getMenuInflater();
      inflater.inflate(R.menu.schedule_menu, menu);
-     Agency agency = Info.routeManager(this).getAgency(activities.getRouteId());     
-     MenuItem browse = menu.findItem(R.id.browse);
-     byte[] icon = agency.getIcon();
-     if ( icon != null) {
-       Drawable drawable = new BitmapDrawable(getResources(), new ByteArrayInputStream(icon));
+     Drawable drawable = Info.getAgencyIcon(this, activities.getRouteId());
+     if (drawable != null) {
+       MenuItem browse = menu.findItem(R.id.browse);
        browse.setIcon(drawable);
      }
      HelpActivity.addItem(menu, this, R.string.help_schedule);
