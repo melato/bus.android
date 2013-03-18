@@ -20,7 +20,6 @@
  */
 package org.melato.bus.android.activity;
 
-import java.io.ByteArrayInputStream;
 import java.util.Date;
 
 import org.melato.bus.android.Info;
@@ -37,10 +36,8 @@ import org.melato.util.DateId;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -248,13 +245,16 @@ public class ScheduleActivity extends Activity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
-     Log.i("aa", "onCreateOptionsMenu");
      MenuInflater inflater = getMenuInflater();
      inflater.inflate(R.menu.schedule_menu, menu);
-     Drawable drawable = Info.getAgencyIcon(this, activities.getRouteId());
+     Agency agency = Info.routeManager(this).getAgency(activities.getRouteId());     
+     Drawable drawable = Info.getAgencyIcon(this, agency);
+     MenuItem browse = menu.findItem(R.id.browse);
      if (drawable != null) {
-       MenuItem browse = menu.findItem(R.id.browse);
        browse.setIcon(drawable);
+     }
+     if ( agency.getLabel() != null) {
+       browse.setTitle(agency.getLabel());
      }
      HelpActivity.addItem(menu, this, R.string.help_schedule);
      return true;

@@ -92,8 +92,7 @@ public class Info {
     RoutePointManager.reload();
   }
   
-  public static synchronized Drawable getAgencyIcon(Context context, RouteId routeId) {
-    Agency agency = Info.routeManager(context).getAgency(routeId);
+  public static synchronized Drawable getAgencyIcon(Context context, Agency agency) {
     String agencyName = agency.getName();
     Drawable.ConstantState state = agencyIcons.get(agencyName);
     if ( state == null && ! agencyIcons.containsKey(agencyName)) {
@@ -109,5 +108,9 @@ public class Info {
     } else {
       return null;
     }
+  }
+  public static synchronized Drawable getAgencyIcon(Context context, RouteId routeId) {
+    Agency agency = Info.routeManager(context).getAgency(routeId);
+    return getAgencyIcon(context, agency);
   }
 }
