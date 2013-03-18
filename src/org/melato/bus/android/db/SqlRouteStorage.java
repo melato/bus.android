@@ -414,7 +414,7 @@ public class SqlRouteStorage implements RouteStorage {
     } else {
       sql = "select minutes from schedule_times" +
           "\njoin schedules on schedules._id = schedule_times.schedule" +
-          "\njoin schedule_exceptions on schedule_exceptions.schedule = schedule._id" +
+          "\njoin schedule_exceptions on schedule_exceptions.schedule = schedules._id" +
           "\njoin routes on routes._id = schedules.route" +
           "\nwhere date_id = " + scheduleId.getDateId() + " AND " + whereClause(routeId) +
           "\norder by minutes";
