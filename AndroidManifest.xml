@@ -24,6 +24,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activity.AgenciesActivity"
+            android:label="@string/agencies" >
+        </activity>
+        <activity
             android:name=".activity.AllRoutesActivity"
             android:label="@string/all_routes" >
         </activity>

@@ -6,6 +6,8 @@
     <string name="menu_all_routes">All</string>
     <string name="menu_recent_routes">Recent</string>
     <string name="menu_nearby_routes">Nearby</string>
+    <string name="menu_agencies">Agencies</string>
+    <string name="agencies">Transportation Agencies</string>
     <string name="all_routes">All Routes</string>
     <string name="recent_routes">Recent Routes</string>
     <string name="nearby_routes">Nearby Routes</string>

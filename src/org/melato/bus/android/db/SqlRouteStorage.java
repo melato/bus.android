@@ -67,6 +67,7 @@ public class SqlRouteStorage implements RouteStorage {
   public static final String PROPERTY_LAT = "center_lat";
   public static final String PROPERTY_LON = "center_lon";
   public static final String PROPERTY_DAY_CHANGE = "day_change";
+  public static final String PROPERTY_DEFAULT_AGENCY = "default_agency";
   
   private Map<String,String> loadProperties(SQLiteDatabase db) {
     String sql = "select name, value from properties";
@@ -184,7 +185,8 @@ public class SqlRouteStorage implements RouteStorage {
   static private final String ROUTE_SELECT = "select routes.name, routes.label, routes.title, routes.direction," +
       " routes.color, routes.background_color," +
       " is_primary," +
-      " routes._id from routes";
+      " agencies.name," +
+      " routes._id from routes join agencies on agencies._id = routes.agency";
   
   private List<Route> loadRoutes(String where) {
     List<Route> routes = new ArrayList<Route>();
@@ -193,7 +195,7 @@ public class SqlRouteStorage implements RouteStorage {
     if ( where != null ) {
       sql += " where " + where;
     }
-    sql += " order by _id";
+    sql += " order by routes.name, routes.direction";
     Cursor cursor = db.rawQuery(sql, null);
     if ( cursor.moveToFirst() ) {
       do {
@@ -244,6 +246,7 @@ public class SqlRouteStorage implements RouteStorage {
       if ( primary == 1 )
         route.setPrimary(true);      
     }
+    route.setAgencyName(cursor.getString(7));
     return route;
   }
 
@@ -781,4 +784,10 @@ public class SqlRouteStorage implements RouteStorage {
     }
     return null;
   }
+
+  @Override
+  public String getDefaultAgencyName() {
+    return getProperty(PROPERTY_DEFAULT_AGENCY);
+  }
+  
 }
