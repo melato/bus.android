@@ -25,24 +25,27 @@ import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteException;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.ScheduleId;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Displays the list of all routes
  * @author Alex Athanasopoulos
  *
  */
-public class ExceptionActivity extends ListActivity {
+public class ExceptionActivity extends Activity {
   public static final String KEY_EXCEPTION = "exception";
   
   public static class ExceptionSpecifier implements Serializable {
@@ -62,6 +65,21 @@ public class ExceptionActivity extends ListActivity {
     intent.putExtra(KEY_EXCEPTION, exc);
     context.startActivity(intent);    
   }
+  static int getCommonDays(List<RouteException> exceptions) {
+    boolean start = true;
+    int days = 0;
+    for( RouteException exception: exceptions ) {
+      if ( start ) {
+        days = exception.getDays();
+        start = false;
+      } else {
+        if ( days != exception.getDays() ) {
+          return 0;
+        }
+      }
+    }
+    return days;
+  }
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     // TODO Auto-generated method stub
@@ -72,9 +90,21 @@ public class ExceptionActivity extends ListActivity {
     }
     RouteManager routeManager = Info.routeManager(this);
     Schedule schedule = routeManager.getSchedule(exc.routeId);
+    Route route = routeManager.getRoute(exc.routeId);
     //Route route = routeManager.getRoute(exc.routeId);
     List<RouteException> exceptions = schedule.getExceptions(exc.scheduleId, exc.time);
-    setListAdapter(new ArrayAdapter<RouteException>(this, R.layout.list_item, exceptions));
+    setContentView(R.layout.schedule);
+    ListView listView = (ListView) findViewById(R.id.listView);
+    listView.setAdapter(new ArrayAdapter<RouteException>(this, R.layout.list_item, exceptions));
+    TextView textView = (TextView) findViewById(R.id.textView);
+    String header = Schedule.formatTimeMod24(exc.time);
+    int days = getCommonDays(exceptions);
+    if ( days != 0 ) {
+      header = ScheduleActivity.getDaysName(this, days) + " " + header;
+    }
+    textView.setText(header);
+    String title = route.getFullTitle();
+    setTitle(title);    
   }
   
 }

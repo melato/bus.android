@@ -115,11 +115,7 @@ public class ScheduleActivity extends Activity implements OnItemClickListener {
     }
     return "";
   }
-  public static String getScheduleName(Context context, ScheduleId scheduleId) {
-    int days = scheduleId.getDays();
-    if ( days == 0 ) {
-      return DateId.toString(scheduleId.getDateId());
-    }
+  public static String getDaysName(Context context, int days) {    
     int first = getFirstBit(days);
     int last = getLastBit(days);
     if ( first == last ) {
@@ -142,6 +138,14 @@ public class ScheduleActivity extends Activity implements OnItemClickListener {
       }
     }
     return buf.toString();
+  }
+  
+  public static String getScheduleName(Context context, ScheduleId scheduleId) {
+    int days = scheduleId.getDays();
+    if ( days == 0 ) {
+      return DateId.toString(scheduleId.getDateId());
+    }
+    return getDaysName(context, days);
   }
 
   protected String getScheduleName() {
