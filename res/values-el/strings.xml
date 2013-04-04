@@ -17,6 +17,7 @@
     <string name="gps_normal">Κανονικό</string>
     <string name="menu_all_schedules">Άλλες Μέρες</string>
     <string name="all_schedules">Όλα τα ωράρια</string>
+    <string name="exceptions">Εξαιρέσεις</string>
     <string name="days_Su">Κυριακή</string>
     <string name="days_Mo">Δευτέρα</string>
     <string name="days_Tu">Τρίτη</string>

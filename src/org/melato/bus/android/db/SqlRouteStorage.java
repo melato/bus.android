@@ -36,6 +36,7 @@ import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
+import org.melato.bus.model.RouteException;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteStopCallback;
 import org.melato.bus.model.RouteStorage;
@@ -59,9 +60,7 @@ public class SqlRouteStorage implements RouteStorage {
   private String databaseFile;
   private Map<String,String> properties;
   private int version;
-  public static final int VERSION_HOLIDAYS = 2;
-  public static final int VERSION_TIME_OFFSET = 3;
-  public static final int MIN_VERSION = 4;
+  public static final int MIN_VERSION = 5;
   public static final String PROPERTY_VERSION = "version";
   public static final String PROPERTY_DATE = "build_date";
   public static final String PROPERTY_LAT = "center_lat";
@@ -195,7 +194,7 @@ public class SqlRouteStorage implements RouteStorage {
     if ( where != null ) {
       sql += " where " + where;
     }
-    sql += " order by routes.name, routes.direction";
+    sql += " order by routes._id";
     Cursor cursor = db.rawQuery(sql, null);
     if ( cursor.moveToFirst() ) {
       do {
@@ -315,34 +314,70 @@ public class SqlRouteStorage implements RouteStorage {
     } finally {
       cursor.close();
     }    
-    if ( getVersion() >= VERSION_HOLIDAYS ) {
-      sql = "select date_id, schedule from schedule_exceptions" +
-          "\njoin routes on routes._id = schedule_exceptions.route" +
-          "\nwhere " + whereClause(routeId) +
-          "\norder by date_id";
-      cursor = db.rawQuery( sql, null);
-      try {
-        if ( cursor.moveToFirst() ) {
-          do {
-            int dateId = cursor.getInt(0);
-            int scheduleId = cursor.getInt(1);
-            DaySchedule daySchedule = scheduleIds.get(scheduleId);
-            int[] times = null;
-            if ( daySchedule != null) {
-              times = daySchedule.getTimes();
-            } else {
-              times = new int[0];
-            }
-            daySchedules.add(createDaySchedule(times, ScheduleId.forDate(dateId)));
-          } while ( cursor.moveToNext() );
-        }
-      } finally {
-        cursor.close();
+    sql = "select date_id, schedule from schedule_exceptions" +
+        "\njoin routes on routes._id = schedule_exceptions.route" +
+        "\nwhere " + whereClause(routeId) +
+        "\norder by date_id";
+    cursor = db.rawQuery( sql, null);
+    try {
+      if ( cursor.moveToFirst() ) {
+        do {
+          int dateId = cursor.getInt(0);
+          int scheduleId = cursor.getInt(1);
+          DaySchedule daySchedule = scheduleIds.get(scheduleId);
+          int[] times = null;
+          if ( daySchedule != null) {
+            times = daySchedule.getTimes();
+          } else {
+            times = new int[0];
+          }
+          daySchedules.add(createDaySchedule(times, ScheduleId.forDate(dateId)));
+        } while ( cursor.moveToNext() );
       }
+    } finally {
+      cursor.close();
     }
     Schedule schedule = new Schedule(daySchedules.toArray(new DaySchedule[0]));
     schedule.setDayChange(getDayChange());
+    List<RouteException> exceptions = loadExceptions(db, routeId);
+    schedule.setExceptions(exceptions);
     return schedule;
+  }
+
+  private int[] explodeTimes(String timesString) {
+    String[] fields = timesString.split(",");
+    int[] times = new int[fields.length];
+    for( int i = 0; i < times.length; i++ ) {
+      times[i] = Integer.parseInt(fields[i]);
+    }
+    return times;
+  }
+  
+  public List<RouteException> loadExceptions(SQLiteDatabase db, RouteId routeId) {
+    String sql = "select note, days, times from route_exceptions" +
+        "\njoin routes on routes._id = route_exceptions.route" +
+        "\nwhere " + whereClause(routeId) +
+        "\norder by route_exceptions._id";
+    Cursor cursor = db.rawQuery( sql, null);
+    List<RouteException> exceptions = new ArrayList<RouteException>();
+    try {
+      if ( cursor.moveToFirst() ) {
+        do {
+          RouteException exception = new RouteException();
+          exception.setNote(cursor.getString(0));
+          if ( ! cursor.isNull(1)) {
+            exception.setDays(cursor.getInt(1));
+          }
+          if ( ! cursor.isNull(2)) {
+            exception.setTimes(explodeTimes(cursor.getString(2)));
+          }
+          exceptions.add(exception);
+        } while ( cursor.moveToNext() );
+      }
+    } finally {
+      cursor.close();
+    }
+    return exceptions;
   }
 
   private ScheduleId[] loadScheduleIds(SQLiteDatabase db, RouteId routeId) {
@@ -363,23 +398,21 @@ public class SqlRouteStorage implements RouteStorage {
     } finally {
       cursor.close();
     }    
-    if ( getVersion() >= VERSION_HOLIDAYS ) {
-      sql = "select date_id from schedule_exceptions" +
-          "\njoin routes on routes._id = schedule_exceptions.route" +
-          "\nwhere " + whereClause(routeId) +
-          "\norder by date_id";
-      cursor = db.rawQuery( sql, null);
-      try {
-        if ( cursor.moveToFirst() ) {
-          do {
-            int dateId = cursor.getInt(0);
-            ScheduleId scheduleId = ScheduleId.forDate(dateId);
-            scheduleIds.add(scheduleId);
-          } while ( cursor.moveToNext() );
-        }
-      } finally {
-        cursor.close();
+    sql = "select date_id from schedule_exceptions" +
+        "\njoin routes on routes._id = schedule_exceptions.route" +
+        "\nwhere " + whereClause(routeId) +
+        "\norder by date_id";
+    cursor = db.rawQuery( sql, null);
+    try {
+      if ( cursor.moveToFirst() ) {
+        do {
+          int dateId = cursor.getInt(0);
+          ScheduleId scheduleId = ScheduleId.forDate(dateId);
+          scheduleIds.add(scheduleId);
+        } while ( cursor.moveToNext() );
       }
+    } finally {
+      cursor.close();
     }
     return scheduleIds.toArray(new ScheduleId[0]);
   }

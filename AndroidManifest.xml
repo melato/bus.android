@@ -48,6 +48,10 @@
             android:label="@string/all_schedules" >
         </activity>
         <activity
+            android:name=".activity.ExceptionActivity"
+            android:label="@string/exceptions" >
+        </activity>
+        <activity
             android:name=".activity.StopsActivity"
             android:label="@string/stops" >
         </activity>
