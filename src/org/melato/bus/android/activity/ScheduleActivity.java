@@ -178,7 +178,9 @@ public class ScheduleActivity extends Activity implements OnItemClickListener {
       this.daySchedule = schedule.getSchedule(scheduleId);
       if ( daySchedule == null ) {
         daySchedule = schedule.getSchedule(currentTime);
-        scheduleId = daySchedule.getScheduleId();
+        if ( daySchedule != null ) {
+          scheduleId = daySchedule.getScheduleId();
+        }
       }
       setContentView(R.layout.schedule);
       ListView listView = (ListView) findViewById(R.id.listView);
