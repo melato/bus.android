@@ -51,13 +51,35 @@ public class StopContext extends LocationContext {
   private SpeedTracker speed;
   private int markerIndex;
   private Stop marker;
+  private StopCount previousStops;
+  private StopCount followingStops;
   private int timeFromStart = -1;
 
   private PropertiesDisplay properties;
   private ArrayAdapter<Object> adapter;
-
+  
   private float straightDistance;
 
+  static class StopCount {
+    int stops;
+    int timedStops;
+    @Override
+    public String toString() {
+      return timedStops + "/" + stops;
+    }
+    public StopCount(Stop[] stops, int start, int end) {
+      this.stops = end - start;
+      if ( this.stops < 0 ) {
+        this.stops = 0;
+      }
+      timedStops = 0;
+      for( int i = start; i < end; i++ ) {
+        if ( stops[i].getTimedCount() != 0 ) {
+          timedStops++;
+        }
+      }
+    }    
+  }
   public float getStraightDistance() {
     return straightDistance;
   }
@@ -131,7 +153,10 @@ public class StopContext extends LocationContext {
   
   public void setMarkerIndex(int index) {
     markerIndex = index;
-    marker = track.getStops()[index];
+    Stop[] stops = track.getStops();
+    marker = stops[index];
+    previousStops = new StopCount(stops, 1, index + 1); // don't include the start stop.
+    followingStops = new StopCount(stops, index + 1, stops.length);
     timeFromStart = -1;
     setLocation(history.getLocation());
     start();
@@ -276,6 +301,21 @@ public class StopContext extends LocationContext {
 
   }
 
+  class StopCountProperty {
+    StopCount count;
+    int resourceId;
+    
+    public StopCountProperty(StopCount count, int resourceId) {
+      super();
+      this.count = count;
+      this.resourceId = resourceId;
+    }
+
+    public String toString() {
+      return properties.formatProperty(resourceId, count.toString());
+    }
+  }
+  
   public void addProperties() {
     properties.add(new StraightDistance());
     properties.add(new Bearing());
@@ -283,6 +323,8 @@ public class StopContext extends LocationContext {
     properties.add(new RouteDistance());
     properties.add(new DistanceFromStart());
     properties.add(new TimeFromStart());
+    properties.add(new StopCountProperty(previousStops, R.string.timed_stops_before));
+    properties.add(new StopCountProperty(followingStops, R.string.timed_stops_after));
 
     // properties.add( new PathSpeed());
     properties.add(new Speed60());

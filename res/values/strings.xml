@@ -34,6 +34,8 @@
     <string name="ETA">ETA</string>
     <string name="walkETA">ETA by walking</string>
     <string name="bikeETA">ETA by bike</string>
+    <string name="timed_stops_before">Previous Timed Stops</string>
+    <string name="timed_stops_after">Following Timed Stops</string>
     <string name="map">Map</string>
     <string name="browse">Web</string>
     <string name="straight_distance">Straight Distance</string>
