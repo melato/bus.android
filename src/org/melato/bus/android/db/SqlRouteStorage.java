@@ -183,7 +183,7 @@ public class SqlRouteStorage implements RouteStorage {
 
   static private final String ROUTE_SELECT = "select routes.name, routes.label, routes.title, routes.direction," +
       " routes.color, routes.background_color," +
-      " flags," +
+      " routes.flags," +
       " agencies.name," +
       " routes._id from routes join agencies on agencies._id = routes.agency";
   
@@ -565,7 +565,7 @@ public class SqlRouteStorage implements RouteStorage {
   @Override
   public List<Stop> loadStops(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
-    String sql = "select lat, lon, markers.symbol, markers.name, stops.time_offset, stops.time_count from markers" +
+    String sql = "select lat, lon, markers.symbol, markers.name, stops.time_offset, stops.flags from markers" +
         "\njoin stops on markers._id = stops.marker" +
         "\njoin routes on routes._id = stops.route" +
         "\nwhere " + whereClause(routeId) + 
@@ -579,7 +579,7 @@ public class SqlRouteStorage implements RouteStorage {
           p.setSymbol(cursor.getString(2));
           p.setName(cursor.getString(3));
           p.setTime(1000L * cursor.getInt(4));
-          p.setTimedCount(cursor.getInt(5));
+          p.setFlags(cursor.getInt(5));
           stops.add(p);
         } while ( cursor.moveToNext() );
       }

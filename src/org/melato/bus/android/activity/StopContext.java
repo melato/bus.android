@@ -32,6 +32,7 @@ import org.melato.bus.client.TrackContext;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.Stop;
+import org.melato.bus.model.StopCount;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.geometry.gpx.SpeedTracker;
 import org.melato.gps.Earth;
@@ -60,26 +61,6 @@ public class StopContext extends LocationContext {
   
   private float straightDistance;
 
-  static class StopCount {
-    int stops;
-    int timedStops;
-    @Override
-    public String toString() {
-      return timedStops + "/" + stops;
-    }
-    public StopCount(Stop[] stops, int start, int end) {
-      this.stops = end - start;
-      if ( this.stops < 0 ) {
-        this.stops = 0;
-      }
-      timedStops = 0;
-      for( int i = start; i < end; i++ ) {
-        if ( stops[i].getTimedCount() != 0 ) {
-          timedStops++;
-        }
-      }
-    }    
-  }
   public float getStraightDistance() {
     return straightDistance;
   }
