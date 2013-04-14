@@ -67,6 +67,7 @@ public class ScheduleActivity extends Activity implements OnItemClickListener {
   private String  stopName;
   private int     timeOffset;
   private ScheduleAdapter scheduleAdapter;
+  private static ScheduleId stickyScheduleId;
   
   private static int getFirstBit(int bitmap ) {
     if ( bitmap == 0 )
@@ -175,10 +176,16 @@ public class ScheduleActivity extends Activity implements OnItemClickListener {
       setStopInfo(routeStop);
       schedule = activities.getRouteManager().getSchedule(routeStop.getRouteId());
       ScheduleId scheduleId = (ScheduleId) getIntent().getSerializableExtra(KEY_SCHEDULE_ID);
-      this.daySchedule = schedule.getSchedule(scheduleId);
-      if ( daySchedule == null ) {
-        daySchedule = schedule.getSchedule(currentTime);
-        if ( daySchedule != null ) {
+      if ( scheduleId == null) {
+        scheduleId = stickyScheduleId;
+      } else {
+        stickyScheduleId = scheduleId;
+      }
+      if ( scheduleId != null) {
+        daySchedule = schedule.getSchedule(scheduleId);
+      } else {
+        daySchedule = schedule.getSchedule(currentTime);   
+        if ( daySchedule != null) {
           scheduleId = daySchedule.getScheduleId();
         }
       }
