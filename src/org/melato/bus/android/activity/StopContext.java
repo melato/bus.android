@@ -282,21 +282,6 @@ public class StopContext extends LocationContext {
 
   }
 
-  class StopCountProperty {
-    StopCount count;
-    int resourceId;
-    
-    public StopCountProperty(StopCount count, int resourceId) {
-      super();
-      this.count = count;
-      this.resourceId = resourceId;
-    }
-
-    public String toString() {
-      return properties.formatProperty(resourceId, count.toString());
-    }
-  }
-  
   public void addProperties() {
     properties.add(new StraightDistance());
     properties.add(new Bearing());
@@ -304,8 +289,7 @@ public class StopContext extends LocationContext {
     properties.add(new RouteDistance());
     properties.add(new DistanceFromStart());
     properties.add(new TimeFromStart());
-    properties.add(new StopCountProperty(previousStops, R.string.timed_stops_before));
-    properties.add(new StopCountProperty(followingStops, R.string.timed_stops_after));
+    properties.add(R.string.timed_stops, context.getString(R.string.timed_stop_counts, previousStops, followingStops));
 
     // properties.add( new PathSpeed());
     properties.add(new Speed60());
