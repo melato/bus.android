@@ -33,6 +33,8 @@
     <string name="ETA">Αναμενόμενη Άφιξη</string>
     <string name="walkETA">Αναμενόμενη Άφιξη περπατώντας</string>
     <string name="bikeETA">Αναμενόμενη Άφιξη με ποδήλατο</string>
+    <string name="timed_stops">Στάσεις με χρόνους</string>
+    <string name="timed_stop_counts">%1$s πριν, %2$s μετά</string>
     <string name="nearby_routes">Κοντινές Γραμμές</string>
     <string name="map">Χάρτης</string>
     <string name="browse">Ιστοσελίδα</string>
