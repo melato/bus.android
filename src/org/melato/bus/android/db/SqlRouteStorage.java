@@ -573,6 +573,7 @@ public class SqlRouteStorage implements RouteStorage {
     Cursor cursor = db.rawQuery( sql, null);
     try {
       List<Stop> stops = new ArrayList<Stop>();
+      int index = 0;
       if ( cursor.moveToFirst() ) {
         do {
           Stop p = new Stop(cursor.getFloat(0), cursor.getFloat(1));
@@ -580,6 +581,7 @@ public class SqlRouteStorage implements RouteStorage {
           p.setName(cursor.getString(3));
           p.setTime(1000L * cursor.getInt(4));
           p.setFlags(cursor.getInt(5));
+          p.setIndex(index++);
           stops.add(p);
         } while ( cursor.moveToNext() );
       }
