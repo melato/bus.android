@@ -36,6 +36,7 @@
     <string name="timed_stops">Στάσεις με χρόνους</string>
     <string name="timed_stop_counts">%1$s πριν, %2$s μετά</string>
     <string name="nearby_routes">Κοντινές Γραμμές</string>
+    <string name="best_route">Βέλτιστη Γραμμή</string>
     <string name="map">Χάρτης</string>
     <string name="browse">Ιστοσελίδα</string>
     <string name="straight_distance">Ευθεία Απόσταση</string>

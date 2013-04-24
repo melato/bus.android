@@ -11,6 +11,7 @@
     <string name="all_routes">All Routes</string>
     <string name="recent_routes">Recent Routes</string>
     <string name="nearby_routes">Nearby Routes</string>
+    <string name="best_route">Best Route</string>
     <string name="schedule">Schedule</string>
     <string name="fast_gps">Fast GPS</string>
     <string name="gps_speed">GPS Updates</string>
@@ -54,6 +55,7 @@
     <string name="unpin_route">Unpin</string>
     <string name="unpin_all">Unpin All</string>
     <string name="loading">Loading &#8230;</string>
+    <string name="computing">Computing &#8230;</string>
     <string name="ok">Ok</string>
     <string name="terms_of_use">Terms of Use</string>
     
