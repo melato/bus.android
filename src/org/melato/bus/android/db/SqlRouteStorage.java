@@ -675,9 +675,9 @@ public class SqlRouteStorage implements RouteStorage {
         stop.setSymbol(cursor.getString(i++));
         stop.setName(cursor.getString(i++));
         stop.setTime(1000L * cursor.getInt(i++));
-        int stopIndex = cursor.getInt(i++);        
+        stop.setIndex(cursor.getInt(i++));        
         //int markerId = cursor.getInt(i++);
-        RStop rstop = new RStop(routeId, stop, stopIndex);
+        RStop rstop = new RStop(routeId, stop);
         collector.add(rstop);
       } while ( cursor.moveToNext() );
     }
