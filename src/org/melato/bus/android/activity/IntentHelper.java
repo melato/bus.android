@@ -33,7 +33,6 @@ import org.melato.gps.Point2D;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 
 
 /**

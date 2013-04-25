@@ -23,8 +23,8 @@ package org.melato.bus.android.activity;
 import java.util.Date;
 
 import org.melato.android.ui.PropertiesDisplay;
-import org.melato.android.util.LatitudeField;
-import org.melato.android.util.LongitudeField;
+import org.melato.android.util.LabeledPoint;
+import org.melato.android.util.LocationField;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.client.Formatting;
@@ -296,8 +296,11 @@ public class StopContext extends LocationContext {
     properties.add(new PathETA());
     properties
         .add(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
-    properties.add(new LatitudeField(context.getString(R.string.latitude), getMarker()));
-    properties.add(new LongitudeField(context.getString(R.string.longitude), getMarker()));
+    //properties.add(new LatitudeField(context.getString(R.string.latitude), getMarker()));
+    //properties.add(new LongitudeField(context.getString(R.string.longitude), getMarker()));
+    Stop stop = getMarker();
+    LabeledPoint p = new LabeledPoint(stop, stop.getName());
+    properties.add(new LocationField(context.getString(R.string.coordinates), p));
     // properties.add(new StraightETA(R.string.bikeETA, BIKE_SPEED,
     // BIKE_OVERHEAD));
   }
