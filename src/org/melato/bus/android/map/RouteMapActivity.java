@@ -20,6 +20,7 @@
  */
 package org.melato.bus.android.map;
 
+import org.melato.android.AndroidLogger;
 import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
@@ -31,6 +32,7 @@ import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.Stop;
 import org.melato.gps.Point2D;
+import org.melato.log.Log;
 
 import android.content.Context;
 import android.location.Location;
@@ -69,6 +71,7 @@ public class RouteMapActivity extends MapActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      Log.setLogger(new AndroidLogger(this));      
       activities = new BusActivities(this);
       routesOverlay = new RoutesOverlay(this);
       route = activities.getRoute();
