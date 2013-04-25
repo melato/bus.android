@@ -30,8 +30,6 @@ import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.Stop;
 
-import android.util.Log;
-
 public class RecentRoute implements Serializable {
   private static final long serialVersionUID = 1L;
   private RouteStop routeStop;
