@@ -38,6 +38,12 @@ public class RouteStop implements Serializable {
     this.routeId = routeId;
   }
   
+  public RouteStop(RouteId routeId, Stop stop) {
+    this.routeId = routeId;
+    this.stopSymbol = stop.getSymbol();
+    this.stopIndex = stop.getIndex();
+  }
+  
   public boolean hasStop() {
     return stopSymbol != null || stopIndex >= 0;
   }
