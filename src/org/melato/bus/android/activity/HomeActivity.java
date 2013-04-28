@@ -137,7 +137,6 @@ public class HomeActivity extends Activity implements OnItemClickListener {
         if (convertView == null) {  // if it's not recycled, initialize some attributes
             button = new Button(context);
             button.setLayoutParams(new GridView.LayoutParams(128, 64));
-            //button.setScaleType(ImageView.ScaleType.CENTER_CROP);
             button.setPadding(8, 8, 8, 8);
         } else {
             button = (Button) convertView;
@@ -145,8 +144,8 @@ public class HomeActivity extends Activity implements OnItemClickListener {
         Item item = items[position];
         button.setCompoundDrawablesWithIntrinsicBounds(0, item.drawable, 0, 0);
         button.setText(item.text);
-        button.setBackgroundColor(Color.BLACK);
-        button.setTextColor(Color.WHITE);
+        //button.setBackgroundColor(Color.BLACK);
+        //button.setTextColor(Color.WHITE);
         button.setOnClickListener(new ButtonListener(position));
         return button;
     }
