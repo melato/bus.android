@@ -21,18 +21,49 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
+import org.melato.bus.android.app.BusPreferencesActivity;
+import org.melato.bus.android.app.HelpActivity;
+import org.melato.bus.android.map.RouteMapActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 
 /** The main activity checks for updates and launches the next activity. */
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements OnItemClickListener {
+  static class Item {
+    int drawable;
+    int text;
+    public Item(int drawable, int text) {
+      super();
+      this.drawable = drawable;
+      this.text = text;
+    }
+    
+  }
+  // references to our images
+  private Item[] items = {
+      new Item(R.drawable.recent, R.string.recent_routes),
+      new Item(R.drawable.nearby, R.string.nearby_routes),
+      new Item(R.drawable.map, R.string.map),
+      new Item(R.drawable.all, R.string.all_routes),
+      new Item(R.drawable.preferences, R.string.pref_menu),
+      new Item(R.drawable.about, R.string.about),
+  };
+  
+  
   /** Called when the activity is first created. */  
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -40,10 +71,48 @@ public class HomeActivity extends Activity {
       setContentView(R.layout.home);
       GridView grid = (GridView) findViewById(R.id.gridView);
       grid.setAdapter(new ImageAdapter(this));
+      grid.setOnItemClickListener(this);
+  }
+
+  void select(int position) {
+    switch( items[position].drawable) {
+      case R.drawable.nearby:
+        startActivity(new Intent(this, NearbyActivity.class));
+        break;
+      case R.drawable.map:
+        startActivity(new Intent(this, RouteMapActivity.class));
+        break;
+      case R.drawable.all:
+        startActivity(new Intent(this, AllRoutesActivity.class));
+        break;
+      case R.drawable.recent:
+        startActivity(new Intent(this, RecentRoutesActivity.class));
+        break;
+      case R.drawable.preferences:
+        startActivity(new Intent(this, BusPreferencesActivity.class));
+        break;
+      case R.drawable.about:
+        HelpActivity.showHelp(this, R.string.help_about, R.string.about, false, true);        
+      default:
+        break;
+    }
+  }
+  @Override
+  public void onItemClick(AdapterView<?> parent, View view, int position,
+      long id) {
+    select(position);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu)
+  {
+     MenuInflater inflater = getMenuInflater();
+     inflater.inflate(R.menu.recent_routes_menu, menu);
+     return true;
   }
 
 
-  public static class ImageAdapter extends BaseAdapter {
+  public class ImageAdapter extends BaseAdapter {
     private Context context;
 
     public ImageAdapter(Context c) {
@@ -64,26 +133,36 @@ public class HomeActivity extends Activity {
 
     // create a new ImageView for each item referenced by the Adapter
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImageView imageView;
+        Button button;
         if (convertView == null) {  // if it's not recycled, initialize some attributes
-            imageView = new ImageView(context);
-            imageView.setLayoutParams(new GridView.LayoutParams(85, 85));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            imageView.setPadding(8, 8, 8, 8);
+            button = new Button(context);
+            button.setLayoutParams(new GridView.LayoutParams(128, 64));
+            //button.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            button.setPadding(8, 8, 8, 8);
         } else {
-            imageView = (ImageView) convertView;
+            button = (Button) convertView;
         }
-
-        imageView.setImageResource(items[position]);
-        return imageView;
+        Item item = items[position];
+        button.setCompoundDrawablesWithIntrinsicBounds(0, item.drawable, 0, 0);
+        button.setText(item.text);
+        button.setBackgroundColor(Color.BLACK);
+        button.setTextColor(Color.WHITE);
+        button.setOnClickListener(new ButtonListener(position));
+        return button;
+    }
+  }
+  
+  class ButtonListener implements OnClickListener {
+    int pos;
+    public ButtonListener(int pos) {
+      super();
+      this.pos = pos;
     }
 
-    // references to our images
-    private Integer[] items = {
-            R.drawable.map,
-            R.drawable.nearby
-            };
-}
-
-  
+    @Override
+    public void onClick(View v) {
+      select(pos);
+    }
+    
+  }
 }
