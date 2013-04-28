@@ -22,66 +22,97 @@ package org.melato.bus.android.activity;
 
 import org.melato.android.AndroidLogger;
 import org.melato.android.location.Locations;
+import org.melato.android.progress.ActivityProgressHandler;
+import org.melato.android.progress.ProgressTitleHandler;
+import org.melato.android.util.LabeledPoint;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.model.Route;
 import org.melato.bus.plan.Plan;
+import org.melato.bus.plan.PlanLeg;
 import org.melato.bus.plan.Planner;
-import org.melato.bus.plan.SingleRoutePlanner;
 import org.melato.gps.Point2D;
 import org.melato.log.Log;
+import org.melato.progress.ProgressGenerator;
 
 import android.app.ListActivity;
+import android.content.Context;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 /** Computes and displays a list of plans for going to a destination. */
 public class PlanActivity extends ListActivity {
+  private ActivityProgressHandler progress;
+  private BusActivities activities;
   private Point2D origin;
   private Point2D destination;
+  private Plan[] plans;
 
   class PlanTask extends AsyncTask<Void,Void,Plan[]> {    
     @Override
     protected void onPreExecute() {
-      setTitle(R.string.loading);
+      //setTitle(R.string.computing);
     }
 
     @Override
     protected Plan[] doInBackground(Void... params) {
-      Planner planner = new SingleRoutePlanner();
+      ProgressGenerator.setHandler(progress);
+      Planner planner = null;
+      //planner = new Nearby1SingleRoutePlanner();
       planner.setRouteManager(Info.routeManager(PlanActivity.this));
       return planner.plan(origin, destination);
     }
 
     @Override
     protected void onPostExecute(Plan[] plans) {
+      PlanActivity.this.plans = plans;
       setTitle(R.string.best_route);
-      setListAdapter(new ArrayAdapter<Plan>(PlanActivity.this, R.layout.list_item, plans));      
+      setListAdapter(new ArrayAdapter<Plan>(PlanActivity.this, R.layout.list_item, plans));
+      progress.end();
     }
   }
   
   
-  public PlanActivity() {
-  }
-
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    activities = new BusActivities(this);
+    progress = new ProgressTitleHandler(this);
     Log.setLogger(new AndroidLogger(this));
-    destination = Locations.getGeoUriPoint(getIntent());        
-    origin = new Point2D(37.989048f, 23.790638f);    
-    if ( origin == null) {
-      setTitle("Missing Origin");
-    } else if ( destination == null) {
+    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    origin = Locations.location2Point(loc);
+    //origin = new Point2D(37.9997f, 23.7848f);
+    LabeledPoint point = Locations.getGeoUri(getIntent());
+    Log.info("lp: " + point);
+    if ( point != null) {
+      Log.info("point: " + point.getLabel());
+      destination = point.getPoint();
+    }
+    if ( destination == null) {
       setTitle("Missing Destination");
+    } else if ( origin == null) {
+      setTitle("Missing Origin");
     } else {
-      new PlanTask().execute();
+      new PlanTask().execute();      
     }
   }
-  
+
   @Override
-  protected void onDestroy() {
-    super.onDestroy();
+  protected void onListItemClick(ListView l, View v, int position, long id) {
+    Plan plan = plans[position];
+    PlanLeg[] legs = plan.getLegs();
+    if ( legs.length > 0 ) {
+      Route route = legs[0].getRoute();
+      RouteStop routeStop = new RouteStop(route.getRouteId(), legs[0].getStop1());
+      activities.showRoute(routeStop);
+    }
   }
+
 }
