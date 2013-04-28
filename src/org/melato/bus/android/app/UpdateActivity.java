@@ -209,7 +209,11 @@ public class UpdateActivity extends Activity {
     */
     @Override
     protected Boolean doInBackground(Void... params) {
-      return ! updateManager.getAvailableUpdates().isEmpty();
+      try {
+        return ! updateManager.getAvailableUpdates().isEmpty();
+      } catch( CanceledException e) {
+        return false;
+      }
       
     }
 
