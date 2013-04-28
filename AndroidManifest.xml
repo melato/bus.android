@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.melato.bus.android"
-    android:versionCode="22"
-    android:versionName="1.4-beta11" >
+    android:versionCode="23"
+    android:versionName="1.4.1-dev" >
 
     <uses-sdk android:minSdkVersion="8" />
 
@@ -15,7 +15,7 @@
         android:label="@string/app_name" >
         <uses-library android:name="com.google.android.maps" />
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.HomeActivity"
             android:label="@string/main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -58,6 +58,16 @@
         <activity
             android:name=".activity.NearbyActivity"
             android:label="@string/nearby_routes" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="geo"/>
+            </intent-filter>
+        </activity>        
+        <activity
+            android:name=".activity.PlanActivity"
+            android:label="@string/best_route" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
