@@ -45,6 +45,7 @@
     <string name="position_from_start">Distance from Start (%s)</string>
     <string name="position_from_end">Distance from End (%s)</string>
     <string name="time_from_start">Expected Time from Start (%s)</string>
+    <string name="coordinates">Coordinates</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
     <string name="cancel">Cancel</string>
