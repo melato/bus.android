@@ -23,12 +23,12 @@ package org.melato.bus.android.activity;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
 import org.melato.bus.android.app.HelpActivity;
+import org.melato.bus.android.app.UpdateActivity;
 import org.melato.bus.android.map.RouteMapActivity;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,24 +43,26 @@ import android.widget.GridView;
 
 /** The main activity checks for updates and launches the next activity. */
 public class HomeActivity extends Activity implements OnItemClickListener {
-  static class Item {
+  static class LaunchItem {
+    int id;
     int drawable;
     int text;
-    public Item(int drawable, int text) {
+    public LaunchItem(int id, int drawable, int text) {
       super();
+      this.id = id;
       this.drawable = drawable;
       this.text = text;
     }
     
   }
   // references to our images
-  private Item[] items = {
-      new Item(R.drawable.recent, R.string.recent_routes),
-      new Item(R.drawable.nearby, R.string.nearby_routes),
-      new Item(R.drawable.map, R.string.map),
-      new Item(R.drawable.all, R.string.all_routes),
-      new Item(R.drawable.preferences, R.string.pref_menu),
-      new Item(R.drawable.about, R.string.about),
+  private LaunchItem[] items = {
+      new LaunchItem(R.id.recent_routes, R.drawable.recent, R.string.recent_routes),
+      new LaunchItem(R.id.nearby, R.drawable.nearby, R.string.nearby_routes),
+      new LaunchItem(R.id.map, R.drawable.map, R.string.map),
+      new LaunchItem(R.id.all_routes, R.drawable.all, R.string.all_routes),
+      new LaunchItem(R.id.pref, R.drawable.preferences, R.string.pref_menu),
+      new LaunchItem(R.id.about, R.drawable.about, R.string.about),
   };
   
   
@@ -68,6 +70,10 @@ public class HomeActivity extends Activity implements OnItemClickListener {
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
+      if ( ! UpdateActivity.checkUpdates(this) ) {
+        finish();
+        return;
+      }
       setContentView(R.layout.home);
       GridView grid = (GridView) findViewById(R.id.gridView);
       grid.setAdapter(new ImageAdapter(this));
@@ -75,23 +81,23 @@ public class HomeActivity extends Activity implements OnItemClickListener {
   }
 
   void select(int position) {
-    switch( items[position].drawable) {
-      case R.drawable.nearby:
+    switch( items[position].id) {
+      case R.id.nearby:
         startActivity(new Intent(this, NearbyActivity.class));
         break;
-      case R.drawable.map:
+      case R.id.map:
         startActivity(new Intent(this, RouteMapActivity.class));
         break;
-      case R.drawable.all:
+      case R.id.all_routes:
         startActivity(new Intent(this, AllRoutesActivity.class));
         break;
-      case R.drawable.recent:
+      case R.id.recent_routes:
         startActivity(new Intent(this, RecentRoutesActivity.class));
         break;
-      case R.drawable.preferences:
+      case R.id.pref:
         startActivity(new Intent(this, BusPreferencesActivity.class));
         break;
-      case R.drawable.about:
+      case R.id.about:
         HelpActivity.showHelp(this, R.string.help_about, R.string.about, false, true);        
       default:
         break;
@@ -141,7 +147,7 @@ public class HomeActivity extends Activity implements OnItemClickListener {
         } else {
             button = (Button) convertView;
         }
-        Item item = items[position];
+        LaunchItem item = items[position];
         button.setCompoundDrawablesWithIntrinsicBounds(0, item.drawable, 0, 0);
         button.setText(item.text);
         //button.setBackgroundColor(Color.BLACK);
