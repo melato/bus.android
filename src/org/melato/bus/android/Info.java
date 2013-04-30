@@ -22,6 +22,7 @@ package org.melato.bus.android;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ import org.melato.bus.android.activity.Pref;
 import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.android.map.RoutePointManager;
 import org.melato.bus.client.NearbyManager;
+import org.melato.bus.client.Serialization;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
@@ -46,10 +48,11 @@ import android.preference.PreferenceManager;
 /** Provides access to global (static) objects. */
 public class Info {
   public static final float MARK_PROXIMITY = 200f;
+  public static final String SEQUENCE_FILE = "sequence.dat";
   private static RouteManager routeManager;
   private static AndroidTrackHistory trackHistory;
   private static Map<String,Drawable.ConstantState> agencyIcons = new HashMap<String,Drawable.ConstantState>();
-  private static Sequence sequence = new Sequence();
+  private static Sequence sequence;
   
   public static RouteManager routeManager(Context context) {
     if ( routeManager == null ) {
@@ -142,7 +145,30 @@ public class Info {
     editor.commit();
   }
 
-  public static Sequence getSequence() {
+  private static Sequence loadSequence(Context context) {
+    File dir = context.getFilesDir();
+    File file = new File(dir, SEQUENCE_FILE);
+    return (Sequence) Serialization.read(Sequence.class, file);
+  }
+  
+  public static Sequence getSequence(Context context) {
+    if ( sequence == null) {
+      sequence = loadSequence(context);
+      if ( sequence == null) {
+        sequence = new Sequence();
+      }
+    }
     return sequence;
+  }
+  
+  public static void saveSequence(Context context) {
+    if ( sequence != null) {
+      File dir = context.getFilesDir();
+      File file = new File(dir, SEQUENCE_FILE);
+      try {
+        Serialization.write(sequence, file);
+      } catch (IOException e) {
+      }
+    }
   }
 }
