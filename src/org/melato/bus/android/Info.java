@@ -33,6 +33,7 @@ import org.melato.bus.client.NearbyManager;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
+import org.melato.bus.plan.Sequence;
 import org.melato.log.Log;
 
 import android.content.Context;
@@ -48,6 +49,7 @@ public class Info {
   private static RouteManager routeManager;
   private static AndroidTrackHistory trackHistory;
   private static Map<String,Drawable.ConstantState> agencyIcons = new HashMap<String,Drawable.ConstantState>();
+  private static Sequence sequence = new Sequence();
   
   public static RouteManager routeManager(Context context) {
     if ( routeManager == null ) {
@@ -138,5 +140,9 @@ public class Info {
     Editor editor = prefs.edit();
     editor.putString(Pref.DEFAULT_AGENCY, agency);
     editor.commit();
+  }
+
+  public static Sequence getSequence() {
+    return sequence;
   }
 }

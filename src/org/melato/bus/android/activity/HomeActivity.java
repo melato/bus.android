@@ -30,8 +30,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -44,25 +42,27 @@ import android.widget.GridView;
 /** The main activity checks for updates and launches the next activity. */
 public class HomeActivity extends Activity implements OnItemClickListener {
   static class LaunchItem {
-    int id;
+    Class<? extends Activity> activity;
     int drawable;
     int text;
-    public LaunchItem(int id, int drawable, int text) {
+    public LaunchItem(Class<? extends Activity> activity, int drawable, int text) {
       super();
-      this.id = id;
+      this.activity = activity;
       this.drawable = drawable;
       this.text = text;
-    }
-    
+    }    
   }
+  
   // references to our images
   private LaunchItem[] items = {
-      new LaunchItem(R.id.recent_routes, R.drawable.recent, R.string.recent_routes),
-      new LaunchItem(R.id.nearby, R.drawable.nearby, R.string.nearby_routes),
-      new LaunchItem(R.id.map, R.drawable.map, R.string.map),
-      new LaunchItem(R.id.all_routes, R.drawable.all, R.string.all_routes),
-      new LaunchItem(R.id.pref, R.drawable.preferences, R.string.pref_menu),
-      new LaunchItem(R.id.about, R.drawable.about, R.string.about),
+      new LaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
+      new LaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.recent_routes),
+      new LaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.nearby_routes),
+      new LaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
+      new LaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.agencies),
+      new LaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
+      new LaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
+      new LaunchItem(null, R.drawable.about, R.string.about),
   };
   
   
@@ -80,27 +80,18 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       grid.setOnItemClickListener(this);
   }
 
+
   void select(int position) {
-    switch( items[position].id) {
-      case R.id.nearby:
-        startActivity(new Intent(this, NearbyActivity.class));
-        break;
-      case R.id.map:
-        startActivity(new Intent(this, RouteMapActivity.class));
-        break;
-      case R.id.all_routes:
-        startActivity(new Intent(this, AllRoutesActivity.class));
-        break;
-      case R.id.recent_routes:
-        startActivity(new Intent(this, RecentRoutesActivity.class));
-        break;
-      case R.id.pref:
-        startActivity(new Intent(this, BusPreferencesActivity.class));
-        break;
-      case R.id.about:
+    LaunchItem item = items[position];
+    if ( item.activity != null) {
+        startActivity(new Intent(this, item.activity));
+    } else {
+      switch(item.text) {
+      case R.string.about:
         HelpActivity.showHelp(this, R.string.help_about, R.string.about, false, true);        
       default:
         break;
+      }
     }
   }
   @Override
@@ -108,15 +99,6 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       long id) {
     select(position);
   }
-
-  @Override
-  public boolean onCreateOptionsMenu(Menu menu)
-  {
-     MenuInflater inflater = getMenuInflater();
-     inflater.inflate(R.menu.recent_routes_menu, menu);
-     return true;
-  }
-
 
   public class ImageAdapter extends BaseAdapter {
     private Context context;

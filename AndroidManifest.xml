@@ -76,6 +76,10 @@
             </intent-filter>
         </activity>        
         <activity
+            android:name=".activity.SequenceActivity"
+            android:label="@string/sequence" >
+        </activity>        
+        <activity
             android:name=".map.RouteMapActivity"
             android:label="@string/map" >
         </activity>

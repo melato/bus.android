@@ -26,10 +26,14 @@ import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.MarkerInfo;
+import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
+import org.melato.bus.model.RouteId;
 import org.melato.bus.model.Stop;
+import org.melato.bus.plan.Sequence;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -126,6 +130,13 @@ public class StopActivity extends ListActivity implements OnItemClickListener
   private void showStopSchedule() {
     activities.showRoute(routeStop, ScheduleActivity.class);
   }
+  private void addToSequence() {
+    Sequence sequence = Info.getSequence();
+    RouteId routeId = routeStop.getRouteId();
+    Stop stop = this.stop.getMarker();
+    sequence.addStop(Info.routeManager(this), new RStop(routeId, stop)); 
+    startActivity(new Intent(this, SequenceActivity.class));    
+  }
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
@@ -136,6 +147,10 @@ public class StopActivity extends ListActivity implements OnItemClickListener
         break;
       case R.id.schedule:
         showStopSchedule();
+        handled = true;
+        break;
+      case R.id.add_stop:
+        addToSequence();
         handled = true;
         break;
       default:
