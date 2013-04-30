@@ -43,8 +43,13 @@ public class SequenceActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    sequence = Info.getSequence();
+    sequence = Info.getSequence(this);
     setListAdapter(new ArrayAdapter<Leg>(this, R.layout.list_item, sequence.getLegs()));
   }
-  
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    Info.saveSequence(this);
+  }
 }
