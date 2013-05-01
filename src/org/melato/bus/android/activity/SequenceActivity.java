@@ -24,10 +24,11 @@ import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.plan.Leg;
 import org.melato.bus.plan.Sequence;
-import org.melato.bus.plan.Sequence.Leg;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -101,6 +102,10 @@ public class SequenceActivity extends ListActivity {
         break;
       case R.id.remove_last:
         removeLast();
+        handled = true;
+        break;
+      case R.id.schedule:
+        startActivity(new Intent(this, SequenceScheduleActivity.class));
         handled = true;
         break;
     }

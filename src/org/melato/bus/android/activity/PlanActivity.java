@@ -32,11 +32,11 @@ import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
+import org.melato.bus.plan.Leg;
 import org.melato.bus.plan.Plan;
 import org.melato.bus.plan.PlanLeg;
 import org.melato.bus.plan.Planner;
 import org.melato.bus.plan.Sequence;
-import org.melato.bus.plan.Sequence.Leg;
 import org.melato.gps.Point2D;
 import org.melato.log.Log;
 import org.melato.progress.ProgressGenerator;
@@ -55,7 +55,7 @@ import android.widget.ListView;
 public class PlanActivity extends ListActivity {
   private ActivityProgressHandler progress;
   private BusActivities activities;
-  private Point2D origin;
+  private Point2D origin;  
   private Point2D destination;
   private Plan[] plans;
 
