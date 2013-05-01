@@ -20,6 +20,8 @@
  */
 package org.melato.bus.android.activity;
 
+import java.util.List;
+
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.plan.Sequence;
@@ -27,14 +29,20 @@ import org.melato.bus.plan.Sequence.Leg;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 /**
  * Displays a sequence
  * @author Alex Athanasopoulos
  */
 public class SequenceActivity extends ListActivity {
-  Sequence sequence;
+  private Sequence sequence;
+  private ArrayAdapter<Leg> adapter;
 
   public SequenceActivity() {
   }
@@ -44,7 +52,8 @@ public class SequenceActivity extends ListActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     sequence = Info.getSequence(this);
-    setListAdapter(new ArrayAdapter<Leg>(this, R.layout.list_item, sequence.getLegs()));
+    adapter = new ArrayAdapter<Leg>(this, R.layout.list_item, sequence.getLegs());
+    setListAdapter(adapter);
   }
 
   @Override
@@ -52,4 +61,51 @@ public class SequenceActivity extends ListActivity {
     super.onDestroy();
     Info.saveSequence(this);
   }
+
+  @Override
+  protected void onListItemClick(ListView l, View v, int position, long id) {
+    Leg leg = sequence.getLegs().get(position);
+    BusActivities activities = new BusActivities(this);
+    activities.showRoute(leg.getRStop1());    
+  }
+  
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu)
+  {
+     MenuInflater inflater = getMenuInflater();
+     inflater.inflate(R.menu.sequence_menu, menu);
+     return true;
+  }
+
+  private void removeLast() {
+    List<Leg> legs = sequence.getLegs();
+    if ( ! legs.isEmpty()) {
+      Leg last = legs.get(legs.size()-1);
+      if ( last.getStop2() != null) {
+        last.setStop2(null);
+      } else {
+        legs.remove(legs.size()-1);
+      }
+      adapter.notifyDataSetChanged();
+    }
+  }
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    List<Leg> legs = sequence.getLegs();
+    boolean handled = false;
+    switch(item.getItemId()) {
+      case R.id.clear:
+        legs.clear();
+        adapter.notifyDataSetChanged();
+        handled = true;
+        break;
+      case R.id.remove_last:
+        removeLast();
+        handled = true;
+        break;
+    }
+    return handled ? true : false;
+  }
+    
+  
 }

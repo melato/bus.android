@@ -61,5 +61,7 @@
     <string name="terms_of_use">Terms of Use</string>
     <string name="sequence">Sequence</string>
     <string name="add_stop">Σχεδιασμός</string>
+    <string name="clear">Διαγραφή όλων</string>
+    <string name="remove_last">Διαγραφή τελευταίας</string>
     
 </resources>
