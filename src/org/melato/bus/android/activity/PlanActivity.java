@@ -20,6 +20,8 @@
  */
 package org.melato.bus.android.activity;
 
+import java.util.List;
+
 import org.melato.android.AndroidLogger;
 import org.melato.android.location.Locations;
 import org.melato.android.progress.ActivityProgressHandler;
@@ -33,6 +35,8 @@ import org.melato.bus.model.Route;
 import org.melato.bus.plan.Plan;
 import org.melato.bus.plan.PlanLeg;
 import org.melato.bus.plan.Planner;
+import org.melato.bus.plan.Sequence;
+import org.melato.bus.plan.Sequence.Leg;
 import org.melato.gps.Point2D;
 import org.melato.log.Log;
 import org.melato.progress.ProgressGenerator;
@@ -79,6 +83,20 @@ public class PlanActivity extends ListActivity {
     }
   }
   
+  Point2D getOrigin() {
+    Sequence sequence = Info.getSequence(this);
+    List<Leg> legs = sequence.getLegs();
+    if ( ! legs.isEmpty()) {
+      Leg last = legs.get(legs.size()-1);
+      if ( last.getStop2() != null) {
+        return last.getStop2();
+      }
+      return last.getStop1();
+    }
+    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    return Locations.location2Point(loc);    
+  }
   
 /** Called when the activity is first created. */
   @Override
@@ -87,9 +105,7 @@ public class PlanActivity extends ListActivity {
     activities = new BusActivities(this);
     progress = new ProgressTitleHandler(this);
     Log.setLogger(new AndroidLogger(this));
-    LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-    Location loc = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-    origin = Locations.location2Point(loc);
+    origin = getOrigin();
     //origin = new Point2D(37.9997f, 23.7848f);
     LabeledPoint point = Locations.getGeoUri(getIntent());
     Log.info("lp: " + point);
