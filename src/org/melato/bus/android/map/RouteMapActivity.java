@@ -26,8 +26,8 @@ import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
 import org.melato.bus.android.activity.IntentHelper;
-import org.melato.bus.android.activity.RouteStop;
 import org.melato.bus.android.app.HelpActivity;
+import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.Stop;
@@ -82,9 +82,9 @@ public class RouteMapActivity extends MapActivity {
         routesOverlay.addRoute(route.getRouteId());
         routesOverlay.setSelectedRoute(route.getRouteId());
         IntentHelper intentHelper = new IntentHelper(this);
-        RouteStop routeStop = intentHelper.getRouteStop();
+        RStop rstop = intentHelper.getRStop();
         Stop[] stops = Info.routeManager(this).getStops(route);
-        int index = routeStop.getStopIndex(stops);
+        int index = rstop.getStopIndex();
         if ( index >= 0 ) {
           routesOverlay.setSelectedStop(stops[index]);
           center = GMap.geoPoint(stops[index]);

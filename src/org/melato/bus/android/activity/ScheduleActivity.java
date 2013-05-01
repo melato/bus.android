@@ -31,6 +31,7 @@ import org.melato.bus.client.TimeOfDay;
 import org.melato.bus.client.TimeOfDayList;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.DaySchedule;
+import org.melato.bus.model.RStop;
 import org.melato.bus.model.RouteException;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.Schedule;
@@ -155,12 +156,17 @@ public class ScheduleActivity extends Activity implements OnItemClickListener {
     return getScheduleName(this, daySchedule.getScheduleId());
   }
   
-  private void setStopInfo(RouteStop stop) {
-    Stop[] stops = Info.routeManager(this).getStops(stop.getRouteId());
-    stopName = stop.getStopName(stops);
-    timeOffset = stop.getTimeFromStart(stops);
-    if ( timeOffset == 0 && stops.length > 0 ) {
-      stopName = stops[0].getName();
+  private void setStopInfo(RStop rstop) {
+    Stop[] stops = Info.routeManager(this).getStops(rstop.getRouteId());
+    Stop stop = rstop.getStop();
+    if ( stop == null || stop.getIndex() > 0 && stop.getSecondsFromStart() == 0) {
+      if ( stops.length > 0 ) {
+        stop = stops[0];
+      }
+    }
+    if ( stop != null) {
+      stopName = stop.getName();
+      timeOffset = stop.getSecondsFromStart();
     }
   }
   
@@ -170,11 +176,11 @@ public class ScheduleActivity extends Activity implements OnItemClickListener {
       super.onCreate(savedInstanceState);
       activities = new BusActivities(this);
       IntentHelper helper = new IntentHelper(this);
-      RouteStop routeStop = helper.getRouteStop();
-      if ( routeStop == null )
+      RStop rstop = helper.getRStop();
+      if ( rstop == null )
         return;
-      setStopInfo(routeStop);
-      schedule = activities.getRouteManager().getSchedule(routeStop.getRouteId());
+      setStopInfo(rstop);
+      schedule = activities.getRouteManager().getSchedule(rstop.getRouteId());
       ScheduleId scheduleId = (ScheduleId) getIntent().getSerializableExtra(KEY_SCHEDULE_ID);
       if ( scheduleId == null) {
         scheduleId = stickyScheduleId;

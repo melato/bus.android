@@ -118,8 +118,12 @@ public class StopContext extends LocationContext {
 
   public int getTimeFromStart() {
     if (timeFromStart == -1) {
-      timeFromStart = new RouteStop(null, null, markerIndex)
-          .getTimeFromStart(track.getStops());
+      if ( markerIndex >= 0 ) {
+        Stop[] stops = track.getStops();
+        timeFromStart = stops[markerIndex].getSecondsFromStart();
+      } else {
+        timeFromStart = 0;
+      }
     }
     return timeFromStart;
   }

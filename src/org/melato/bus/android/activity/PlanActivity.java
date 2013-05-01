@@ -25,8 +25,10 @@ import org.melato.android.location.Locations;
 import org.melato.android.progress.ActivityProgressHandler;
 import org.melato.android.progress.ProgressTitleHandler;
 import org.melato.android.util.LabeledPoint;
+import org.melato.bus.algorithm.Nearby1SingleRoutePlanner;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.plan.Plan;
 import org.melato.bus.plan.PlanLeg;
@@ -63,7 +65,7 @@ public class PlanActivity extends ListActivity {
     protected Plan[] doInBackground(Void... params) {
       ProgressGenerator.setHandler(progress);
       Planner planner = null;
-      //planner = new Nearby1SingleRoutePlanner();
+      planner = new Nearby1SingleRoutePlanner();
       planner.setRouteManager(Info.routeManager(PlanActivity.this));
       return planner.plan(origin, destination);
     }
@@ -109,9 +111,10 @@ public class PlanActivity extends ListActivity {
     Plan plan = plans[position];
     PlanLeg[] legs = plan.getLegs();
     if ( legs.length > 0 ) {
-      Route route = legs[0].getRoute();
-      RouteStop routeStop = new RouteStop(route.getRouteId(), legs[0].getStop1());
-      activities.showRoute(routeStop);
+      PlanLeg leg = legs[0];
+      Route route = leg.getRoute();
+      RStop rstop = new RStop(route.getRouteId(), leg.getStop1());
+      activities.showRoute(rstop);
     }
   }
 
