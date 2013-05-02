@@ -26,7 +26,9 @@ import org.melato.bus.plan.SequenceInstance.LegInstance;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 /**
  * Displays a sequence instance:  An instance schedule at a particular time.
@@ -48,5 +50,13 @@ public class SequenceInstanceActivity extends ListActivity {
       finish();
     }
     setListAdapter(new ArrayAdapter<LegInstance>(this, R.layout.list_item, instance.getLegInstances()));
+  }
+
+  @Override
+  protected void onListItemClick(ListView l, View v, int position, long id) {
+    LegInstance leg = instance.getLegInstances()[position];
+    BusActivities activities = new BusActivities(this);
+    activities.showRoute(leg.getRStop());    
   }  
+  
 }

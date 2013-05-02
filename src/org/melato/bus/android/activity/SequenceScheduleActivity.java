@@ -20,6 +20,7 @@
  */
 package org.melato.bus.android.activity;
 
+import java.util.Date;
 import java.util.List;
 
 import org.melato.bus.android.Info;
@@ -27,7 +28,6 @@ import org.melato.bus.android.R;
 import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.SequenceInstance;
 import org.melato.bus.plan.SequenceSchedule;
-import org.melato.bus.plan.SequenceInstance.LegInstance;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -54,7 +54,13 @@ public class SequenceScheduleActivity extends ListActivity {
     sequence = Info.getSequence(this);
     SequenceSchedule schedule = new SequenceSchedule(sequence, Info.routeManager(this));
     instances = schedule.getInstances();
-    setListAdapter(new ArrayAdapter<SequenceInstance>(this, R.layout.list_item, instances));
+    HighlightAdapter<SequenceInstance> adapter = new HighlightAdapter<SequenceInstance>(this, instances);
+    setListAdapter(adapter);
+    int pos = schedule.getTimePosition(new Date());
+    if ( pos >= 0 ) {
+      adapter.setSelection(pos);
+      setSelection(pos);
+    }
   }
 
   @Override
