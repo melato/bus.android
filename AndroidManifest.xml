@@ -84,6 +84,10 @@
             android:label="@string/schedule" >
         </activity>        
         <activity
+            android:name=".activity.SequenceInstanceActivity"
+            android:label="@string/schedule" >
+        </activity>        
+        <activity
             android:name=".map.RouteMapActivity"
             android:label="@string/map" >
         </activity>

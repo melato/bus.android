@@ -20,55 +20,33 @@
  */
 package org.melato.bus.android.activity;
 
-import java.util.List;
-
-import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.SequenceInstance;
-import org.melato.bus.plan.SequenceSchedule;
 import org.melato.bus.plan.SequenceInstance.LegInstance;
 
 import android.app.ListActivity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 /**
- * Displays a sequence
+ * Displays a sequence instance:  An instance schedule at a particular time.
  * @author Alex Athanasopoulos
  */
-public class SequenceScheduleActivity extends ListActivity {
-  private Sequence sequence;
-  private List<SequenceInstance> instances;
+public class SequenceInstanceActivity extends ListActivity {
+  public static final String KEY_INSTANCE = "org.melato.bus.android.instance";
+  private SequenceInstance instance;
 
-  public SequenceScheduleActivity() {
+  public SequenceInstanceActivity() {
   }
   
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    sequence = Info.getSequence(this);
-    SequenceSchedule schedule = new SequenceSchedule(sequence, Info.routeManager(this));
-    instances = schedule.getInstances();
-    setListAdapter(new ArrayAdapter<SequenceInstance>(this, R.layout.list_item, instances));
-  }
-
-  @Override
-  protected void onListItemClick(ListView l, View v, int position, long id) {
-    SequenceInstance instance = instances.get(position);
-    Intent intent = new Intent(this, SequenceInstanceActivity.class);
-    intent.putExtra(SequenceInstanceActivity.KEY_INSTANCE, instance);
-    startActivity(intent);
-  }
-  
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    Info.saveSequence(this);
-  }
-
+    instance = (SequenceInstance) getIntent().getSerializableExtra(KEY_INSTANCE);
+    if ( instance == null) {
+      finish();
+    }
+    setListAdapter(new ArrayAdapter<LegInstance>(this, R.layout.list_item, instance.getLegInstances()));
+  }  
 }

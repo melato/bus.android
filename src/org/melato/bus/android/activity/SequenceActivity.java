@@ -110,7 +110,5 @@ public class SequenceActivity extends ListActivity {
         break;
     }
     return handled ? true : false;
-  }
-    
-  
+  }    
 }
