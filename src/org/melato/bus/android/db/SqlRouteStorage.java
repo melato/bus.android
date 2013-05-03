@@ -22,6 +22,7 @@ package org.melato.bus.android.db;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -33,7 +34,6 @@ import java.util.Set;
 
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.DaySchedule;
-import org.melato.bus.model.MarkerInfo;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteException;
@@ -44,6 +44,7 @@ import org.melato.bus.model.Schedule;
 import org.melato.bus.model.ScheduleId;
 import org.melato.bus.model.ScheduleSummary;
 import org.melato.bus.model.Stop;
+import org.melato.bus.plan.Leg;
 import org.melato.gps.Point2D;
 import org.melato.progress.ProgressGenerator;
 import org.melato.util.IntArrays;
@@ -533,6 +534,22 @@ public class SqlRouteStorage implements RouteStorage {
     return s.replaceAll( "'", "''" );
   }
   
+  private String join(List<String> items) {
+    StringBuilder buf = new StringBuilder();
+    boolean first = true;
+    for(String item: items) {
+      if ( first ) {
+        first = false;
+      } else {
+        buf.append(",");        
+      }
+      buf.append( "'");
+      buf.append(quote(item));
+      buf.append( "'");
+    }
+    return buf.toString();
+  }
+  
   private String format(String sql, RouteId routeId ) {
     return String.format(Locale.US, sql, quote(routeId.getName()), quote(routeId.getDirection()));
   }
@@ -562,32 +579,43 @@ public class SqlRouteStorage implements RouteStorage {
     }
   }
 
+  static private final String STOP_SELECT =
+      "select lat, lon, markers.symbol, markers.name, stops.time_offset, stops.flags, stops.seq" +
+      " from markers" +
+      "\njoin stops on markers._id = stops.marker";
+
+  private Stop readStop(Cursor cursor) {
+    Stop p = new Stop(cursor.getFloat(0), cursor.getFloat(1));
+    p.setSymbol(cursor.getString(2));
+    p.setName(cursor.getString(3));
+    p.setTime(1000L * cursor.getInt(4));
+    p.setFlags(cursor.getInt(5));
+    p.setIndex(cursor.getInt(6));
+    return p;
+  }
+  
   @Override
   public List<Stop> loadStops(RouteId routeId) {
     SQLiteDatabase db = getDatabase();
-    String sql = "select lat, lon, markers.symbol, markers.name, stops.time_offset, stops.flags from markers" +
-        "\njoin stops on markers._id = stops.marker" +
-        "\njoin routes on routes._id = stops.route" +
-        "\nwhere " + whereClause(routeId) + 
-        "\norder by stops._id";
-    Cursor cursor = db.rawQuery( sql, null);
     try {
-      List<Stop> stops = new ArrayList<Stop>();
-      int index = 0;
-      if ( cursor.moveToFirst() ) {
-        do {
-          Stop p = new Stop(cursor.getFloat(0), cursor.getFloat(1));
-          p.setSymbol(cursor.getString(2));
-          p.setName(cursor.getString(3));
-          p.setTime(1000L * cursor.getInt(4));
-          p.setFlags(cursor.getInt(5));
-          p.setIndex(index++);
-          stops.add(p);
-        } while ( cursor.moveToNext() );
+      String sql = STOP_SELECT +
+          "\njoin routes on routes._id = stops.route" +
+          "\nwhere " + whereClause(routeId) + 
+          "\norder by stops._id";
+      Cursor cursor = db.rawQuery( sql, null);
+      try {
+        List<Stop> stops = new ArrayList<Stop>();
+        if ( cursor.moveToFirst() ) {
+          do {
+            Stop p = readStop(cursor);
+            stops.add(p);
+          } while ( cursor.moveToNext() );
+        }
+        return stops;
+      } finally {
+        cursor.close();
       }
-      return stops;
     } finally {
-      cursor.close();
       db.close();
     }
   }
@@ -713,9 +741,8 @@ public class SqlRouteStorage implements RouteStorage {
     //Log.info(clock);    
   }
 
-  private List<Route> loadRoutesForMarker(SQLiteDatabase db, String symbol) {    
-    List<Route> routes = new ArrayList<Route>();
-    String sql = ROUTE_SELECT +
+  private Set<RouteId> loadRoutesForMarker(SQLiteDatabase db, String symbol) {    
+    String sql = "select routes.name, routes.direction" +
         "\njoin stops on routes._id = stops.route" +
         "\njoin markers on markers._id = stops.marker" +
         "\nwhere markers.symbol = '%s'";
@@ -723,54 +750,84 @@ public class SqlRouteStorage implements RouteStorage {
         String.format( Locale.US, sql, quote(symbol)),
         null);
     try {
-      Set<Integer> set = new HashSet<Integer>();
+      Set<RouteId> set = new HashSet<RouteId>();
       if ( cursor.moveToFirst() ) {
         do {
-          int id = cursor.getInt(4);
-          if ( set.add(id)) { // skip duplicates.
-            Route route = readBasic(cursor);
-            routes.add(route);
-          }
+          RouteId routeId = new RouteId(cursor.getString(0), cursor.getString(1));
+          set.add(routeId);
         } while(cursor.moveToNext());      
       }
+      return set;
     } finally {
       cursor.close();
     }
-    return routes;
   }
   
-  private Stop loadStop(SQLiteDatabase db, String symbol) {
-    String sql = "select lat, lon, symbol, name, _id from markers" +
-        "\nwhere symbol = '%s'";
-    Cursor cursor = db.rawQuery(
-        String.format(Locale.US, sql, quote(symbol)), null);
+  private List<Stop> loadStops(SQLiteDatabase db, RouteId routeId, List<String> symbols) {
+    String sql = STOP_SELECT +
+        "\njoin routes on routes._id = stops.route" +
+        "\nwhere " + whereClause(routeId) +
+        "\nand markers.symbol in (" + join(symbols) + ")";
+    Cursor cursor = db.rawQuery(sql, null);
     try {
+      List<Stop> stops = new ArrayList<Stop>();
       if ( cursor.moveToFirst() ) {
-        Stop p = new Stop(cursor.getFloat(0), cursor.getFloat(1));
-        p.setSymbol(cursor.getString(2));
-        p.setName(cursor.getString(3));
-        return p;
+        do {
+          Stop p = readStop(cursor);
+          stops.add(p);
+        } while( cursor.moveToNext());
       }
-      return null;
+      return stops;
     } finally {
       cursor.close();
     }
   }
   
-  @Override
-  public MarkerInfo loadMarker(String symbol) {
+  private Collection<RouteId> loadRoutesBetween(String stop1, String stop2) {
     SQLiteDatabase db = getDatabase();
     try {
-      Stop waypoint = loadStop(db, symbol);
-      if ( waypoint == null )
-        return null;
-      List<Route> routes = loadRoutesForMarker(db, symbol);
-      return new MarkerInfo(waypoint, routes);      
+      String sql = "select routes.name, routes.direction from routes" +
+          "\njoin stops as s1 on routes._id = s1.route" +
+          "\njoin markers as m1 on s1.marker = m1._id" +
+          "\njoin stops as s2 on routes._id = s2.route" +
+          "\njoin markers as m2 on s2.marker = m2._id" +
+          "\nwhere m1.symbol = '%s' and m2.symbol = '%s' and s1.seq < s2.seq"; 
+      Cursor cursor = db.rawQuery(
+          String.format( Locale.US, sql, quote(stop1), quote(stop2)),
+          null);
+      try {
+        List<RouteId> routeIds = new ArrayList<RouteId>();
+        if ( cursor.moveToFirst() ) {
+          do {
+            routeIds.add(new RouteId(cursor.getString(0), cursor.getString(1)));
+          } while( cursor.moveToNext() );
+        }
+        return routeIds;
+      } finally {
+        cursor.close();
+      }
     } finally {
       db.close();
     }
   }
   
+  @Override
+  public List<Leg> loadLegsBetween(String stop1, String stop2) {
+    SQLiteDatabase db = getDatabase();
+    try {
+      List<String> symbols = Arrays.asList(new String[] { stop1, stop2});
+      Collection<RouteId> routes = loadRoutesBetween(stop1, stop2);
+      List<Leg> legs = new ArrayList<Leg>();
+      for(RouteId routeId: routes) {
+        List<Stop> stops = loadStops(db, routeId, symbols);
+        Leg.findLegs(routeId, stops, stop1, stop2, legs);
+      }
+      return legs;
+    } finally {
+      db.close();
+    }
+  }
+
   public boolean checkVersion() {
     return getVersion() >= MIN_VERSION;
   }
