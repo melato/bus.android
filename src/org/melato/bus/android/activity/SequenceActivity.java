@@ -25,6 +25,7 @@ import java.util.List;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.plan.Leg;
+import org.melato.bus.plan.LegItem;
 import org.melato.bus.plan.Sequence;
 
 import android.app.ListActivity;
@@ -43,7 +44,8 @@ import android.widget.ListView;
  */
 public class SequenceActivity extends ListActivity {
   private Sequence sequence;
-  private ArrayAdapter<Leg> adapter;
+  private List<LegItem> items;
+  private ArrayAdapter<LegItem> adapter;
 
   public SequenceActivity() {
   }
@@ -53,8 +55,7 @@ public class SequenceActivity extends ListActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     sequence = Info.getSequence(this);
-    adapter = new ArrayAdapter<Leg>(this, R.layout.list_item, sequence.getLegs());
-    setListAdapter(adapter);
+    resetList();
   }
 
   @Override
@@ -78,6 +79,12 @@ public class SequenceActivity extends ListActivity {
      return true;
   }
 
+  private void resetList() {
+    items = sequence.getLegItems();
+    adapter = new ArrayAdapter<LegItem>(this, R.layout.list_item, items);
+    setListAdapter(adapter);
+  }
+  
   private void removeLast() {
     List<Leg> legs = sequence.getLegs();
     if ( ! legs.isEmpty()) {
@@ -87,14 +94,14 @@ public class SequenceActivity extends ListActivity {
       } else {
         legs.remove(legs.size()-1);
       }
-      adapter.notifyDataSetChanged();
+      resetList();
     }
   }
   private void removeFirst() {
     List<Leg> legs = sequence.getLegs();
     if ( ! legs.isEmpty()) {
       legs.remove(0);
-      adapter.notifyDataSetChanged();
+      resetList();
     }
   }
   @Override
@@ -104,7 +111,7 @@ public class SequenceActivity extends ListActivity {
     switch(item.getItemId()) {
       case R.id.clear:
         legs.clear();
-        adapter.notifyDataSetChanged();
+        resetList();
         handled = true;
         break;
       case R.id.remove_last:
