@@ -62,4 +62,5 @@
     <string name="clear">Διαγραφή όλων</string>
     <string name="remove_last">Διαγραφή τελευταίας</string>
     <string name="remove_first">Διαγραφή πρώτης</string>
+    <string name="twitter">Twitter</string>
 </resources>

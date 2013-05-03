@@ -29,6 +29,7 @@ import org.melato.bus.android.map.RouteMapActivity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -51,18 +52,50 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       this.drawable = drawable;
       this.text = text;
     }    
+    protected LaunchItem(int drawable, int text) {
+      super();
+      this.drawable = drawable;
+      this.text = text;
+    }
+    public void invoke(Context context) {
+      context.startActivity(new Intent(context, activity));      
+    }
   }
+  static class About extends LaunchItem {
+    
+    public About() {
+      super(R.drawable.about, R.string.about);
+    }
+
+    public void invoke(Context context) {
+      HelpActivity.showHelp(context, R.string.help_about, R.string.about, false, true);        
+    }
+  }
+  static class Twitter extends LaunchItem {
+    
+    public Twitter() {
+      super(R.drawable.twitter, R.string.twitter);
+    }
+
+    public void invoke(Context context) {
+      Uri uri = Uri.parse("http://twitter.com/athensnextbus");
+      Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+      context.startActivity(intent);
+    }
+  }
+  
   
   // references to our images
   private LaunchItem[] items = {
       new LaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
-      new LaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.recent_routes),
-      new LaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.nearby_routes),
+      new LaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
+      new LaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
       new LaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
-      new LaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.agencies),
+      new LaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
       new LaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
       new LaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
-      new LaunchItem(null, R.drawable.about, R.string.about),
+      new About(),
+      new Twitter(),
   };
   
   
@@ -83,16 +116,7 @@ public class HomeActivity extends Activity implements OnItemClickListener {
 
   void select(int position) {
     LaunchItem item = items[position];
-    if ( item.activity != null) {
-        startActivity(new Intent(this, item.activity));
-    } else {
-      switch(item.text) {
-      case R.string.about:
-        HelpActivity.showHelp(this, R.string.help_about, R.string.about, false, true);        
-      default:
-        break;
-      }
-    }
+    item.invoke(this);
   }
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position,
