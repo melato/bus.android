@@ -7,9 +7,9 @@
     <string name="menu_recent_routes">Πρόσφατες</string>
     <string name="menu_nearby_routes">Κοντινές</string>
     <string name="menu_agencies">Φορείς</string>
-    <string name="agencies">Συγκοινωνιακοί Φορείς</string>
+    <string name="agencies">Φορείς</string>
     <string name="all_routes">Όλες οι Γραμμές</string>
-    <string name="recent_routes">Πρόσφατες Γραμμές</string>
+    <string name="recent_routes">Πρόσφατες</string>
     <string name="schedule">Ωράριο</string>
     <string name="fast_gps">Γρήγορο GPS</string>
     <string name="gps_speed">Συχνότητα GPS</string>
@@ -57,4 +57,9 @@
     <string name="loading">Φορτώνει &#8230;</string>
     <string name="ok">Ok</string>
     <string name="terms_of_use">Όροι Χρήσης</string>
+    <string name="sequence">Πρόγραμμα</string>
+    <string name="add_stop">Προσθήκη</string>
+    <string name="clear">Διαγραφή όλων</string>
+    <string name="remove_last">Διαγραφή τελευταίας</string>
+    <string name="remove_first">Διαγραφή πρώτης</string>
 </resources>

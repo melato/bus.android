@@ -7,7 +7,7 @@
     <string name="menu_recent_routes">Recent</string>
     <string name="menu_nearby_routes">Nearby</string>
     <string name="menu_agencies">Agencies</string>
-    <string name="agencies">Transportation Agencies</string>
+    <string name="agencies">Agencies</string>
     <string name="all_routes">All Routes</string>
     <string name="recent_routes">Recent Routes</string>
     <string name="nearby_routes">Nearby Routes</string>
@@ -60,8 +60,9 @@
     <string name="ok">Ok</string>
     <string name="terms_of_use">Terms of Use</string>
     <string name="sequence">Sequence</string>
-    <string name="add_stop">Σχεδιασμός</string>
-    <string name="clear">Διαγραφή όλων</string>
-    <string name="remove_last">Διαγραφή τελευταίας</string>
+    <string name="add_stop">Add to Sequence</string>
+    <string name="clear">Clear All</string>
+    <string name="remove_last">Clear Last</string>
+    <string name="remove_first">Clear First</string>
     
 </resources>
