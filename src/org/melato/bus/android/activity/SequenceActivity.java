@@ -90,6 +90,13 @@ public class SequenceActivity extends ListActivity {
       adapter.notifyDataSetChanged();
     }
   }
+  private void removeFirst() {
+    List<Leg> legs = sequence.getLegs();
+    if ( ! legs.isEmpty()) {
+      legs.remove(0);
+      adapter.notifyDataSetChanged();
+    }
+  }
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     List<Leg> legs = sequence.getLegs();
@@ -102,6 +109,10 @@ public class SequenceActivity extends ListActivity {
         break;
       case R.id.remove_last:
         removeLast();
+        handled = true;
+        break;
+      case R.id.remove_first:
+        removeFirst();
         handled = true;
         break;
       case R.id.schedule:
