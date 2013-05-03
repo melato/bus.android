@@ -23,6 +23,7 @@ package org.melato.bus.android.activity;
 import org.melato.bus.android.R;
 import org.melato.bus.plan.SequenceInstance;
 import org.melato.bus.plan.SequenceInstance.LegInstance;
+import org.melato.bus.plan.SequenceInstance.SequenceInstanceLeg;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -49,14 +50,17 @@ public class SequenceInstanceActivity extends ListActivity {
     if ( instance == null) {
       finish();
     }
-    setListAdapter(new ArrayAdapter<LegInstance>(this, R.layout.list_item, instance.getLegInstances()));
+    setListAdapter(new ArrayAdapter<SequenceInstanceLeg>(this, R.layout.list_item, instance.getLegInstances()));
   }
 
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
-    LegInstance leg = instance.getLegInstances()[position];
-    BusActivities activities = new BusActivities(this);
-    activities.showRoute(leg.getRStop());    
+    SequenceInstanceLeg leg = instance.getLegInstances().get(position);
+    if ( leg instanceof LegInstance) {
+      LegInstance legInstance = (LegInstance) leg;
+      BusActivities activities = new BusActivities(this);
+      activities.showRoute(legInstance.getRStop());    
+    }
   }  
   
 }
