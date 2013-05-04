@@ -24,6 +24,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.melato.bus.android.Info;
+import org.melato.bus.model.Schedule.DateScheduleFactory;
+import org.melato.bus.model.Schedule.ScheduleFactory;
+import org.melato.bus.model.Schedule.ScheduleIdScheduleFactory;
+import org.melato.bus.model.ScheduleId;
 import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.SequenceInstance;
 import org.melato.bus.plan.SequenceSchedule;
@@ -45,12 +49,20 @@ public class SequenceScheduleActivity extends ListActivity {
   public SequenceScheduleActivity() {
   }
   
+  public static ScheduleFactory scheduleFactory() {
+    ScheduleId scheduleId = Info.getStickyScheduleId();
+    if ( scheduleId != null) {
+      return new ScheduleIdScheduleFactory(scheduleId);
+    } else {
+      return new DateScheduleFactory();
+    }
+  }
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     sequence = Info.getSequence(this);
-    SequenceSchedule schedule = new SequenceSchedule(sequence, Info.routeManager(this));
+    SequenceSchedule schedule = new SequenceSchedule(sequence, scheduleFactory(), Info.routeManager(this));
     instances = schedule.getInstances();
     HighlightAdapter<SequenceInstance> adapter = new HighlightAdapter<SequenceInstance>(this, instances);
     setListAdapter(adapter);

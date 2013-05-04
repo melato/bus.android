@@ -66,9 +66,12 @@ public class SequenceActivity extends ListActivity {
 
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
-    Leg leg = sequence.getLegs().get(position);
-    BusActivities activities = new BusActivities(this);
-    activities.showRoute(leg.getRStop1());    
+    LegItem item = items.get(position);
+    if ( item instanceof Leg ) {
+      Leg leg = (Leg) item;
+      BusActivities activities = new BusActivities(this);
+      activities.showRoute(leg.getRStop1());
+    }
   }
   
   @Override

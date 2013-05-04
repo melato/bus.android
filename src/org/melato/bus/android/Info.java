@@ -35,6 +35,7 @@ import org.melato.bus.client.Serialization;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
+import org.melato.bus.model.ScheduleId;
 import org.melato.bus.plan.Sequence;
 import org.melato.log.Log;
 
@@ -53,6 +54,7 @@ public class Info {
   private static AndroidTrackHistory trackHistory;
   private static Map<String,Drawable.ConstantState> agencyIcons = new HashMap<String,Drawable.ConstantState>();
   private static Sequence sequence;
+  private static ScheduleId stickyScheduleId;
   
   public static RouteManager routeManager(Context context) {
     if ( routeManager == null ) {
@@ -170,5 +172,13 @@ public class Info {
       } catch (IOException e) {
       }
     }
+  }
+
+  public static ScheduleId getStickyScheduleId() {
+    return stickyScheduleId;
+  }
+
+  public static void setStickyScheduleId(ScheduleId stickyScheduleId) {
+    Info.stickyScheduleId = stickyScheduleId;
   }
 }
