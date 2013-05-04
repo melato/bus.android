@@ -33,6 +33,7 @@ import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.Stop;
 import org.melato.bus.model.StopCount;
+import org.melato.bus.plan.Walk;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.geometry.gpx.SpeedTracker;
 import org.melato.gps.Earth;
@@ -42,8 +43,6 @@ import android.content.Context;
 import android.widget.ArrayAdapter;
 
 public class StopContext extends LocationContext {
-  public static final float WALK_OVERHEAD = 1.3f;
-  public static final float WALK_SPEED = 5f;
   public static final float BIKE_OVERHEAD = 1.35f;
   public static final float BIKE_SPEED = 15f;
   public static final float MIN_SPEED = 1f / (3600f / 1000f); // 1 Km/h
@@ -299,7 +298,7 @@ public class StopContext extends LocationContext {
     properties.add(new Speed60());
     properties.add(new PathETA());
     properties
-        .add(new StraightETA(R.string.walkETA, WALK_SPEED, WALK_OVERHEAD));
+        .add(new StraightETA(R.string.walkETA, Walk.SPEED, Walk.OVERHEAD));
     //properties.add(new LatitudeField(context.getString(R.string.latitude), getMarker()));
     //properties.add(new LongitudeField(context.getString(R.string.longitude), getMarker()));
     Stop stop = getMarker();
