@@ -128,11 +128,15 @@ public class StopActivity extends ListActivity implements OnItemClickListener
   private void showStopSchedule() {
     activities.showRoute(rstop, ScheduleActivity.class);
   }
-  private void addToSequence() {
+  private void addToSequence(boolean after) {
     Sequence sequence = Info.getSequence(this);
     RouteId routeId = rstop.getRouteId();
     Stop stop = this.stop.getMarker();
-    sequence.addStop(Info.routeManager(this), new RStop(routeId, stop)); 
+    if ( after ) {
+      sequence.addStopAfter(Info.routeManager(this), new RStop(routeId, stop));
+    } else {
+      sequence.addStopBefore(Info.routeManager(this), new RStop(routeId, stop));
+    }
     startActivity(new Intent(this, SequenceActivity.class));    
   }
   @Override
@@ -147,8 +151,12 @@ public class StopActivity extends ListActivity implements OnItemClickListener
         showStopSchedule();
         handled = true;
         break;
-      case R.id.add_stop:
-        addToSequence();
+      case R.id.add_stop_after:
+        addToSequence(true);
+        handled = true;
+        break;
+      case R.id.add_stop_before:
+        addToSequence(false);
         handled = true;
         break;
       default:

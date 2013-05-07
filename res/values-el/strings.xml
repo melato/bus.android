@@ -58,7 +58,8 @@
     <string name="ok">Ok</string>
     <string name="terms_of_use">Όροι Χρήσης</string>
     <string name="sequence">Πρόγραμμα</string>
-    <string name="add_stop">Προσθήκη</string>
+    <string name="add_stop_after">Προσθήκη</string>
+    <string name="add_stop_before">Πρίν</string>
     <string name="clear">Διαγραφή όλων</string>
     <string name="remove_last">Διαγραφή τελευταίας</string>
     <string name="remove_first">Διαγραφή πρώτης</string>
