@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.melato.bus.android.Info;
+import org.melato.bus.android.R;
 import org.melato.bus.model.Schedule.DateScheduleFactory;
 import org.melato.bus.model.Schedule.ScheduleFactory;
 import org.melato.bus.model.Schedule.ScheduleIdScheduleFactory;
@@ -32,17 +33,20 @@ import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.SequenceInstance;
 import org.melato.bus.plan.SequenceSchedule;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Displays a sequence
  * @author Alex Athanasopoulos
  */
-public class SequenceScheduleActivity extends ListActivity {
+public class SequenceScheduleActivity extends Activity implements OnItemClickListener {
   private Sequence sequence;
   private List<SequenceInstance> instances;
 
@@ -65,16 +69,20 @@ public class SequenceScheduleActivity extends ListActivity {
     SequenceSchedule schedule = new SequenceSchedule(sequence, scheduleFactory(), Info.routeManager(this));
     instances = schedule.getInstances();
     HighlightAdapter<SequenceInstance> adapter = new HighlightAdapter<SequenceInstance>(this, instances);
-    setListAdapter(adapter);
-    int pos = schedule.getTimePosition(new Date());
+    setContentView(R.layout.schedule);
+    ListView listView = (ListView) findViewById(R.id.listView);
+    TextView textView = (TextView) findViewById(R.id.textView);
+    listView.setAdapter(adapter);
+    listView.setOnItemClickListener(this);
+        int pos = schedule.getTimePosition(new Date());
     if ( pos >= 0 ) {
       adapter.setSelection(pos);
-      setSelection(pos);
+      listView.setSelection(pos);
     }
   }
 
   @Override
-  protected void onListItemClick(ListView l, View v, int position, long id) {
+  public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
     SequenceInstance instance = instances.get(position);
     Intent intent = new Intent(this, SequenceInstanceActivity.class);
     intent.putExtra(SequenceInstanceActivity.KEY_INSTANCE, instance);
