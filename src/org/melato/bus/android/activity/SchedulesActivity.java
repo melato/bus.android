@@ -60,7 +60,7 @@ public class SchedulesActivity extends ListActivity {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
       TextView view = (TextView) super.getView(position, convertView, parent);
-      String name = ScheduleActivity.getScheduleName(getContext(), this.getItem(position).getScheduleId());
+      String name = ScheduleUtilities.getScheduleName(getContext(), this.getItem(position).getScheduleId());
       view.setText( name );
       return view;
     }
