@@ -349,6 +349,9 @@ public class SqlRouteStorage implements RouteStorage {
 
   private int[] explodeTimes(String timesString) {
     String[] fields = timesString.split(",");
+    if ( fields.length == 1 && fields[0].length() == 0) {
+      return new int[0];
+    }
     int[] times = new int[fields.length];
     for( int i = 0; i < times.length; i++ ) {
       times[i] = Integer.parseInt(fields[i]);
