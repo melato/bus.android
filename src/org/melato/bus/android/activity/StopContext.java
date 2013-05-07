@@ -264,7 +264,7 @@ public class StopContext extends LocationContext {
 
     public String toString() {
       String label = context.getResources().getString(labelId);
-      float time = getStraightDistance() / (speed * 1000 / 3600);
+      float time = getStraightDistance() * overhead / speed;
       return PropertiesDisplay.formatProperty(label, formatTime(time));
     }
   }
