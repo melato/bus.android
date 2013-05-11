@@ -25,8 +25,9 @@ import java.util.List;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.plan.Leg;
-import org.melato.bus.plan.LegItem;
+import org.melato.bus.plan.LegGroup;
 import org.melato.bus.plan.Sequence;
+import org.melato.bus.plan.SequenceItem;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -44,8 +45,8 @@ import android.widget.ListView;
  */
 public class SequenceActivity extends ListActivity {
   private Sequence sequence;
-  private List<LegItem> items;
-  private ArrayAdapter<LegItem> adapter;
+  private List<SequenceItem> items;
+  private ArrayAdapter<SequenceItem> adapter;
 
   public SequenceActivity() {
   }
@@ -66,9 +67,9 @@ public class SequenceActivity extends ListActivity {
 
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
-    LegItem item = items.get(position);
-    if ( item instanceof Leg ) {
-      Leg leg = (Leg) item;
+    SequenceItem item = items.get(position);
+    if ( item instanceof LegGroup ) {
+      Leg leg = ((LegGroup) item).getLeg();
       BusActivities activities = new BusActivities(this);
       activities.showRoute(leg.getRStop1());
     }
@@ -83,15 +84,15 @@ public class SequenceActivity extends ListActivity {
   }
 
   private void resetList() {
-    items = sequence.getLegItems();
-    adapter = new ArrayAdapter<LegItem>(this, R.layout.list_item, items);
+    items = sequence.getSequenceItems();
+    adapter = new ArrayAdapter<SequenceItem>(this, R.layout.list_item, items);
     setListAdapter(adapter);
   }
   
   private void removeLast() {
-    List<Leg> legs = sequence.getLegs();
+    List<LegGroup> legs = sequence.getLegs();
     if ( ! legs.isEmpty()) {
-      Leg last = legs.get(legs.size()-1);
+      Leg last = legs.get(legs.size()-1).getLeg();
       if ( last.getStop2() != null) {
         last.setStop2(null);
       } else {
@@ -101,7 +102,7 @@ public class SequenceActivity extends ListActivity {
     }
   }
   private void removeFirst() {
-    List<Leg> legs = sequence.getLegs();
+    List<LegGroup> legs = sequence.getLegs();
     if ( ! legs.isEmpty()) {
       legs.remove(0);
       resetList();
@@ -109,11 +110,10 @@ public class SequenceActivity extends ListActivity {
   }
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    List<Leg> legs = sequence.getLegs();
     boolean handled = false;
     switch(item.getItemId()) {
       case R.id.clear:
-        legs.clear();
+        sequence.getLegs().clear();
         resetList();
         handled = true;
         break;

@@ -33,6 +33,7 @@ import org.melato.bus.android.R;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.plan.Leg;
+import org.melato.bus.plan.LegGroup;
 import org.melato.bus.plan.Plan;
 import org.melato.bus.plan.PlanLeg;
 import org.melato.bus.plan.Planner;
@@ -85,9 +86,9 @@ public class PlanActivity extends ListActivity {
   
   Point2D getOrigin() {
     Sequence sequence = Info.getSequence(this);
-    List<Leg> legs = sequence.getLegs();
+    List<LegGroup> legs = sequence.getLegs();
     if ( ! legs.isEmpty()) {
-      Leg last = legs.get(legs.size()-1);
+      Leg last = legs.get(legs.size()-1).getLeg();
       if ( last.getStop2() != null) {
         return last.getStop2();
       }
