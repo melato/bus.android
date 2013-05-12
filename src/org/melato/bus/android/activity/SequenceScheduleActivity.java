@@ -20,6 +20,7 @@
  */
 package org.melato.bus.android.activity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -35,12 +36,12 @@ import org.melato.bus.plan.SequenceSchedule;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 
 /**
  * Displays a sequence
@@ -48,9 +49,32 @@ import android.widget.TextView;
  */
 public class SequenceScheduleActivity extends Activity implements OnItemClickListener {
   private Sequence sequence;
-  private List<SequenceInstance> instances;
+  private List<SequenceInstance> instances = new ArrayList<SequenceInstance>();
 
   public SequenceScheduleActivity() {
+  }
+  
+  class ScheduleTask extends AsyncTask<Void,Integer,SequenceSchedule> {
+
+    @Override
+    protected SequenceSchedule doInBackground(Void... params) {
+      SequenceSchedule schedule = new SequenceSchedule(sequence, scheduleFactory(), Info.routeManager(SequenceScheduleActivity.this));
+      instances = schedule.getInstances();
+      return schedule;
+    }
+
+    @Override
+    protected void onPostExecute(SequenceSchedule schedule) {
+      ListView listView = (ListView) findViewById(R.id.listView);
+      HighlightAdapter<SequenceInstance> adapter = new HighlightAdapter<SequenceInstance>(SequenceScheduleActivity.this, instances);
+      listView.setAdapter(adapter);
+      listView.setOnItemClickListener(SequenceScheduleActivity.this);
+      int pos = schedule.getTimePosition(new Date());
+      if ( pos >= 0 ) {
+        adapter.setSelection(pos);
+        listView.setSelection(pos);
+      }
+    }    
   }
   
   public static ScheduleFactory scheduleFactory() {
@@ -66,19 +90,9 @@ public class SequenceScheduleActivity extends Activity implements OnItemClickLis
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     sequence = Info.getSequence(this);
-    SequenceSchedule schedule = new SequenceSchedule(sequence, scheduleFactory(), Info.routeManager(this));
-    instances = schedule.getInstances();
-    HighlightAdapter<SequenceInstance> adapter = new HighlightAdapter<SequenceInstance>(this, instances);
     setContentView(R.layout.schedule);
-    ListView listView = (ListView) findViewById(R.id.listView);
-    TextView textView = (TextView) findViewById(R.id.textView);
-    listView.setAdapter(adapter);
-    listView.setOnItemClickListener(this);
-        int pos = schedule.getTimePosition(new Date());
-    if ( pos >= 0 ) {
-      adapter.setSelection(pos);
-      listView.setSelection(pos);
-    }
+    new ScheduleTask().execute();
+    //TextView textView = (TextView) findViewById(R.id.textView);
   }
 
   @Override
