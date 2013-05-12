@@ -99,7 +99,7 @@ public class SequenceScheduleActivity extends Activity implements OnItemClickLis
   public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
     SequenceInstance instance = instances.get(position);
     Intent intent = new Intent(this, SequenceInstanceActivity.class);
-    intent.putExtra(SequenceInstanceActivity.KEY_INSTANCE, instance);
+    intent.putExtra(SequenceInstanceActivity.KEY_LEGS, instance.getLegInstances());
     startActivity(intent);
   }
   

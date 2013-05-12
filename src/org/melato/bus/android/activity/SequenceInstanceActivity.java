@@ -21,9 +21,7 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
-import org.melato.bus.plan.SequenceInstance;
 import org.melato.bus.plan.SequenceInstance.LegInstance;
-import org.melato.bus.plan.SequenceInstance.SequenceInstanceLeg;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -36,8 +34,8 @@ import android.widget.ListView;
  * @author Alex Athanasopoulos
  */
 public class SequenceInstanceActivity extends ListActivity {
-  public static final String KEY_INSTANCE = "org.melato.bus.android.instance";
-  private SequenceInstance instance;
+  public static final String KEY_LEGS = "org.melato.bus.android.legs";
+  private Object[] legs;
 
   public SequenceInstanceActivity() {
   }
@@ -46,21 +44,23 @@ public class SequenceInstanceActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    instance = (SequenceInstance) getIntent().getSerializableExtra(KEY_INSTANCE);
-    if ( instance == null) {
+    legs = (Object[]) getIntent().getSerializableExtra(KEY_LEGS);
+    System.out.println( "legObjects: " + legs.length);
+    Object leg = legs[0];
+    System.out.println( "legObjects[0]: " + leg.getClass().getName());
+    if ( legs == null) {
       finish();
     }
-    setListAdapter(new ArrayAdapter<SequenceInstanceLeg>(this, R.layout.list_item, instance.getLegInstances()));
+    setListAdapter(new ArrayAdapter<Object>(this, R.layout.list_item, legs));
   }
 
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
-    SequenceInstanceLeg leg = instance.getLegInstances().get(position);
+    Object leg = legs[position];
     if ( leg instanceof LegInstance) {
       LegInstance legInstance = (LegInstance) leg;
       BusActivities activities = new BusActivities(this);
       activities.showRoute(legInstance.getRStop());    
     }
-  }  
-  
+  }    
 }
