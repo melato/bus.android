@@ -20,14 +20,20 @@
  */
 package org.melato.bus.android.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.client.Formatting;
+import org.melato.bus.model.Route;
+import org.melato.bus.model.RouteManager;
+import org.melato.bus.model.Stop;
 import org.melato.bus.plan.Leg;
 import org.melato.bus.plan.LegGroup;
 import org.melato.bus.plan.Sequence;
-import org.melato.bus.plan.SequenceItem;
+import org.melato.bus.plan.Walk;
+import org.melato.gps.Point2D;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -48,6 +54,64 @@ public class SequenceActivity extends ListActivity {
   private List<SequenceItem> items;
   private ArrayAdapter<SequenceItem> adapter;
 
+  static interface SequenceItem {    
+  }
+  class LegItem implements SequenceItem {
+    private LegGroup leg;
+    private Route route;
+
+    public LegItem(LegGroup leg, RouteManager routeManager) {
+      super();
+      this.leg = leg;
+      route = routeManager.getRoute(leg.getLeg().getRouteId());
+    }
+
+    @Override
+    public String toString() {
+      Leg leg = this.leg.getLeg();
+      StringBuilder buf = new StringBuilder();
+      buf.append(route.getLabel());
+      buf.append( " " );
+      buf.append(leg.getStop1().getName());
+      Stop stop2 = leg.getStop2();
+      if ( stop2 != null) {
+        buf.append( " -> " );
+        buf.append(stop2.getName());
+      }
+      return buf.toString();
+    }
+    
+    
+  }
+  
+  public class WalkItem implements SequenceItem {
+    private float distance;
+    private String label;
+    public WalkItem(Point2D point1, Point2D point2, RouteManager routeManager) {
+      super();
+      distance = routeManager.getMetric().distance(point1, point2);
+      label = getString(R.string.walk_leg, Formatting.straightDistance(distance), Walk.distanceDuration(distance));
+    }
+    @Override
+    public String toString() {
+      return label;
+    }
+  }
+  
+  public List<SequenceItem> getSequenceItems(Sequence sequence, RouteManager routeManager) {
+    List<SequenceItem> items = new ArrayList<SequenceItem>();
+    Leg previous = null;
+    for(LegGroup leg: sequence.getLegs() ) {
+      if ( previous != null) {
+        items.add(new WalkItem(previous.getStop2(), leg.getLeg().getStop1(), routeManager));
+      }
+      items.add(new LegItem(leg, routeManager));
+      previous = leg.getLeg();
+    }
+    return items;
+  }
+  
+  
   public SequenceActivity() {
   }
   
@@ -68,8 +132,8 @@ public class SequenceActivity extends ListActivity {
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     SequenceItem item = items.get(position);
-    if ( item instanceof LegGroup ) {
-      Leg leg = ((LegGroup) item).getLeg();
+    if ( item instanceof LegItem ) {
+      Leg leg = ((LegItem) item).leg.getLeg();
       BusActivities activities = new BusActivities(this);
       activities.showRoute(leg.getRStop1());
     }
@@ -84,7 +148,7 @@ public class SequenceActivity extends ListActivity {
   }
 
   private void resetList() {
-    items = sequence.getSequenceItems();
+    items = getSequenceItems(sequence, Info.routeManager(this));
     adapter = new ArrayAdapter<SequenceItem>(this, R.layout.list_item, items);
     setListAdapter(adapter);
   }

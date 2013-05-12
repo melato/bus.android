@@ -63,5 +63,6 @@
     <string name="clear">Διαγραφή όλων</string>
     <string name="remove_last">Διαγραφή τελευταίας</string>
     <string name="remove_first">Διαγραφή πρώτης</string>
+    <string name="walk_leg">Περπάτημα %1$s %2$s</string>
     <string name="twitter">Twitter</string>
 </resources>
