@@ -170,6 +170,7 @@ public class Info {
       try {
         Serialization.write(sequence, file);
       } catch (IOException e) {
+        System.out.println(e);
       }
     }
   }
