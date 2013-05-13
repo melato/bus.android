@@ -57,8 +57,8 @@
     <string name="loading">Φορτώνει &#8230;</string>
     <string name="ok">Ok</string>
     <string name="terms_of_use">Όροι Χρήσης</string>
-    <string name="sequence">Πρόγραμμα</string>
-    <string name="add_stop_after">Προσθήκη</string>
+    <string name="sequence">Συνδυασμός</string>
+    <string name="add_stop_after">Συνδυασμός</string>
     <string name="add_stop_before">Πρίν</string>
     <string name="clear">Διαγραφή όλων</string>
     <string name="remove_last">Διαγραφή τελευταίας</string>

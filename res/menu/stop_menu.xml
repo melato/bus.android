@@ -12,9 +12,6 @@
     <item android:id="@+id/add_stop_after"
           android:icon="@drawable/add_stop"                  
           android:title="@string/add_stop_after" />
-    <item android:id="@+id/add_stop_before"
-          android:icon="@drawable/add_stop"                  
-          android:title="@string/add_stop_before" />
     <item android:id="@+id/fast_gps"
           android:icon="@drawable/fast_gps"                  
           android:title="@string/fast_gps" />

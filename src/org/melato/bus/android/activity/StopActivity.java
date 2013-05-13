@@ -155,10 +155,12 @@ public class StopActivity extends ListActivity implements OnItemClickListener
         addToSequence(true);
         handled = true;
         break;
+      /**
       case R.id.add_stop_before:
         addToSequence(false);
         handled = true;
         break;
+      */
       default:
         break;
     }
