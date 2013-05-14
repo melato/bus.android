@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.melato.android.progress.ActivityProgressHandler;
+import org.melato.android.progress.ProgressTitleHandler;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.model.Schedule.DateScheduleFactory;
@@ -33,6 +35,7 @@ import org.melato.bus.model.ScheduleId;
 import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.SequenceInstance;
 import org.melato.bus.plan.SequenceSchedule;
+import org.melato.progress.ProgressGenerator;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -42,6 +45,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Displays a sequence
@@ -50,15 +54,21 @@ import android.widget.ListView;
 public class SequenceScheduleActivity extends Activity implements OnItemClickListener {
   private Sequence sequence;
   private List<SequenceInstance> instances = new ArrayList<SequenceInstance>();
+  private ActivityProgressHandler progressHandler;
 
   public SequenceScheduleActivity() {
   }
   
   class ScheduleTask extends AsyncTask<Void,Integer,SequenceSchedule> {
+    ScheduleFactory scheduleFactory;
 
     @Override
     protected SequenceSchedule doInBackground(Void... params) {
-      SequenceSchedule schedule = new SequenceSchedule(sequence, scheduleFactory(), Info.routeManager(SequenceScheduleActivity.this));
+      ProgressGenerator.setHandler(progressHandler);
+      ProgressGenerator progress = ProgressGenerator.get();
+      progress.setText(getString(R.string.computing));
+      scheduleFactory = scheduleFactory();
+      SequenceSchedule schedule = new SequenceSchedule(sequence, scheduleFactory, Info.routeManager(SequenceScheduleActivity.this));
       instances = schedule.getInstances();
       return schedule;
     }
@@ -74,7 +84,11 @@ public class SequenceScheduleActivity extends Activity implements OnItemClickLis
         adapter.setSelection(pos);
         listView.setSelection(pos);
       }
-    }    
+      progressHandler.end();
+      setTitle( sequence.getLabel(Info.routeManager(SequenceScheduleActivity.this)));
+      TextView textView = (TextView) findViewById(R.id.textView);
+      textView.setText(ScheduleUtilities.getScheduleName(SequenceScheduleActivity.this, scheduleFactory));
+      }    
   }
   
   public static ScheduleFactory scheduleFactory() {
@@ -89,10 +103,10 @@ public class SequenceScheduleActivity extends Activity implements OnItemClickLis
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    progressHandler = new ProgressTitleHandler(this);
     sequence = Info.getSequence(this);
     setContentView(R.layout.schedule);
     new ScheduleTask().execute();
-    //TextView textView = (TextView) findViewById(R.id.textView);
   }
 
   @Override

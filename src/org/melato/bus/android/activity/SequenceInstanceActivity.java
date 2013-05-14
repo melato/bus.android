@@ -21,7 +21,9 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
+import org.melato.bus.android.activity.SequenceActivity.WalkItem;
 import org.melato.bus.plan.SequenceInstance.LegInstance;
+import org.melato.bus.plan.SequenceInstance.WalkInstance;
 
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -50,6 +52,11 @@ public class SequenceInstanceActivity extends ListActivity {
     System.out.println( "legObjects[0]: " + leg.getClass().getName());
     if ( legs == null) {
       finish();
+    }
+    for(int i = 0; i < legs.length; i++ ) {
+      if ( legs[i] instanceof WalkInstance ) {
+        legs[i] = new WalkItem((WalkInstance) legs[i], this);
+      }
     }
     setListAdapter(new ArrayAdapter<Object>(this, R.layout.list_item, legs));
   }

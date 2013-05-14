@@ -32,10 +32,12 @@ import org.melato.bus.model.Stop;
 import org.melato.bus.plan.Leg;
 import org.melato.bus.plan.LegGroup;
 import org.melato.bus.plan.Sequence;
+import org.melato.bus.plan.SequenceInstance.WalkInstance;
 import org.melato.bus.plan.Walk;
 import org.melato.gps.Point2D;
 
 import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -54,7 +56,7 @@ public class SequenceActivity extends ListActivity {
   private List<SequenceItem> items;
   private ArrayAdapter<SequenceItem> adapter;
 
-  static interface SequenceItem {    
+  public static interface SequenceItem {    
   }
   class LegItem implements SequenceItem {
     private LegGroup leg;
@@ -84,13 +86,18 @@ public class SequenceActivity extends ListActivity {
     
   }
   
-  public class WalkItem implements SequenceItem {
+  public static class WalkItem implements SequenceItem {
     private float distance;
     private String label;
-    public WalkItem(Point2D point1, Point2D point2, RouteManager routeManager) {
+    public WalkItem(Point2D point1, Point2D point2, RouteManager routeManager, Context context) {
       super();
       distance = routeManager.getMetric().distance(point1, point2);
-      label = getString(R.string.walk_leg, Formatting.straightDistance(distance), Walk.distanceDuration(distance));
+      System.out.println( "WalkItem: from=" + point1 + " to=" + point2 + " distance=" + distance);
+      label = context.getString(R.string.walk_leg, Formatting.straightDistance(distance), Walk.distanceDuration(distance));
+    }
+    public WalkItem(WalkInstance walk, Context context) {
+      this.distance = walk.getDistance();
+      label = context.getString(R.string.walk_leg, Formatting.straightDistance(distance), Walk.distanceDuration(distance));
     }
     @Override
     public String toString() {
@@ -103,7 +110,7 @@ public class SequenceActivity extends ListActivity {
     Leg previous = null;
     for(LegGroup leg: sequence.getLegs() ) {
       if ( previous != null) {
-        items.add(new WalkItem(previous.getStop2(), leg.getLeg().getStop1(), routeManager));
+        items.add(new WalkItem(previous.getStop2(), leg.getLeg().getStop1(), routeManager, this));
       }
       items.add(new LegItem(leg, routeManager));
       previous = leg.getLeg();
@@ -120,6 +127,7 @@ public class SequenceActivity extends ListActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     sequence = Info.getSequence(this);
+    setTitle( sequence.getLabel(Info.routeManager(this)));
     resetList();
   }
 

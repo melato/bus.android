@@ -1,6 +1,9 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
+import org.melato.bus.model.Schedule.DateScheduleFactory;
+import org.melato.bus.model.Schedule.ScheduleFactory;
+import org.melato.bus.model.Schedule.ScheduleIdScheduleFactory;
 import org.melato.bus.model.ScheduleId;
 import org.melato.util.DateId;
 
@@ -85,6 +88,16 @@ public class ScheduleUtilities {
       return DateId.toString(scheduleId.getDateId());
     }
     return getDaysName(context, days);
+  }
+
+  public static String getScheduleName(Context context, ScheduleFactory schedule) {
+    if ( schedule instanceof ScheduleIdScheduleFactory ) {
+      return getScheduleName(context, ((ScheduleIdScheduleFactory)schedule).getScheduleId());      
+    }
+    if ( schedule instanceof DateScheduleFactory ) {
+      return context.getString(R.string.today);      
+    }
+    return schedule.toString();
   }
 
 

@@ -26,6 +26,7 @@
     <string name="days_Fr">Παρασκευή</string>
     <string name="days_Sa">Σάββατο</string>
     <string name="days_all">Κάθε μέρα</string>
+    <string name="today">Σήμερα</string>
     <string name="stops">Στάσεις</string>
     <string name="stop">Στάση</string>
     <string name="name">Όνομα</string>

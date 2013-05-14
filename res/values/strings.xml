@@ -28,6 +28,7 @@
     <string name="days_Fr">Friday</string>
     <string name="days_Sa">Saturday</string>
     <string name="days_all">Every Day</string>
+    <string name="today">Today</string>
     <string name="stops"> Stops</string>
     <string name="stop">Stop</string>
     <string name="name">Name</string>
