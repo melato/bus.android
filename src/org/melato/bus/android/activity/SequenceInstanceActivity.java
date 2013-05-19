@@ -47,15 +47,17 @@ public class SequenceInstanceActivity extends ListActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     legs = (Object[]) getIntent().getSerializableExtra(KEY_LEGS);
-    System.out.println( "legObjects: " + legs.length);
-    Object leg = legs[0];
-    System.out.println( "legObjects[0]: " + leg.getClass().getName());
     if ( legs == null) {
       finish();
     }
+    // translate strings
+    String waitString = getString(R.string.wait);
     for(int i = 0; i < legs.length; i++ ) {
       if ( legs[i] instanceof WalkInstance ) {
         legs[i] = new WalkItem((WalkInstance) legs[i], this);
+      } else if ( legs[i] instanceof LegInstance) {
+        LegInstance leg = (LegInstance) legs[i];
+        leg.setWaitString(waitString);
       }
     }
     setListAdapter(new ArrayAdapter<Object>(this, R.layout.list_item, legs));

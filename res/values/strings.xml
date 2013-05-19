@@ -67,5 +67,6 @@
     <string name="remove_last">Clear Last</string>
     <string name="remove_first">Clear First</string>
     <string name="walk_leg">Walk %1$s %2$s</string>
+    <string name="wait">wait</string>
     <string name="twitter">Twitter</string>    
 </resources>
