@@ -55,9 +55,7 @@ public class AgenciesActivity extends ListActivity {
       ImageView imageView = (ImageView) view.findViewById(R.id.icon);
       Agency agency = agencies[position];
       Drawable drawable = Info.getAgencyIcon(AgenciesActivity.this, agency);
-      if (drawable != null) {
-        imageView.setImageDrawable(drawable);
-      }      
+      imageView.setImageDrawable(drawable);
       return view;
     }
   }
