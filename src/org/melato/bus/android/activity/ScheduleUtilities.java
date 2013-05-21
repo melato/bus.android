@@ -13,4 +13,8 @@ public class ScheduleUtilities {
   public static String getScheduleName(Context context, ScheduleFactory schedule) {
     return new AndroidScheduleNames(context).getScheduleName(schedule);
   }
+
+  public static String getDaysName(Context context, int days) {
+    return new AndroidScheduleNames(context).getDaysName(days);
+  }
 }
