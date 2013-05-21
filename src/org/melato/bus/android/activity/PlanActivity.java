@@ -27,7 +27,6 @@ import org.melato.android.location.Locations;
 import org.melato.android.progress.ActivityProgressHandler;
 import org.melato.android.progress.ProgressTitleHandler;
 import org.melato.android.util.LabeledPoint;
-import org.melato.bus.algorithm.Nearby1SingleRoutePlanner;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.model.RStop;
@@ -52,7 +51,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-/** Computes and displays a list of plans for going to a destination. */
+/** Computes and displays a list of plans for going to a destination.
+ * This is experimental.  It is not part of the production app yet.
+ * */
 public class PlanActivity extends ListActivity {
   private ActivityProgressHandler progress;
   private BusActivities activities;
@@ -70,7 +71,7 @@ public class PlanActivity extends ListActivity {
     protected Plan[] doInBackground(Void... params) {
       ProgressGenerator.setHandler(progress);
       Planner planner = null;
-      planner = new Nearby1SingleRoutePlanner();
+      //planner = new Nearby1SingleRoutePlanner();
       planner.setRouteManager(Info.routeManager(PlanActivity.this));
       return planner.plan(origin, destination);
     }
