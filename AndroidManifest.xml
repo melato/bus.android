@@ -66,16 +66,6 @@
             </intent-filter>
         </activity>        
         <activity
-            android:name=".activity.PlanActivity"
-            android:label="@string/best_route" >
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-                <category android:name="android.intent.category.BROWSABLE"/>
-                <data android:scheme="geo"/>
-            </intent-filter>
-        </activity>        
-        <activity
             android:name=".activity.SequenceActivity"
             android:label="@string/sequence" >
         </activity>        
