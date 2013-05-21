@@ -159,6 +159,7 @@ public class SequenceActivity extends ListActivity {
     items = getSequenceItems(sequence, Info.routeManager(this));
     adapter = new ArrayAdapter<SequenceItem>(this, R.layout.list_item, items);
     setListAdapter(adapter);
+    setTitle( sequence.getLabel(Info.routeManager(this)));
   }
   
   private void removeLast() {
