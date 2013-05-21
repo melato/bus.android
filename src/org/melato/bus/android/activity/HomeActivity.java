@@ -95,7 +95,7 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       new LaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
       new LaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
       new About(),
-      new Twitter(),
+      //new Twitter(),
   };
   
   
