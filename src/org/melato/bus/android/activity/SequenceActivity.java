@@ -128,7 +128,6 @@ public class SequenceActivity extends ListActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     sequence = Info.getSequence(this);
-    setTitle( sequence.getLabel(Info.routeManager(this)));
     resetList();
   }
 
@@ -161,7 +160,11 @@ public class SequenceActivity extends ListActivity {
     items = getSequenceItems(sequence, Info.routeManager(this));
     adapter = new ArrayAdapter<SequenceItem>(this, R.layout.list_item, items);
     setListAdapter(adapter);
-    setTitle( sequence.getLabel(Info.routeManager(this)));
+    if ( sequence.getLegs().isEmpty()) {
+      setTitle(R.string.empty_sequence);
+    } else {
+      setTitle( sequence.getLabel(Info.routeManager(this)));
+    }
   }
   
   private void removeLast() {
