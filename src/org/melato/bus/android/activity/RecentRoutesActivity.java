@@ -98,11 +98,6 @@ public class RecentRoutesActivity extends ListActivity {
     context.startActivity(intent);        
   }
   
-  public static void showAll(Context context) {
-    Intent intent = new Intent(context, AllRoutesActivity.class);
-    context.startActivity(intent);        
-  }
-  
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     return activities.onOptionsItemSelected(item);
