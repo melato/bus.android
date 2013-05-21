@@ -25,6 +25,7 @@ import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
@@ -152,6 +153,7 @@ public class SequenceActivity extends ListActivity {
   {
      MenuInflater inflater = getMenuInflater();
      inflater.inflate(R.menu.sequence_menu, menu);
+     HelpActivity.addItem(menu, this, R.string.help_sequence);
      return true;
   }
 
