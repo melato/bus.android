@@ -25,6 +25,7 @@ import org.melato.bus.android.R;
 import org.melato.bus.model.Agency;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
@@ -83,7 +84,7 @@ public class AgenciesActivity extends ListActivity {
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
     Info.setDefaultAgencyName(this, agencies[position].getName());
-    finish();
+    startActivity(new Intent(this, AllRoutesActivity.class));      
   }
 
   @Override
