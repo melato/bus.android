@@ -8,4 +8,12 @@
       <item>White on Black</item>
    </string-array>
 
+   <string-array
+      name="lang_names">
+      <item>Device Language</item>
+      <item>English</item>
+      <item>Ελληνικά</item>
+      <item>ΑΑ</item>
+      </string-array>
+   
 </resources>
