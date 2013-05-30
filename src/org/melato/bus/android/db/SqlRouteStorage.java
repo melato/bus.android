@@ -34,6 +34,7 @@ import java.util.Set;
 
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.DaySchedule;
+import org.melato.bus.model.Municipality;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteException;
@@ -61,7 +62,14 @@ public class SqlRouteStorage implements RouteStorage {
   private String databaseFile;
   private Map<String,String> properties;
   private int version;
-  public static final int MIN_VERSION = 5;
+  /** 7: municipalities
+   *  6: route flags, stop flags
+   *  5: exceptions
+   *  4: agencies
+   *  3: time offset
+   *  2: holidays
+   * */
+  public static final int MIN_VERSION = 7;
   public static final String PROPERTY_VERSION = "version";
   public static final String PROPERTY_DATE = "build_date";
   public static final String PROPERTY_LAT = "center_lat";
@@ -887,5 +895,25 @@ public class SqlRouteStorage implements RouteStorage {
   public String getDefaultAgencyName() {
     return getProperty(PROPERTY_DEFAULT_AGENCY);
   }
-  
+
+  @Override
+  public Municipality loadMunicipality(String stop) {
+    String sql = "select municipalities.name from municipalities join markers on municipalities._id = markers.municipality" +
+        " where markers.symbol = '%s'";
+    sql = String.format(sql, stop);
+    SQLiteDatabase db = getDatabase();
+    try {
+      Cursor cursor = db.rawQuery( sql, null);
+      try {
+        if ( cursor.moveToFirst() ) {
+          return new Municipality(cursor.getString(0));
+        }
+      } finally {
+        cursor.close();
+      }
+    } finally {
+      db.close();
+    }
+    return null;
+  }
 }

@@ -23,12 +23,14 @@ package org.melato.bus.android.activity;
 import java.util.Date;
 
 import org.melato.android.ui.PropertiesDisplay;
+import org.melato.android.ui.PropertiesDisplay.Item;
 import org.melato.android.util.LabeledPoint;
 import org.melato.android.util.LocationField;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.client.TrackContext;
+import org.melato.bus.model.Municipality;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.Stop;
@@ -304,6 +306,10 @@ public class StopContext extends LocationContext {
     Stop stop = getMarker();
     LabeledPoint p = new LabeledPoint(stop, stop.getName());
     properties.add(new LocationField(context.getString(R.string.coordinates), p));
+    Municipality municipality = Info.routeManager(context).getMunicipality(stop);
+    if ( municipality != null) {
+      properties.add(new Item(context, R.string.municipality, municipality.getName()));
+    }
     // properties.add(new StraightETA(R.string.bikeETA, BIKE_SPEED,
     // BIKE_OVERHEAD));
   }

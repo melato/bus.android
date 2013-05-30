@@ -70,4 +70,6 @@
     <string name="walk_leg">Walk %1$s %2$s</string>
     <string name="wait">wait</string>
     <string name="twitter">Twitter</string>    
+    <string name="language">Language</string>    
+    <string name="municipality">Municipality</string>    
 </resources>

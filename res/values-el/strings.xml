@@ -70,4 +70,7 @@
     <string name="walk_leg">Περπάτημα %1$s %2$s</string>
     <string name="wait">αναμονή</string>
     <string name="twitter">Twitter</string>
+    <string name="language">Γλώσσα</string>    
+    <string name="lang_default">Γλώσσα συσκευής</string>    
+    <string name="municipality">Δήμος</string>    
 </resources>
