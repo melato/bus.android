@@ -69,7 +69,7 @@ public class SqlRouteStorage implements RouteStorage {
    *  3: time offset
    *  2: holidays
    * */
-  public static final int MIN_VERSION = 7;
+  public static final int MIN_VERSION = 6;
   public static final String PROPERTY_VERSION = "version";
   public static final String PROPERTY_DATE = "build_date";
   public static final String PROPERTY_LAT = "center_lat";
@@ -898,6 +898,9 @@ public class SqlRouteStorage implements RouteStorage {
 
   @Override
   public Municipality loadMunicipality(String stop) {
+    if ( getVersion() < 7 ) {
+      return null;
+    }
     String sql = "select municipalities.name from municipalities join markers on municipalities._id = markers.municipality" +
         " where markers.symbol = '%s'";
     sql = String.format(sql, stop);
