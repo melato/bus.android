@@ -72,4 +72,7 @@
     <string name="twitter">Twitter</string>    
     <string name="language">Language</string>    
     <string name="municipality">Municipality</string>    
+    <string name="mayor">Mayor</string>    
+    <string name="police_phone">Municipal Police</string>    
+    <string name="website">Website</string>    
 </resources>

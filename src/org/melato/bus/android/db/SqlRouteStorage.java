@@ -47,6 +47,7 @@ import org.melato.bus.model.ScheduleSummary;
 import org.melato.bus.model.Stop;
 import org.melato.bus.plan.Leg;
 import org.melato.gps.Point2D;
+import org.melato.log.Log;
 import org.melato.progress.ProgressGenerator;
 import org.melato.util.IntArrays;
 import org.melato.util.VariableSubstitution;
@@ -69,7 +70,7 @@ public class SqlRouteStorage implements RouteStorage {
    *  3: time offset
    *  2: holidays
    * */
-  public static final int MIN_VERSION = 6;
+  public static final int MIN_VERSION = 7;
   public static final String PROPERTY_VERSION = "version";
   public static final String PROPERTY_DATE = "build_date";
   public static final String PROPERTY_LAT = "center_lat";
@@ -840,7 +841,12 @@ public class SqlRouteStorage implements RouteStorage {
   }
 
   public boolean checkVersion() {
-    return getVersion() >= MIN_VERSION;
+    int dbVersion = getVersion();
+    if ( dbVersion >= MIN_VERSION ) {
+      return true;
+    }
+    Log.info("db version = " + dbVersion + " required: " + MIN_VERSION);
+    return false;
   }
 
   @Override
@@ -901,15 +907,34 @@ public class SqlRouteStorage implements RouteStorage {
     if ( getVersion() < 7 ) {
       return null;
     }
-    String sql = "select municipalities.name from municipalities join markers on municipalities._id = markers.municipality" +
-        " where markers.symbol = '%s'";
+    String sql = "select m.name, m.mayor, m.police, m.website," +
+        " m.address, m.postal_code, m.city," +
+        " m.lat, m.lon" +
+        " from municipalities as m join markers on m._id = markers.municipality" +
+        " where markers.symbol = '%s'";    
     sql = String.format(sql, stop);
     SQLiteDatabase db = getDatabase();
     try {
       Cursor cursor = db.rawQuery( sql, null);
       try {
         if ( cursor.moveToFirst() ) {
-          return new Municipality(cursor.getString(0));
+          int i = 0;
+          Municipality m = new Municipality(cursor.getString(i++));
+          if ( ! cursor.isNull(i)) {
+            m.setMayor(cursor.getString(i++));
+            m.setPolice(cursor.getString(i++));
+            m.setWebsite(cursor.getString(i++));
+            m.setAddress(cursor.getString(i++));
+            m.setCity(cursor.getString(i++));
+            m.setPostalCode(cursor.getString(i++));
+            if ( ! cursor.isNull(i)) {
+              Point2D point = new Point2D();            
+              point.setLat(cursor.getFloat(i++));
+              point.setLon(cursor.getFloat(i++));
+              m.setPoint(point);
+            }
+          }
+          return m;
         }
       } finally {
         cursor.close();

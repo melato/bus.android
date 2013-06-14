@@ -87,6 +87,10 @@
             android:label="@string/stop" >
         </activity>
         <activity
+            android:name=".activity.MunicipalityActivity"
+            android:label="@string/stop" >
+        </activity>
+        <activity
             android:name=".app.UpdateActivity"
             android:label="@string/available_updates" >
         </activity>
