@@ -49,6 +49,8 @@ import org.melato.bus.plan.Leg;
 import org.melato.gps.Point2D;
 import org.melato.log.Log;
 import org.melato.progress.ProgressGenerator;
+import org.melato.sun.SunsetProvider;
+import org.melato.util.DateId;
 import org.melato.util.IntArrays;
 import org.melato.util.VariableSubstitution;
 
@@ -58,7 +60,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.SparseArray;
 
-public class SqlRouteStorage implements RouteStorage {
+public class SqlRouteStorage implements RouteStorage, SunsetProvider {
   public static final String DATABASE_NAME = "ROUTES.db";
   private String databaseFile;
   private Map<String,String> properties;
@@ -944,4 +946,28 @@ public class SqlRouteStorage implements RouteStorage {
     }
     return null;
   }
+
+  @Override
+  public int[] getSunriseSunset(Date date) {
+    int dateId = DateId.dateId(date);
+    String sql = "select sunrise, sunset from sun where date_id = %d";
+    sql = String.format(sql, dateId);
+    SQLiteDatabase db = getDatabase();
+    try {
+      Cursor cursor = db.rawQuery( sql, null);
+      try {
+        if ( cursor.moveToFirst() ) {
+          int[] times = new int[2];
+          times[0] = cursor.getInt(0);
+          times[1] = cursor.getInt(1);
+          return times;
+        }        
+      } finally {
+        cursor.close();
+      }
+    } finally {
+      db.close();
+    }
+    return null;
+  }  
 }

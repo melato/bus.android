@@ -72,5 +72,12 @@
     <string name="twitter">Twitter</string>
     <string name="language">Γλώσσα</string>    
     <string name="lang_default">Γλώσσα συσκευής</string>    
-    <string name="municipality">Δήμος</string>    
+    <string name="municipality">Δήμος</string>
+    
+    <string name="sun">Ήλιος</string>
+    <string name="sunrise_sunset">Ανατολή/Δύση</string>
+    <string name="date">Ημερομηνία</string>
+    <string name="sunrise">Ανατολή</string>
+    <string name="sunset">Δύση</string>
+    
 </resources>

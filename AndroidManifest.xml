@@ -91,6 +91,10 @@
             android:label="@string/stop" >
         </activity>
         <activity
+            android:name=".activity.SunActivity"
+            android:label="@string/sun" >
+        </activity>
+        <activity
             android:name=".app.UpdateActivity"
             android:label="@string/available_updates" >
         </activity>
