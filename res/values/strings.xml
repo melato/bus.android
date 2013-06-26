@@ -75,7 +75,8 @@
     <string name="mayor">Mayor</string>    
     <string name="police_phone">Municipal Police</string>    
     <string name="website">Website</string>
-
+    <string name="city_hall">City Hall</string>
+    
     <string name="sun">Sun</string>
     <string name="sunrise_sunset">Sunrise/Sunset</string>
     <string name="date">Date</string>

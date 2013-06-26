@@ -32,7 +32,9 @@ import org.melato.gps.Point2D;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -60,15 +62,22 @@ public class MunicipalityActivity extends ListActivity implements OnItemClickLis
     properties = new PropertiesDisplay(this);
     setTitle(municipality.getName());   
     properties.add(R.string.municipality, municipality.getName());
-    properties.add(R.string.mayor, municipality.getMayor());
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    boolean prefMayor = prefs.getBoolean(Pref.MAYOR, true);
+    if (prefMayor) {
+      properties.add(R.string.mayor, municipality.getMayor());
+    }    
     //properties.add(R.string.website, municipality.getWebsite());
     properties.add(new UrlField(municipality.getWebsite()));
     if ( municipality.hasDetails()) {
       //properties.add(R.string.police_phone, municipality.getPolice());
-      properties.add(new PhoneField(getString(R.string.police_phone), municipality.getPolice()));
+      String phone = municipality.getPhone();
+      if ( phone != null) {
+        properties.add(new PhoneField(getString(R.string.police_phone), phone));
+      }
       Point2D point = municipality.getPoint();
       if ( point != null) {
-        properties.add(new LocationField(getString(R.string.coordinates), point));
+        properties.add(new LocationField(getString(R.string.city_hall), point));
       }
     }
     ArrayAdapter<Object> adapter;

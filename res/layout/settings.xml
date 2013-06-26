@@ -20,6 +20,12 @@
             android:summary="@string/pref_nearby_times_desc"
             android:title="@string/pref_nearby_times" />
 
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="mayor"
+            android:summary="@string/pref_mayor_summary"
+            android:title="@string/pref_mayor" />
+
         <ListPreference
             android:defaultValue=""
             android:entries="@array/lang_names"

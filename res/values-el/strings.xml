@@ -73,6 +73,10 @@
     <string name="language">Γλώσσα</string>    
     <string name="lang_default">Γλώσσα συσκευής</string>    
     <string name="municipality">Δήμος</string>
+    <string name="mayor">Δήμαρχος</string>    
+    <string name="police_phone">Δημοτική Αστυνομία</string>    
+    <string name="website">Ιστοσελίδα</string>
+    <string name="city_hall">Δημαρχείο</string>
     
     <string name="sun">Ήλιος</string>
     <string name="sunrise_sunset">Ανατολή/Δύση</string>
