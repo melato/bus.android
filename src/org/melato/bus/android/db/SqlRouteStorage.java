@@ -79,6 +79,7 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider {
   public static final String PROPERTY_LON = "center_lon";
   public static final String PROPERTY_DAY_CHANGE = "day_change";
   public static final String PROPERTY_DEFAULT_AGENCY = "default_agency";
+  public static final String PROPERTY_TRANSLITERATION = "transliteration";
   
   private Map<String,String> loadProperties(SQLiteDatabase db) {
     String sql = "select name, value from properties";
@@ -145,6 +146,10 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider {
     }
     return null;
   }    
+  
+  public String getTransliteration() {
+    return getProperty(PROPERTY_TRANSLITERATION);
+  }
   
   public int getDayChange() {
     String time = getProperty(PROPERTY_DAY_CHANGE);
@@ -909,7 +914,7 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider {
     if ( getVersion() < 7 ) {
       return null;
     }
-    String sql = "select m.name, m.mayor, m.police, m.website," +
+    String sql = "select m.name, m.mayor, m.phone, m.website," +
         " m.address, m.postal_code, m.city," +
         " m.lat, m.lon" +
         " from municipalities as m join markers on m._id = markers.municipality" +
@@ -924,7 +929,7 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider {
           Municipality m = new Municipality(cursor.getString(i++));
           if ( ! cursor.isNull(i)) {
             m.setMayor(cursor.getString(i++));
-            m.setPolice(cursor.getString(i++));
+            m.setPhone(cursor.getString(i++));
             m.setWebsite(cursor.getString(i++));
             m.setAddress(cursor.getString(i++));
             m.setCity(cursor.getString(i++));
