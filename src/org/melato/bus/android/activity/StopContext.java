@@ -181,7 +181,14 @@ public class StopContext extends LocationContext {
       float travelBearing = history.getBearing();
       if (!Float.isNaN(travelBearing)) {
         float markerBearing = Earth.bearing(getLocation(), marker);
-        bearing = Formatting.bearing(markerBearing - travelBearing);
+        int turn = Math.round(Formatting.normalizeBearing(markerBearing - travelBearing));
+        if ( turn < 0 ) {
+          bearing = context.getString(R.string.bearing_left, -turn );
+        } else if ( turn > 0 ) {
+          bearing = context.getString(R.string.bearing_right, turn );
+        } else {
+          bearing = context.getString(R.string.bearing_straight);
+        }
       }
       return properties.formatProperty(R.string.bearing, bearing);
     }
@@ -326,8 +333,8 @@ public class StopContext extends LocationContext {
     properties.add(R.string.timed_stops, context.getString(R.string.timed_stop_counts, previousStops, followingStops));
 
     // properties.add( new PathSpeed());
-    properties.add(new Speed60());
-    properties.add(new PathETA());
+    //properties.add(new Speed60());
+    //properties.add(new PathETA());
     properties
         .add(new StraightETA(R.string.walkETA, Walk.SPEED, Walk.OVERHEAD));
     //properties.add(new LatitudeField(context.getString(R.string.latitude), getMarker()));
