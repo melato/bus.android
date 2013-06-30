@@ -932,8 +932,8 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider {
             m.setPhone(cursor.getString(i++));
             m.setWebsite(cursor.getString(i++));
             m.setAddress(cursor.getString(i++));
-            m.setCity(cursor.getString(i++));
             m.setPostalCode(cursor.getString(i++));
+            m.setCity(cursor.getString(i++));
             if ( ! cursor.isNull(i)) {
               Point2D point = new Point2D();            
               point.setLat(cursor.getFloat(i++));
