@@ -79,6 +79,8 @@ public class MunicipalityActivity extends ListActivity implements OnItemClickLis
       if ( point != null) {
         properties.add(new LocationField(getString(R.string.city_hall), point));
       }
+      properties.add(municipality.getAddress());
+      properties.add(municipality.getCity() + " " + municipality.getPostalCode());
     }
     ArrayAdapter<Object> adapter;
     adapter = properties.createAdapter(R.layout.stop_item, R.color.black, R.color.stop_link);
