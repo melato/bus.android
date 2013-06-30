@@ -88,11 +88,11 @@ public class HomeActivity extends Activity implements OnItemClickListener {
   // references to our images
   private LaunchItem[] items = {
       new LaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
+      new LaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
       new LaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
+      new LaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
       new LaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
       new LaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
-      new LaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
-      new LaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
       new LaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
       new LaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
       new About(),
