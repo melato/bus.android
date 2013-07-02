@@ -51,8 +51,19 @@ The latitude and longitude of the stop, as published by OASA.
 &lt;br/>Database Version: %2$s
 &lt;br/>&lt;br/>&lt;b>Credits&lt;/b>
 &lt;br/>The route maps and timetables are provided by OASA and are available to the public from www.oasa.gr.
+&lt;br/>&lt;br/>Municipality information is provided by pezh.org
+&lt;br/>&lt;br/>Sunset and Sunrise times are provided by the United States Naval Observatory.
 &lt;br/>&lt;br/>Most icons are from the bctango icon collection, by Bosky Cinek (http://boskastrona.ovh.org).  License: Creative Commons attribution share-alike
 (http://creativecommons.org/licenses/by-sa/2.5/).
+&lt;br/>&lt;br/>&lt;b>Contributions&lt;/b>
+&lt;br/>If you want to contribute to this app, you can do it in the following ways:
+&lt;br/>1.  Help reclaim Athens streets for pedestrians.
+&lt;br/>2.  Submit bug reports or suggestions.  
+&lt;br/>3.  Spread the app.
+&lt;br/>4.  Record bus trips with your GPS and upload them to the app\'s webpage.
+&lt;br/>5.  Translate the app to another language.
+&lt;br/>6.  Contact me by email for more details.
+
 &lt;br/>&lt;br/>&lt;b>Errors&lt;/b>
 &lt;br/>Contact OASA to fix errors in its timetables and contact me to fix bugs in the application.
 &lt;br/>
@@ -68,10 +79,11 @@ please contact me so I can fix the bug or update the application with the latest
 The application is provided as is, without any warranty about its fitness for any use or the accuracy of the information it provides.\n\n
 The application uses data that are published by the Athens Urban Transport Organisation S.A. (OASA) at its website (http://www.oasa.gr) and are subject to the following terms of use (translated by the application author):\n\n
 <b>OASA Terms of Use</b>\n\n
-1.  The user of the application accepts that the use of the information provided is done at his own risk.  The application provides data for the Athens urban transporation system that is licensed from the provider Athens Urban Transport Organisation S.A. - OASA (http://www.oasa.gr).  Access to the relevant data is provided without payment.  In any case, the level of accuracy of the data is adjusted from the current needs and capabilities of OASA and may possibly not be appropriate for their use by third parties and for purposes that are not anticipated by OASA.  Therefore, all relevant data are provided \'as is\'.  Athens Urban Transport Organisation S.A. (OASA), ODIKES SYGKOINONIES S.A., and Urban Rail Transport S.A. (STASY), bear no responsibility whatsoever for any omissions or errors, in updating of the data and generally for any direct or indirect damage that could arise from using or operating this application.\n
+1.  The user of the application accepts that the use of the information provided is done at his own risk.  The application provides data for the Athens urban transportation system that is licensed from the provider Athens Urban Transport Organisation S.A. - OASA (http://www.oasa.gr).  Access to the relevant data is provided without payment.  In any case, the level of accuracy of the data is adjusted from the current needs and capabilities of OASA and may possibly not be appropriate for their use by third parties and for purposes that are not anticipated by OASA.  Therefore, all relevant data are provided \'as is\'.  Athens Urban Transport Organisation S.A. (OASA), ODIKES SYGKOINONIES S.A., and Urban Rail Transport S.A. (STASY), bear no responsibility whatsoever for any omissions or errors, in updating of the data and generally for any direct or indirect damage that could arise from using or operating this application.\n
 2.  OASA has not contributed to the development of this application and bears no responsibility for its completeness or its compatibility with any operating system of a mobile or other device.\n
 3.  The data published by OASA reflect, approximately, the current operational state of the Athens Urban Transport Network, which is subject to change at any time, without warning and without any liability of OASA, OSY, and STASY.  Interested parties may refer to OASA\'s website (www.oasa.gr) and/or call OASA\'s telephone information center (185) to get information for any scheduled or unscheduled changes in the operation of urban transport.\n
 4.  OASA is the sole beneficiary of the intellectual property of the database from which the present application receives data and displays it in specially crafted graphical user interface.  The use of any logo and/or commercial trademark of OASA in the application\'s graphical user interface (GUI) or in the application icon does not mean that this application has been developed by OASA or its subsidiaries, neither that OASA recommends this application over other existing or future applications that will offer the same or similar features and information to the user.\n
 5.  The export of data from the application and its import to any other application or computer code or database or any other organized dataset, digital or not, without the explicit written permission of OASA, is expressly forbidden.\n</string>
-
+<string name="help_municipality">This information is provided so you can write a letter to the mayor or call the municipal police to complain about offenses against pedestrians.
+</string>    
 </resources>
