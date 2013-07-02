@@ -103,6 +103,16 @@
             android:label="@string/help" >
         </activity>
         <activity
+            android:name=".app.HelpActivity2"
+            android:label="@string/help" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="help"/>
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".app.BusPreferencesActivity"
             android:label="@string/pref_title" >
         </activity>

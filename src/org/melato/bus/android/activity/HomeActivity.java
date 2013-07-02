@@ -23,6 +23,7 @@ package org.melato.bus.android.activity;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
 import org.melato.bus.android.app.HelpActivity;
+import org.melato.bus.android.app.HelpActivity2;
 import org.melato.bus.android.app.UpdateActivity;
 import org.melato.bus.android.map.RouteMapActivity;
 
@@ -84,6 +85,17 @@ public class HomeActivity extends Activity implements OnItemClickListener {
     }
   }
   
+  static class Pezh extends LaunchItem {
+    
+    public Pezh() {
+      super(R.drawable.pezh, R.string.pezh);
+    }
+
+    public void invoke(Context context) {
+      HelpActivity2.showHelp(context, "pezh");
+    }
+  }
+  
   
   // references to our images
   private LaunchItem[] items = {
@@ -96,6 +108,7 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       new LaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
       new LaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
       new Twitter(),
+      new Pezh(),
       new About(),
   };
   

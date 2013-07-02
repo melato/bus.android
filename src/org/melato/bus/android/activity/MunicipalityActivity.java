@@ -26,6 +26,7 @@ import org.melato.android.util.LocationField;
 import org.melato.android.util.PhoneField;
 import org.melato.android.util.UrlField;
 import org.melato.bus.android.R;
+import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.Municipality;
 import org.melato.gps.Point2D;
 
@@ -35,6 +36,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -101,5 +104,13 @@ public class MunicipalityActivity extends ListActivity implements OnItemClickLis
     if ( value instanceof Invokable) {
       ((Invokable)value).invoke(this);
     }
-  }  
+  }
+  
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    HelpActivity.addItem(menu, this, R.string.help_municipality);
+    return true;
+  }
+  
+  
 }

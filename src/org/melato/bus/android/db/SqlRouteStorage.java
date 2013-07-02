@@ -32,6 +32,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
+import org.melato.bus.client.HelpItem;
+import org.melato.bus.client.HelpStorage;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Municipality;
@@ -60,19 +62,21 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.SparseArray;
 
-public class SqlRouteStorage implements RouteStorage, SunsetProvider {
+public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorage {
   public static final String DATABASE_NAME = "ROUTES.db";
   private String databaseFile;
   private Map<String,String> properties;
   private int version;
-  /** 7: municipalities
+  /**
+   *  8: help
+   *  7: municipalities
    *  6: route flags, stop flags
    *  5: exceptions
    *  4: agencies
    *  3: time offset
    *  2: holidays
    * */
-  public static final int MIN_VERSION = 7;
+  public static final int MIN_VERSION = 8;
   public static final String PROPERTY_VERSION = "version";
   public static final String PROPERTY_DATE = "build_date";
   public static final String PROPERTY_LAT = "center_lat";
@@ -974,5 +978,44 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider {
       db.close();
     }
     return null;
-  }  
+  }
+
+  private HelpItem loadHelpWhere(String where) {
+    if ( getVersion() < 8 ) {
+      return null;
+    }
+    String sql = "select title, body, node, name from help where " + where;
+    SQLiteDatabase db = getDatabase();
+    try {
+      Cursor cursor = db.rawQuery( sql, null);
+      try {
+        if ( cursor.moveToFirst() ) {
+          int i = 0;
+          HelpItem h = new HelpItem();
+          h.setTitle(cursor.getString(i++));
+          h.setText(cursor.getString(i++));
+          h.setNode(cursor.getInt(i++));
+          if ( ! cursor.isNull(i)) {
+            h.setName(cursor.getString(i));
+          }
+          return h;
+        }
+      } finally {
+        cursor.close();
+      }
+    } finally {
+      db.close();
+    }
+    return null;
+  }
+  
+  @Override
+  public HelpItem loadHelp(String name) {
+    return loadHelpWhere( "name = '" + quote(name) + "'");
+  }
+
+  @Override
+  public HelpItem loadHelp(int node) {
+    return loadHelpWhere( "node = " + node);
+  }
 }
