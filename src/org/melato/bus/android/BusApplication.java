@@ -9,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class BusApplication extends Application {
   private Locale locale;
@@ -25,12 +24,6 @@ public class BusApplication extends Application {
     super.onConfigurationChanged(newConfig);
     if ( locale != null ) {
       updateLocale(newConfig);
-      /*
-      newConfig.locale = locale;
-      Locale.setDefault(locale);
-      Resources resources = getBaseContext().getResources(); 
-      resources.updateConfiguration(newConfig, resources.getDisplayMetrics());
-      */
     }
   }
   @Override
