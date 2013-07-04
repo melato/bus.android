@@ -20,17 +20,28 @@
  */
 package org.melato.bus.android.activity;
 
+import java.io.ByteArrayInputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.melato.android.util.Invokable;
+import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
 import org.melato.bus.android.app.HelpActivity2;
 import org.melato.bus.android.app.UpdateActivity;
 import org.melato.bus.android.map.RouteMapActivity;
+import org.melato.bus.client.Menu;
+import org.melato.bus.client.MenuStorage;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -42,26 +53,65 @@ import android.widget.GridView;
 
 /** The main activity checks for updates and launches the next activity. */
 public class HomeActivity extends Activity implements OnItemClickListener {
-  static class LaunchItem {
+  List<LaunchItem> items = new ArrayList<LaunchItem>();
+  static interface LaunchItem extends Invokable {
+    public void init(Button button);
+  }
+  static class InternalLaunchItem implements LaunchItem {
     Class<? extends Activity> activity;
     int drawable;
     int text;
-    public LaunchItem(Class<? extends Activity> activity, int drawable, int text) {
+    public InternalLaunchItem(Class<? extends Activity> activity, int drawable, int text) {
       super();
       this.activity = activity;
       this.drawable = drawable;
       this.text = text;
     }    
-    protected LaunchItem(int drawable, int text) {
+    protected InternalLaunchItem(int drawable, int text) {
       super();
       this.drawable = drawable;
       this.text = text;
+    }
+    public void init(Button button) {
+      button.setCompoundDrawablesWithIntrinsicBounds(0, drawable, 0, 0);
+      button.setText(text);
     }
     public void invoke(Context context) {
       context.startActivity(new Intent(context, activity));      
     }
   }
-  static class Help extends LaunchItem {
+  static class MenuLaunchItem implements LaunchItem {
+    Drawable drawable;
+    Menu menu;
+    
+    public MenuLaunchItem(Context context, Menu menu) {      
+      this.menu = menu;
+      MenuStorage db = (MenuStorage) Info.routeManager(context).getStorage();
+      if ( menu.icon != null) {
+        byte[] icon = db.loadImage(menu.icon);
+        if ( icon != null) {
+          drawable = new BitmapDrawable(context.getResources(), new ByteArrayInputStream(icon));
+        }
+      }
+    }
+    public void invoke(Context context) {
+      if ( "url".equals( menu.type)){ 
+        Uri uri = Uri.parse(menu.target);
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        context.startActivity(intent);
+      } else if ("help".equals(menu.type)) {
+        HelpActivity2.showHelp(context, menu.target);
+      }
+    }
+    @Override
+    public void init(Button button) {
+      button.setText(menu.getLabel());
+      button.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
+      Log.i("aa", "init label=" + menu.getLabel() + " drawable=" + drawable);
+    }
+    
+  }
+  static class Help extends InternalLaunchItem {
     private String helpName;
     
     public Help(int icon, int label, String helpName) {
@@ -80,41 +130,49 @@ public class HomeActivity extends Activity implements OnItemClickListener {
     }
   }  
   
-  static class Twitter extends LaunchItem {
-    
-    public Twitter() {
-      super(R.drawable.twitter, R.string.twitter);
-    }
-
-    public void invoke(Context context) {
-      Uri uri = Uri.parse("http://twitter.com/athensnextbus");
-      Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-      context.startActivity(intent);
-    }
-  }
-  
   static class Pezh extends Help {    
     public Pezh() {
       super(R.drawable.pezh, R.string.pezh, "pezh");
     }
   }  
   
+   static class Twitter extends InternalLaunchItem {       
+     public Twitter() {
+       super(R.drawable.twitter, R.string.twitter);
+     }
+  
+     public void invoke(Context context) {
+       Uri uri = Uri.parse("http://twitter.com/athensnextbus");
+       Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+       context.startActivity(intent);
+     }
+   }
+  
   // references to our images
-  private LaunchItem[] items = {
-      new LaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
-      new LaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
-      new LaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
-      new LaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
-      new LaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
-      new LaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
-      new LaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
-      new LaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
+  private InternalLaunchItem[] internalItems = {
+      new InternalLaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
+      new InternalLaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
+      new InternalLaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
+      new InternalLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
+      new InternalLaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
+      new InternalLaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
+      new InternalLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
+      new InternalLaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
+      new About(),
       new Twitter(),
       new Pezh(),
-      new About(),
   };
   
-  
+  void initMenus() {
+    for( LaunchItem item: internalItems ) {
+      items.add(item);
+    }
+    MenuStorage db = (MenuStorage) Info.routeManager(this).getStorage();
+    for(Menu menu: db.loadMenus() ) {
+      Log.i("aa", "menu: " + menu );
+      items.add( new MenuLaunchItem(this, menu));
+    }    
+  }
   /** Called when the activity is first created. */  
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -125,13 +183,14 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       }
       setContentView(R.layout.home);
       GridView grid = (GridView) findViewById(R.id.gridView);
+      initMenus();
       grid.setAdapter(new ImageAdapter(this));
       grid.setOnItemClickListener(this);
   }
 
 
   void select(int position) {
-    LaunchItem item = items[position];
+    Invokable item = items.get(position);
     item.invoke(this);
   }
   @Override
@@ -148,7 +207,7 @@ public class HomeActivity extends Activity implements OnItemClickListener {
     }
 
     public int getCount() {
-        return items.length;
+        return items.size();
     }
 
     public Object getItem(int position) {
@@ -171,11 +230,8 @@ public class HomeActivity extends Activity implements OnItemClickListener {
         } else {
             button = (Button) convertView;
         }
-        LaunchItem item = items[position];
-        button.setCompoundDrawablesWithIntrinsicBounds(0, item.drawable, 0, 0);
-        button.setText(item.text);
-        //button.setBackgroundColor(Color.BLACK);
-        //button.setTextColor(Color.WHITE);
+        LaunchItem item = items.get(position);
+        item.init(button);
         button.setOnClickListener(new ButtonListener(position));
         return button;
     }
