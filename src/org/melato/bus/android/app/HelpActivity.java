@@ -136,7 +136,7 @@ public class HelpActivity extends Activity {
   public boolean onOptionsItemSelected(MenuItem item) {
     switch( item.getItemId() ) {
       case R.id.about:
-        HelpActivity.showHelp(this, R.string.help_about, R.string.about, false, true);
+        HelpActivity2.showHelp(this, "about");
         //startActivity( new Intent(this, AboutActivity.class));
         break;
       case R.id.terms:
