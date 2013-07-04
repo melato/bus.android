@@ -20,37 +20,39 @@
  */
 package org.melato.bus.android.app;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.client.HelpItem;
 import org.melato.bus.client.HelpStorage;
+import org.melato.util.VariableSubstitution;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.widget.TextView;
 
 /** Displays interlinked help items that are taken from the database. */
 public class HelpActivity2 extends Activity {
   public static final String KEY_NAME = "help_name";
-  public static final String KEY_NODE = "help_node";
   
   HelpItem getHelp() {
     HelpStorage db = (HelpStorage) Info.routeManager(this).getStorage();
     String name = getIntent().getStringExtra(KEY_NAME);
     if ( name != null) {
-      return db.loadHelp(name);
-    } else {
-      int node = getIntent().getIntExtra(KEY_NODE, 0);
-      if ( node != 0 ) {
-        return db.loadHelp(node);
-      }
+      String lang = Locale.getDefault().getLanguage();
+      return db.loadHelpByName(name, lang);
     }
     Uri uri = getIntent().getData();
     if ( uri == null )
@@ -59,14 +61,30 @@ public class HelpActivity2 extends Activity {
     if ( "help".equals(scheme)) {
       String path = uri.getSchemeSpecificPart();
       if ( path != null) {
-        try {
-          int node = Integer.parseInt(path);
-          return db.loadHelp(node);
-        } catch( NumberFormatException e) {          
-        }
+        return db.loadHelpByNode(path);
       }
     }
     return null;
+  }
+  
+  Map<String,String> getVariables() {
+    Map<String,String> vars = new HashMap<String,String>();
+    String appVersion = "?";
+    PackageInfo packageInfo;
+    try {
+      packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+      appVersion = packageInfo.versionName;
+    } catch (NameNotFoundException e) {
+      throw new RuntimeException(e);
+    }
+    SqlRouteStorage routeDB = (SqlRouteStorage) Info.routeManager(this).getStorage();
+    String databaseDate = routeDB.getBuildDate();
+    if ( databaseDate == null) {
+      databaseDate = "?";
+    }
+    vars.put("app.version", appVersion);
+    vars.put("db.version", databaseDate);
+    return vars;
   }
   
   public static void showHelp(Context context, String name) {
@@ -77,7 +95,11 @@ public class HelpActivity2 extends Activity {
   
   protected void setHelpText(TextView view, HelpItem help) {
     if ( help != null) {
-      Spanned s = Html.fromHtml(help.getText());
+      String text = help.getText();
+      VariableSubstitution sub = new VariableSubstitution(VariableSubstitution.ANT_PATTERN);
+      Map<String,String> vars = getVariables();
+      text = sub.substitute(text, vars);
+      Spanned s = Html.fromHtml(text);
       view.setText(s);
     }
   }

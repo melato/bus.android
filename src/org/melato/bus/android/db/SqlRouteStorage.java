@@ -994,7 +994,7 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
           HelpItem h = new HelpItem();
           h.setTitle(cursor.getString(i++));
           h.setText(cursor.getString(i++));
-          h.setNode(cursor.getInt(i++));
+          h.setNode(cursor.getString(i++));
           if ( ! cursor.isNull(i)) {
             h.setName(cursor.getString(i));
           }
@@ -1010,12 +1010,17 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
   }
   
   @Override
-  public HelpItem loadHelp(String name) {
-    return loadHelpWhere( "name = '" + quote(name) + "'");
+  public HelpItem loadHelpByName(String name, String lang) {
+    if ( lang == null) {
+      return loadHelpWhere( "name = '" + quote(name) + "'");
+    } else {
+      String name2 = name + "." + lang;      
+      return loadHelpWhere( "name IN ('" + quote(name) + "', '" + quote(name2) + "') ORDER BY name DESC");
+    }
   }
 
   @Override
-  public HelpItem loadHelp(int node) {
-    return loadHelpWhere( "node = " + node);
+  public HelpItem loadHelpByNode(String node) {
+    return loadHelpWhere( "node = '" + quote(node) + "'");
   }
 }
