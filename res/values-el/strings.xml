@@ -74,7 +74,7 @@
     <string name="wait">αναμονή</string>
     <string name="twitter">Twitter</string>
     <string name="language">Γλώσσα</string>    
-    <string name="lang_default">Γλώσσα συσκευής</string>    
+    <string name="device_lang">Γλώσσα συσκευής</string>    
     <string name="municipality">Δήμος</string>
     <string name="mayor">Δήμαρχος</string>    
     <string name="police_phone">Δημοτική Αστυνομία</string>    
