@@ -34,6 +34,8 @@ import java.util.Set;
 
 import org.melato.bus.client.HelpItem;
 import org.melato.bus.client.HelpStorage;
+import org.melato.bus.client.Menu;
+import org.melato.bus.client.MenuStorage;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.DaySchedule;
 import org.melato.bus.model.Municipality;
@@ -62,7 +64,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.SparseArray;
 
-public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorage {
+public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorage, MenuStorage {
   public static final String DATABASE_NAME = "ROUTES.db";
   private String databaseFile;
   private Map<String,String> properties;
@@ -1022,5 +1024,56 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
   @Override
   public HelpItem loadHelpByNode(String node) {
     return loadHelpWhere( "node = '" + quote(node) + "'");
+  }
+
+  @Override
+  public List<Menu> loadMenus() {
+    String sql = "select name, label, type, target, icon from menus";
+    List<Menu> menus = new ArrayList<Menu>();
+    SQLiteDatabase db = getDatabase();
+    try {
+      Cursor cursor = db.rawQuery(sql, null);
+      try {
+        if ( cursor.moveToFirst() ) {
+          do {
+            Menu menu = new Menu();        
+            menu.setName( cursor.getString(0));
+            menu.setLabel( cursor.getString(1));
+            menu.setType( cursor.getString(2));
+            menu.setTarget( cursor.getString(3));
+            if ( ! cursor.isNull(4)) {
+              menu.setIcon(cursor.getString(4));
+            }
+            menus.add(menu);
+          } while( cursor.moveToNext() );
+        }
+      } finally {
+        cursor.close();
+      }
+    } finally {
+      db.close();
+    }
+    return menus;
+  }
+
+  @Override
+  public byte[] loadImage(String name) {
+    String sql = String.format("select image from images where name = '%s'", quote(name));
+    SQLiteDatabase db = getDatabase();
+    try {
+      Cursor cursor = db.rawQuery(sql, null);
+      try {
+        if ( cursor.moveToFirst() ) {
+          do {
+            return cursor.getBlob(0);
+          } while( cursor.moveToNext() );
+        }
+      } finally {
+        cursor.close();
+      }
+    } finally {
+      db.close();
+    }
+    return null;
   }
 }
