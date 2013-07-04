@@ -62,9 +62,28 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       context.startActivity(new Intent(context, activity));      
     }
   }
-  static class About extends LaunchItem {
+  static class Help extends LaunchItem {
+    private String helpName;
     
+    public Help(int icon, int label, String helpName) {
+      super(icon, label);
+      this.helpName = helpName;
+    }
+
+    public void invoke(Context context) {
+      HelpActivity2.showHelp(context, helpName);
+    }
+  }
+
+  static class About extends Help {    
     public About() {
+      super(R.drawable.about, R.string.about, "about");
+    }
+  }  
+  
+  static class About1 extends LaunchItem {
+    
+    public About1() {
       super(R.drawable.about, R.string.about);
     }
 
@@ -85,17 +104,11 @@ public class HomeActivity extends Activity implements OnItemClickListener {
     }
   }
   
-  static class Pezh extends LaunchItem {
-    
+  static class Pezh extends Help {    
     public Pezh() {
-      super(R.drawable.pezh, R.string.pezh);
+      super(R.drawable.pezh, R.string.pezh, "pezh");
     }
-
-    public void invoke(Context context) {
-      HelpActivity2.showHelp(context, "pezh");
-    }
-  }
-  
+  }  
   
   // references to our images
   private LaunchItem[] items = {
