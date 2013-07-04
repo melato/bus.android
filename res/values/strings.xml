@@ -74,6 +74,7 @@
     <string name="wait">wait</string>
     <string name="twitter">Twitter</string>    
     <string name="language">Language</string>    
+    <string name="device_lang">Device Language</string>    
     <string name="municipality">Municipality</string>    
     <string name="mayor">Mayor</string>    
     <string name="police_phone">Municipal Police</string>    
@@ -86,4 +87,5 @@
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
     <string name="pezh">ΠΕΖΗ</string>
+        
 </resources>

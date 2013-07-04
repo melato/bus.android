@@ -10,7 +10,7 @@
 
    <string-array
       name="lang_names">
-      <item>Device Language</item>
+      <item>@string/device_lang</item>
       <item>English</item>
       <item>Ελληνικά</item>
       </string-array>
