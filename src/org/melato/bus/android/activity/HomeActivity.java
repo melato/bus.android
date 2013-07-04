@@ -22,7 +22,6 @@ package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
-import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.android.app.HelpActivity2;
 import org.melato.bus.android.app.UpdateActivity;
 import org.melato.bus.android.map.RouteMapActivity;
@@ -81,16 +80,6 @@ public class HomeActivity extends Activity implements OnItemClickListener {
     }
   }  
   
-  static class About1 extends LaunchItem {
-    
-    public About1() {
-      super(R.drawable.about, R.string.about);
-    }
-
-    public void invoke(Context context) {
-      HelpActivity.showHelp(context, R.string.help_about, R.string.about, false, true);        
-    }
-  }
   static class Twitter extends LaunchItem {
     
     public Twitter() {
