@@ -21,26 +21,31 @@
 package org.melato.bus.android.activity;
 
 import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.melato.android.util.Invokable;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
-import org.melato.bus.android.app.HelpActivity2;
+import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.android.app.UpdateActivity;
 import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.client.Menu;
 import org.melato.bus.client.MenuStorage;
+import org.melato.util.DateId;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -86,11 +91,14 @@ public class HomeActivity extends Activity implements OnItemClickListener {
     
     public MenuLaunchItem(Context context, Menu menu) {      
       this.menu = menu;
-      MenuStorage db = (MenuStorage) Info.routeManager(context).getStorage();
-      if ( menu.icon != null) {
-        byte[] icon = db.loadImage(menu.icon);
-        if ( icon != null) {
-          drawable = new BitmapDrawable(context.getResources(), new ByteArrayInputStream(icon));
+      MenuStorage db = Info.menuManager(context);
+      if ( menu.getIcon() != null) {
+        byte[] icon = db.loadImage(menu.getIcon());
+        if ( icon != null) { 
+          Options options = new BitmapFactory.Options();
+          options.inDensity = DisplayMetrics.DENSITY_DEFAULT;
+          InputStream in = new ByteArrayInputStream(icon);
+          drawable = Drawable.createFromResourceStream(context.getResources(), null, in, menu.icon, options);
         }
       }
     }
@@ -100,7 +108,7 @@ public class HomeActivity extends Activity implements OnItemClickListener {
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         context.startActivity(intent);
       } else if ("help".equals(menu.type)) {
-        HelpActivity2.showHelp(context, menu.target);
+        HelpActivity.showHelp(context, menu.target);
       }
     }
     @Override
@@ -120,7 +128,7 @@ public class HomeActivity extends Activity implements OnItemClickListener {
     }
 
     public void invoke(Context context) {
-      HelpActivity2.showHelp(context, helpName);
+      HelpActivity.showHelp(context, helpName);
     }
   }
 
@@ -168,9 +176,11 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       items.add(item);
     }
     MenuStorage db = (MenuStorage) Info.routeManager(this).getStorage();
+    int dateId = DateId.dateId(new Date());
     for(Menu menu: db.loadMenus() ) {
-      Log.i("aa", "menu: " + menu );
-      items.add( new MenuLaunchItem(this, menu));
+      if ( menu.isActive(dateId)) {
+        items.add( new MenuLaunchItem(this, menu));
+      }
     }    
   }
   /** Called when the activity is first created. */  

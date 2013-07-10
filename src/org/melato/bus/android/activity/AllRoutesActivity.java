@@ -158,7 +158,7 @@ public class AllRoutesActivity extends RoutesActivity {
   {
      MenuInflater inflater = getMenuInflater();
      inflater.inflate(R.menu.all_routes_menu, menu);
-     HelpActivity.addItem(menu, this, R.string.help_all);
+     HelpActivity.addItem(menu, this, Help.ALL);
      return true;
   }
 

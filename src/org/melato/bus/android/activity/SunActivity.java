@@ -10,11 +10,13 @@ import java.util.List;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.RouteStorage;
 import org.melato.sun.SunsetProvider;
 
 import android.app.ListActivity;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.ArrayAdapter;
 
 /** An activity that shows the sunrise and sunset for the current date. */
@@ -46,5 +48,12 @@ public class SunActivity extends ListActivity {
       }
     }
     setListAdapter( new ArrayAdapter<String>(this, R.layout.list_item, items));
+  }
+  
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu)
+  {
+     HelpActivity.addItem(menu, this, Help.SUN);
+     return true;
   }
 }

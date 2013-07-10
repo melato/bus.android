@@ -107,7 +107,7 @@ public class MunicipalityActivity extends ListActivity implements OnItemClickLis
   
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    HelpActivity.addItem(menu, this, R.string.help_municipality);
+    HelpActivity.addItem(menu, this, Help.MUNICIPALITY);
     return true;
   }
   
