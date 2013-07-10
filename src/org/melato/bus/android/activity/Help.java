@@ -15,4 +15,5 @@ public class Help {
     public static final String SEQUENCE = "sequence";
     public static final String STOP = "stop";
     public static final String STOPS = "stops";
+    public static final String SUN = "sun";
 }
