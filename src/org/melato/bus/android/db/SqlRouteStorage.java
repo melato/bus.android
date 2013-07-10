@@ -1028,7 +1028,7 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
 
   @Override
   public List<Menu> loadMenus() {
-    String sql = "select name, label, type, target, icon from menus";
+    String sql = "select label, type, target, icon, start_date, end_date from menus";
     List<Menu> menus = new ArrayList<Menu>();
     SQLiteDatabase db = getDatabase();
     try {
@@ -1037,13 +1037,16 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
         if ( cursor.moveToFirst() ) {
           do {
             Menu menu = new Menu();        
-            menu.setName( cursor.getString(0));
-            menu.setLabel( cursor.getString(1));
-            menu.setType( cursor.getString(2));
-            menu.setTarget( cursor.getString(3));
-            if ( ! cursor.isNull(4)) {
-              menu.setIcon(cursor.getString(4));
+            int i = 0;
+            menu.setLabel( cursor.getString(i++));
+            menu.setType( cursor.getString(i++));
+            menu.setTarget( cursor.getString(i++));
+            if ( ! cursor.isNull(i)) {
+              menu.setIcon(cursor.getString(i));
             }
+            i++;
+            menu.setStartDate(cursor.getInt(i++));
+            menu.setEndDate(cursor.getInt(i++));
             menus.add(menu);
           } while( cursor.moveToNext() );
         }
