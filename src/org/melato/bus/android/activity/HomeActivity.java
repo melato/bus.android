@@ -167,8 +167,8 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       new InternalLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
       new InternalLaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
       new About(),
-      new Twitter(),
-      new Pezh(),
+      //new Twitter(),
+      //new Pezh(),
   };
   
   void initMenus() {
