@@ -37,6 +37,7 @@ import android.widget.ListView;
  */
 public class SequenceInstanceActivity extends ListActivity {
   public static final String KEY_LEGS = "org.melato.bus.android.legs";
+  /** This is really SequenceInstanceLeg[], but somehow its type does not survive serialization. */
   private Object[] legs;
 
   public SequenceInstanceActivity() {
