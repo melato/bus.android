@@ -87,5 +87,8 @@
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
     <string name="pezh">ΠΕΖΗ</string>
-        
+
+    <string name="plan">Plan</string>
+    <string name="swap">Swap</string>
+    
 </resources>

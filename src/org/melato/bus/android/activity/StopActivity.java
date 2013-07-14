@@ -29,7 +29,10 @@ import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.Stop;
+import org.melato.bus.plan.NamedPoint;
 import org.melato.bus.plan.Sequence;
+import org.melato.gps.Point2D;
+import org.melato.log.Log;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -139,6 +142,14 @@ public class StopActivity extends ListActivity implements OnItemClickListener
     }
     startActivity(new Intent(this, SequenceActivity.class));    
   }
+  private void addToPlan() {
+    Intent intent = new Intent(this, PlanActivity.class);
+    Stop stop = this.stop.getMarker();
+    NamedPoint point = new NamedPoint(stop);
+    point.setName(stop.getName());
+    intent.putExtra(PlanActivity.POINT, point);
+    startActivity(intent);    
+  }
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
@@ -153,6 +164,10 @@ public class StopActivity extends ListActivity implements OnItemClickListener
         break;
       case R.id.add_stop_after:
         addToSequence(true);
+        handled = true;
+        break;
+      case R.id.plan:
+        addToPlan();
         handled = true;
         break;
       /**

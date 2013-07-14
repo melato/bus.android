@@ -86,5 +86,9 @@
     <string name="date">Ημερομηνία</string>
     <string name="sunrise">Ανατολή</string>
     <string name="sunset">Δύση</string>
-    <string name="pezh">ΠΕΖΗ</string>    
+    <string name="pezh">ΠΕΖΗ</string>
+    
+    <string name="plan">Σχεδιασμός</string>
+    <string name="swap">Αλλαγή Κατεύθυνσης</string>
+    
 </resources>
