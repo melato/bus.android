@@ -49,7 +49,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 /**
- * Displays a sequence
+ * Displays a sequence and allows simple editing.
+ * Launches the sequence schedule activity.
  * @author Alex Athanasopoulos
  */
 public class SequenceActivity extends ListActivity {
