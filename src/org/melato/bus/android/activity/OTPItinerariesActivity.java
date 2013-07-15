@@ -21,12 +21,13 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
-import org.melato.bus.model.RStop;
-import org.melato.bus.model.Route;
-import org.melato.bus.plan.Plan;
-import org.melato.bus.plan.PlanLeg;
+import org.melato.bus.client.Formatting;
+import org.melato.bus.otp.OTP;
+import org.melato.bus.otp.OTP.Leg;
+import org.melato.bus.otp.OTP.TransitLeg;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,44 +35,48 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-/** Computes and displays a list of plans for going to a destination.
- * This is experimental.  It is not part of the production app yet.
- * */
-public class PlanResultsActivity extends ListActivity {
-  private BusActivities activities;
-  private Plan[] plans;
+public class OTPItinerariesActivity extends ListActivity {
+  private OTP.Plan plan;
 
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    activities = new BusActivities(this);
-    //plans = PlanActivity.plans;    
-    setListAdapter(new PlanAdapter());
+    plan = PlanActivity.plan;    
+    setListAdapter(new ItinerariesAdapter());
   }
 
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
-    Plan plan = plans[position];
-    PlanLeg[] legs = plan.getLegs();
-    if ( legs.length > 0 ) {
-      PlanLeg leg = legs[0];
-      Route route = leg.getRoute();
-      RStop rstop = new RStop(route.getRouteId(), leg.getStop1());
-      activities.showRoute(rstop);
-    }
+    OTP.Itinerary itinerary = plan.itineraries[position];
+    Intent intent = new Intent(this, OTPItineraryActivity.class);
+    intent.putExtra(OTPItineraryActivity.ITINERARY, itinerary);
+    startActivity(intent);
   }
+
+  public String itineraryLabel(OTP.Itinerary itinerary) {
+    StringBuilder buf = new StringBuilder();
+    buf.append( Formatting.formatTime(itinerary.startTime));
+    for(Leg leg: itinerary.legs) {
+      if ( leg instanceof TransitLeg ) {
+        TransitLeg t = (TransitLeg)leg;
+        buf.append( " " );        
+        buf.append(t.label);
+      }
+    }
+    return buf.toString();
+  }    
   
-  class PlanAdapter extends ArrayAdapter<Plan> {
-    public PlanAdapter() {
-      super(PlanResultsActivity.this, R.layout.list_item, plans); 
+  class ItinerariesAdapter extends ArrayAdapter<OTP.Itinerary> {
+    public ItinerariesAdapter() {
+      super(OTPItinerariesActivity.this, R.layout.list_item, plan.itineraries); 
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
       TextView view = (TextView) super.getView(position, convertView, parent);
-      Plan plan = plans[position];
-      String text = plan.getLabel();
+      OTP.Itinerary itinerary = plan.itineraries[position];
+      String text = itineraryLabel(itinerary);
       view.setText( text );
       return view;
     }

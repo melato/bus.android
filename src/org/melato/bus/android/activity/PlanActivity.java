@@ -20,15 +20,15 @@
  */
 package org.melato.bus.android.activity;
 
+import java.util.Date;
+
 import org.melato.android.progress.ActivityProgressHandler;
 import org.melato.android.progress.ProgressTitleHandler;
-import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.otp.OTPPlanner;
+import org.melato.bus.otp.OTP;
+import org.melato.bus.otp.OTPClient;
+import org.melato.bus.otp.PlanRequest;
 import org.melato.bus.plan.NamedPoint;
-import org.melato.bus.plan.Plan;
-import org.melato.bus.plan.PlanRequest;
-import org.melato.bus.plan.Planner;
 import org.melato.progress.ProgressGenerator;
 
 import android.app.Activity;
@@ -49,42 +49,46 @@ public class PlanActivity extends Activity {
   private ActivityProgressHandler progress;
   private static NamedPoint origin;
   private static NamedPoint destination;
-  public static Plan[] plans;
+  public static OTP.Plan plan;
 
-  class PlanTask extends AsyncTask<Void,Void,Plan[]> {    
+  class PlanTask extends AsyncTask<Void,Void,OTP.Plan> {    
     private Exception exception;
     @Override
     protected void onPreExecute() {
     }
 
     @Override
-    protected Plan[] doInBackground(Void... params) {
+    protected OTP.Plan doInBackground(Void... params) {
       ProgressGenerator.setHandler(progress);
-      Planner planner = new OTPPlanner();
-      planner.setRouteManager(Info.routeManager(PlanActivity.this));
+      OTP.Planner planner = new OTPClient();
+      //planner.setRouteManager(Info.routeManager(PlanActivity.this));
       PlanRequest request = new PlanRequest();
       request.setFromPlace(origin);
       request.setToPlace(destination);
+      Date date = new Date();
+      date = PlanRequest.replaceTime(date, 12 * 3600);
+      request.setDate(date);
       try {
         return planner.plan(request);
       } catch(Exception e) {
         exception = e;
+        e.printStackTrace();
         return null;
       }
     }
 
     @Override
-    protected void onPostExecute(Plan[] plans) {
+    protected void onPostExecute(OTP.Plan plan) {
       progress.end();
-      if ( plans == null) {
+      if ( plan == null) {
         if ( exception != null) {
           Toast toast = Toast.makeText(PlanActivity.this, exception.toString(), Toast.LENGTH_SHORT);
           toast.show();              
         }        
       } else {
-        PlanActivity.plans = plans;
+        PlanActivity.plan = plan;
         setTitle(R.string.best_route);
-        startActivity(new Intent(PlanActivity.this, PlanResultsActivity.class));
+        startActivity(new Intent(PlanActivity.this, OTPItinerariesActivity.class));
       }
     }
   }

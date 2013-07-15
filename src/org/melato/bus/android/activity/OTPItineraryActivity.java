@@ -20,58 +20,52 @@
  */
 package org.melato.bus.android.activity;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.melato.bus.android.R;
-import org.melato.bus.model.RStop;
-import org.melato.bus.model.Route;
-import org.melato.bus.plan.Plan;
-import org.melato.bus.plan.PlanLeg;
+import org.melato.bus.client.Formatting;
+import org.melato.bus.otp.OTP;
 
 import android.app.ListActivity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
-/** Computes and displays a list of plans for going to a destination.
- * This is experimental.  It is not part of the production app yet.
- * */
-public class PlanResultsActivity extends ListActivity {
-  private BusActivities activities;
-  private Plan[] plans;
+public class OTPItineraryActivity extends ListActivity {
+  public static String ITINERARY = "itinerary";
+  private OTP.Itinerary itinerary;
 
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    activities = new BusActivities(this);
-    //plans = PlanActivity.plans;    
-    setListAdapter(new PlanAdapter());
+    Intent intent = getIntent();
+    itinerary = (OTP.Itinerary) intent.getSerializableExtra(ITINERARY);
+    setListAdapter(new ItineraryAdapter());
   }
 
-  @Override
-  protected void onListItemClick(ListView l, View v, int position, long id) {
-    Plan plan = plans[position];
-    PlanLeg[] legs = plan.getLegs();
-    if ( legs.length > 0 ) {
-      PlanLeg leg = legs[0];
-      Route route = leg.getRoute();
-      RStop rstop = new RStop(route.getRouteId(), leg.getStop1());
-      activities.showRoute(rstop);
-    }
-  }
-  
-  class PlanAdapter extends ArrayAdapter<Plan> {
-    public PlanAdapter() {
-      super(PlanResultsActivity.this, R.layout.list_item, plans); 
+  class ItineraryAdapter extends ArrayAdapter<OTP.Leg> {
+    public ItineraryAdapter() {
+      super(OTPItineraryActivity.this, R.layout.list_item, itinerary.legs); 
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
       TextView view = (TextView) super.getView(position, convertView, parent);
-      Plan plan = plans[position];
-      String text = plan.getLabel();
+      OTP.Leg leg = itinerary.legs[position];
+      String text = "";
+      if ( leg instanceof OTP.TransitLeg){
+        OTP.TransitLeg t = (OTP.TransitLeg) leg; 
+        text = t.label + " (" + Formatting.formatTime(leg.startTime) + ") " + t.from.name + " -> " + t.to.name +
+            " (" + Formatting.formatTime(leg.endTime) + ")";
+      } else if ( leg instanceof OTP.WalkLeg ) {
+        text = "Walk " + " (" + Formatting.formatTime(leg.startTime) + ") " + Formatting.straightDistance(leg.distance);
+      }
       view.setText( text );
       return view;
     }

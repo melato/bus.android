@@ -83,6 +83,14 @@
             android:label="@string/plan" >
         </activity>
         <activity
+            android:name=".activity.OTPItinerariesActivity"
+            android:label="@string/plan" >
+        </activity>
+        <activity
+            android:name=".activity.OTPItineraryActivity"
+            android:label="@string/plan" >
+        </activity>
+        <activity
             android:name=".activity.PlanResultsActivity"
             android:label="@string/plan" >
         </activity>
