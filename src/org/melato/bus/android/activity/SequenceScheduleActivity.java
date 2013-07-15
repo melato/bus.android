@@ -48,7 +48,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /**
- * Displays a sequence
+ * Displays the schedule of a sequence for a whole day.
+ * The schedule displays all starting times, end times and duration.
  * @author Alex Athanasopoulos
  */
 public class SequenceScheduleActivity extends Activity implements OnItemClickListener {
