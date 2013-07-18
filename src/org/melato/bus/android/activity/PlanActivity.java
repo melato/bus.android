@@ -27,7 +27,7 @@ import org.melato.android.progress.ProgressTitleHandler;
 import org.melato.bus.android.R;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPClient;
-import org.melato.bus.otp.PlanRequest;
+import org.melato.bus.otp.OTPRequest;
 import org.melato.bus.plan.NamedPoint;
 import org.melato.progress.ProgressGenerator;
 
@@ -51,14 +51,14 @@ public class PlanActivity extends Activity {
   private static NamedPoint destination;
   public static OTP.Plan plan;
 
-  class PlanTask extends AsyncTask<PlanRequest,Void,OTP.Plan> {    
+  class PlanTask extends AsyncTask<OTPRequest,Void,OTP.Plan> {    
     private Exception exception;
     @Override
     protected void onPreExecute() {
     }
 
     @Override
-    protected OTP.Plan doInBackground(PlanRequest... params) {
+    protected OTP.Plan doInBackground(OTPRequest... params) {
       ProgressGenerator.setHandler(progress);
       OTP.Planner planner = new OTPClient();
       try {
@@ -125,15 +125,15 @@ public class PlanActivity extends Activity {
     }
     return -1;
   }
-  PlanRequest buildRequest() {
-    PlanRequest request = new PlanRequest();
+  OTPRequest buildRequest() {
+    OTPRequest request = new OTPRequest();
     request.setFromPlace(origin);
     request.setToPlace(destination);
     Date date = new Date();
     TextView timeView = (TextView) findViewById(R.id.time);
     int time = parseTime(timeView.getText().toString());
     if ( time >= 0) {
-      date = PlanRequest.replaceTime(date, time);
+      date = OTPRequest.replaceTime(date, time);
     }
     request.setDate(date);
     CheckBox arriveView = (CheckBox) findViewById(R.id.arrive);
@@ -149,7 +149,7 @@ public class PlanActivity extends Activity {
     } else if ( origin == null) {
       setTitle("Missing Origin");
     } else {
-      PlanRequest request = buildRequest();
+      OTPRequest request = buildRequest();
       new PlanTask().execute(request);      
     }
   }
