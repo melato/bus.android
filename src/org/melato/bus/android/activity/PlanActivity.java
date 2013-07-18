@@ -38,12 +38,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
 /** Computes and displays a list of plans for going to a destination.
- * This is experimental.  It is not part of the production app yet.
- * */
+ **/
 public class PlanActivity extends Activity {
   public static final String POINT = "POINT";
   private ActivityProgressHandler progress;
@@ -51,25 +51,18 @@ public class PlanActivity extends Activity {
   private static NamedPoint destination;
   public static OTP.Plan plan;
 
-  class PlanTask extends AsyncTask<Void,Void,OTP.Plan> {    
+  class PlanTask extends AsyncTask<PlanRequest,Void,OTP.Plan> {    
     private Exception exception;
     @Override
     protected void onPreExecute() {
     }
 
     @Override
-    protected OTP.Plan doInBackground(Void... params) {
+    protected OTP.Plan doInBackground(PlanRequest... params) {
       ProgressGenerator.setHandler(progress);
       OTP.Planner planner = new OTPClient();
-      //planner.setRouteManager(Info.routeManager(PlanActivity.this));
-      PlanRequest request = new PlanRequest();
-      request.setFromPlace(origin);
-      request.setToPlace(destination);
-      Date date = new Date();
-      date = PlanRequest.replaceTime(date, 12 * 3600);
-      request.setDate(date);
       try {
-        return planner.plan(request);
+        return planner.plan(params[0]);
       } catch(Exception e) {
         exception = e;
         e.printStackTrace();
@@ -94,14 +87,10 @@ public class PlanActivity extends Activity {
   }
   
   void showEndpoints() {
-    if ( origin != null) {
-      TextView view = (TextView) findViewById(R.id.from);
-      view.setText(origin.getName());
-    }
-    if ( destination != null) {
-      TextView view = (TextView) findViewById(R.id.to);
-      view.setText(destination.getName());
-    }
+    TextView view = (TextView) findViewById(R.id.from);
+    view.setText(origin != null ? origin.getName() : "");
+    view = (TextView) findViewById(R.id.to);
+    view.setText(destination != null ? destination.getName() : "");
   }
   
   /** Called when the activity is first created. */
@@ -122,13 +111,46 @@ public class PlanActivity extends Activity {
     showEndpoints();
   }
 
+  int parseTime(String s) {
+    if ( s == null )
+      return -1;
+    s = s.trim();
+    String[] fields = s.split(":");
+    if ( fields.length == 2 ) {
+      try {
+        int time = Integer.parseInt(fields[0]) * 60 + Integer.parseInt(fields[1]);
+        return time * 60;
+      } catch( NumberFormatException e) {        
+      }
+    }
+    return -1;
+  }
+  PlanRequest buildRequest() {
+    PlanRequest request = new PlanRequest();
+    request.setFromPlace(origin);
+    request.setToPlace(destination);
+    Date date = new Date();
+    TextView timeView = (TextView) findViewById(R.id.time);
+    int time = parseTime(timeView.getText().toString());
+    if ( time >= 0) {
+      date = PlanRequest.replaceTime(date, time);
+    }
+    request.setDate(date);
+    CheckBox arriveView = (CheckBox) findViewById(R.id.arrive);
+    if ( arriveView.isChecked()) {
+      request.setArriveBy(true);
+    }
+    return request;
+  }
+  
   void plan() {
     if ( destination == null) {
       setTitle("Missing Destination");
     } else if ( origin == null) {
       setTitle("Missing Origin");
     } else {
-      new PlanTask().execute();      
+      PlanRequest request = buildRequest();
+      new PlanTask().execute(request);      
     }
   }
 
