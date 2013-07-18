@@ -20,22 +20,27 @@
  */
 package org.melato.bus.android.activity;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.otp.OTP;
+import org.melato.bus.otp.PlanConverter;
+import org.melato.bus.otp.PlanConverter.MismatchException;
+import org.melato.bus.plan.Sequence;
 
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+/** Displays a single OTP itinerary */
 public class OTPItineraryActivity extends ListActivity {
   public static String ITINERARY = "itinerary";
   private OTP.Itinerary itinerary;
@@ -70,4 +75,35 @@ public class OTPItineraryActivity extends ListActivity {
       return view;
     }
   }
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu)
+  {
+     MenuInflater inflater = getMenuInflater();
+     inflater.inflate(R.menu.itinerary_menu, menu);
+     //HelpActivity.addItem(menu, this, Help.PLAN);
+     return true;
+  }
+  
+  void showSchedule() {
+    try {
+      Sequence sequence = new PlanConverter(Info.routeManager(this)).convertToSequence(itinerary);
+      Info.setSequence(this, sequence);
+      startActivity(new Intent(this, SequenceScheduleActivity.class));
+    } catch (MismatchException e) {
+      Toast toast = Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT);
+      toast.show();    
+    }
+  }
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    boolean handled = false;
+    switch(item.getItemId()) {
+      case R.id.schedule:
+        showSchedule();
+        handled = true;
+        break;
+    }
+    return handled ? true : false;
+  }
+
 }

@@ -35,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+/** Displays the itineraries of an OTP plan */
 public class OTPItinerariesActivity extends ListActivity {
   private OTP.Plan plan;
 

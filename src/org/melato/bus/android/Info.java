@@ -171,6 +171,11 @@ public class Info {
     return sequence;
   }
   
+  public static void setSequence(Context context, Sequence sequence) {
+    Info.sequence = sequence;
+    saveSequence(context);
+  }
+  
   public static void saveSequence(Context context) {
     if ( sequence != null) {
       File dir = context.getFilesDir();
