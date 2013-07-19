@@ -4,61 +4,88 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="From:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <TextView
-        android:id="@+id/from"
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="from"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_height="wrap_content" >
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="To:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        <TableRow
+            android:id="@+id/tableRow1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+			    <TextView
+			        android:id="@+id/textView1"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="@string/from"
+			        android:textAppearance="?android:attr/textAppearanceMedium" />
+			
+			    <TextView
+			        android:id="@+id/from"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="10dp"
+			        android:text=""
+			        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <TextView
-        android:id="@+id/to"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="to"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tableRow2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+			    <TextView
+			        android:id="@+id/textView3"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+              android:text="@string/to"
+			        android:textAppearance="?android:attr/textAppearanceMedium" />
+			
+			    <TextView
+			        android:id="@+id/to"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_marginLeft="10dp"
+			        android:text=""
+			        android:textAppearance="?android:attr/textAppearanceMedium" />
+			      
+        </TableRow>
+
+    </TableLayout>
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time:"
+        android:text="@string/plan_time"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <EditText
-        android:id="@+id/time"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10" >
+        android:layout_height="wrap_content" >
 
-        <requestFocus />
-    </EditText>
+        <EditText
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10" >
 
-    <CheckBox
-        android:id="@+id/arrive"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Arrive" />
+            <requestFocus />
+        </EditText>
 
+        <CheckBox
+            android:id="@+id/arrive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/arrive" />
+
+    </LinearLayout>
     <CheckBox
         android:id="@+id/subway"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="true"
         android:text="Subway" />
-    
+
 </LinearLayout>

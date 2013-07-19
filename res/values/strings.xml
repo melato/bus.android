@@ -90,5 +90,10 @@
 
     <string name="plan">Plan</string>
     <string name="swap">Swap</string>
+    <string name="from">From:</string>
+    <string name="to">To:</string>
+    <string name="plan_time">Time:</string>
+    <string name="arrive">Arrive</string>
+    <string name="walk">Walk</string>
     
 </resources>

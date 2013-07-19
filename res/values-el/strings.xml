@@ -90,5 +90,10 @@
     
     <string name="plan">Σχεδιασμός</string>
     <string name="swap">Αλλαγή Κατεύθυνσης</string>
+    <string name="from">Από:</string>
+    <string name="to">Έως:</string>
+    <string name="plan_time">Ώρα:</string>
+    <string name="arrive">Άφιξη</string>
+    <string name="walk">Περπάτημα</string>
     
 </resources>
