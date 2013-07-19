@@ -146,7 +146,8 @@ public class StopActivity extends ListActivity implements OnItemClickListener
     Intent intent = new Intent(this, PlanActivity.class);
     Stop stop = this.stop.getMarker();
     NamedPoint point = new NamedPoint(stop);
-    point.setName(stop.getName());
+    Route route = activities.getRoute();
+    point.setName(stop.getName() + " " + route.getLabel());
     intent.putExtra(PlanActivity.POINT, point);
     startActivity(intent);    
   }
