@@ -23,6 +23,7 @@ package org.melato.bus.android.activity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.client.Formatting;
+import org.melato.bus.model.Schedule;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.PlanConverter;
 import org.melato.bus.otp.PlanConverter.MismatchException;
@@ -57,11 +58,11 @@ public class OTPItineraryActivity extends ListActivity {
   String legLabel(OTP.Leg leg) {
     StringBuilder buf = new StringBuilder();
     if ( leg instanceof OTP.TransitLeg){
+      buf.append(Formatting.formatTime(leg.startTime));
+      buf.append(" ");
       OTP.TransitLeg t = (OTP.TransitLeg) leg; 
       buf.append(t.label);
-      buf.append(" (");
-      buf.append(Formatting.formatTime(leg.startTime));
-      buf.append(") ");
+      buf.append(" ");
       buf.append(t.from.name);
       buf.append(" -> ");
       buf.append(t.to.name);
@@ -69,10 +70,10 @@ public class OTPItineraryActivity extends ListActivity {
       buf.append(Formatting.formatTime(leg.endTime));
       buf.append(")");
     } else if ( leg instanceof OTP.WalkLeg ) {
-      buf.append("Walk (");
-      buf.append(Formatting.formatTime(leg.startTime));
-      buf.append(") ");
+      buf.append(getString(R.string.walk));
       buf.append(Formatting.straightDistance(leg.distance));
+      buf.append(" ");
+      buf.append(Schedule.formatDuration(leg.getDuration()));
     }
     return buf.toString();
   }
