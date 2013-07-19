@@ -22,6 +22,7 @@ package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
 import org.melato.bus.client.Formatting;
+import org.melato.bus.model.Schedule;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTP.Leg;
 import org.melato.bus.otp.OTP.TransitLeg;
@@ -55,9 +56,20 @@ public class OTPItinerariesActivity extends ListActivity {
     startActivity(intent);
   }
 
+  public void itineraryTimes(OTP.Itinerary itinerary, StringBuilder buf) {
+    int startTime = Schedule.getSeconds(itinerary.startTime);
+    int endTime = startTime + (int) (itinerary.endTime.getTime()-itinerary.startTime.getTime()) / 1000;
+    buf.append(Schedule.formatTime(startTime/60));
+    buf.append(" -> ");
+    buf.append(Schedule.formatTime(endTime/60));
+    buf.append(" (");
+    buf.append(Schedule.formatDuration(endTime-startTime));
+    buf.append(")"); 
+  }
+  
   public String itineraryLabel(OTP.Itinerary itinerary) {
     StringBuilder buf = new StringBuilder();
-    buf.append( Formatting.formatTime(itinerary.startTime));
+    itineraryTimes(itinerary, buf);
     for(Leg leg: itinerary.legs) {
       if ( leg instanceof TransitLeg ) {
         TransitLeg t = (TransitLeg)leg;
