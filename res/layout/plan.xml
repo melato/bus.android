@@ -53,5 +53,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Arrive" />
+
+    <CheckBox
+        android:id="@+id/subway"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="Subway" />
     
 </LinearLayout>

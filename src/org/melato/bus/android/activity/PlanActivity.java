@@ -20,7 +20,9 @@
  */
 package org.melato.bus.android.activity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.melato.android.progress.ActivityProgressHandler;
 import org.melato.android.progress.ProgressTitleHandler;
@@ -140,6 +142,16 @@ public class PlanActivity extends Activity {
     if ( arriveView.isChecked()) {
       request.setArriveBy(true);
     }
+    List<String> mode = new ArrayList<String>();
+    mode.add(OTPRequest.WALK);
+    CheckBox subwayView = (CheckBox) findViewById(R.id.subway);
+    if ( subwayView.isChecked()) {
+      mode.add(OTPRequest.TRANSIT);
+    } else {
+      mode.add(OTPRequest.BUS);      
+      mode.add(OTPRequest.TRAM);      
+    }
+    request.setMode(mode);
     return request;
   }
   
