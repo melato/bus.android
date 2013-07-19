@@ -70,7 +70,8 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
   private Map<String,String> properties;
   private int version;
   /**
-   *  8: help
+   *  9: force up-to-date menu
+   *  8: help, menu
    *  7: municipalities
    *  6: route flags, stop flags
    *  5: exceptions
@@ -78,7 +79,7 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
    *  3: time offset
    *  2: holidays
    * */
-  public static final int MIN_VERSION = 8;
+  public static final int MIN_VERSION = 9;
   public static final String PROPERTY_VERSION = "version";
   public static final String PROPERTY_DATE = "build_date";
   public static final String PROPERTY_LAT = "center_lat";
