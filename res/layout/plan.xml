@@ -81,11 +81,19 @@
             android:text="@string/arrive" />
 
     </LinearLayout>
-    <CheckBox
-        android:id="@+id/subway"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:id="@+id/modeView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="Subway" />
+        android:orientation="vertical" >
+        
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/modeView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
 
 </LinearLayout>

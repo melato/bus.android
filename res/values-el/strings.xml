@@ -95,5 +95,8 @@
     <string name="plan_time">Ώρα:</string>
     <string name="arrive">Άφιξη</string>
     <string name="walk">Περπάτημα</string>
+    <string name="mode_bus">Λεωφορείο</string>
+    <string name="mode_tram">Τραμ</string>
+    <string name="mode_subway">Μετρό</string>
     
 </resources>

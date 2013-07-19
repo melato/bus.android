@@ -34,13 +34,18 @@ import org.melato.bus.plan.NamedPoint;
 import org.melato.progress.ProgressGenerator;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,7 +57,33 @@ public class PlanActivity extends Activity {
   private static NamedPoint origin;
   private static NamedPoint destination;
   public static OTP.Plan plan;
+  private Mode[] modes;
 
+  static class Mode {
+    String code;
+    int     resource;
+    CheckBox check;
+    
+    public String prefKey() {
+      return "mode." + code;
+    }
+    public boolean getPreference(Context context) {
+      SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+      return settings.getBoolean(prefKey(), true);
+    }
+    public void setPreference(SharedPreferences.Editor settings) {
+      settings.putBoolean(prefKey(), check.isChecked());
+    }
+    public Mode(Context context, String code, int resource) {
+      super();
+      this.code = code;
+      this.resource = resource;
+      check = new CheckBox(context);
+      check.setText(resource);
+      check.setChecked(getPreference(context));
+    }
+    
+  }
   class PlanTask extends AsyncTask<OTPRequest,Void,OTP.Plan> {    
     private Exception exception;
     @Override
@@ -110,7 +141,22 @@ public class PlanActivity extends Activity {
       }
     }
     setContentView(R.layout.plan);
+    LinearLayout modeView = (LinearLayout)findViewById(R.id.modeView);
+    modes = new Mode[] {
+        new Mode(this, OTPRequest.BUS, R.string.mode_bus),
+        new Mode(this, OTPRequest.TRAM, R.string.mode_tram),
+        new Mode(this, OTPRequest.SUBWAY, R.string.mode_subway),        
+    };
+    for( int i = 0; i < modes.length; i++ ) {
+      modeView.addView(modes[i].check);
+    }
     showEndpoints();
+  }
+    
+  @Override
+  protected void onDestroy() {
+    savePreferences();
+    super.onDestroy();
   }
 
   int parseTime(String s) {
@@ -142,17 +188,24 @@ public class PlanActivity extends Activity {
     if ( arriveView.isChecked()) {
       request.setArriveBy(true);
     }
-    List<String> mode = new ArrayList<String>();
-    mode.add(OTPRequest.WALK);
-    CheckBox subwayView = (CheckBox) findViewById(R.id.subway);
-    if ( subwayView.isChecked()) {
-      mode.add(OTPRequest.TRANSIT);
-    } else {
-      mode.add(OTPRequest.BUS);      
-      mode.add(OTPRequest.TRAM);      
+    List<String> modeList = new ArrayList<String>();
+    modeList.add(OTPRequest.WALK);
+    for( Mode mode: modes ) {
+      if ( mode.check.isChecked()) {
+        modeList.add(mode.code);
+      }
     }
-    request.setMode(mode);
+    request.setMode(modeList);
     return request;
+  }
+  
+  void savePreferences() {
+    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+    Editor editor = settings.edit();
+    for( Mode mode: modes ) {
+      mode.setPreference(editor);
+    }
+    editor.commit();
   }
   
   void plan() {
