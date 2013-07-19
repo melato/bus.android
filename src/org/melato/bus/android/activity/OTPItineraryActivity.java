@@ -54,6 +54,28 @@ public class OTPItineraryActivity extends ListActivity {
     setListAdapter(new ItineraryAdapter());
   }
 
+  String legLabel(OTP.Leg leg) {
+    StringBuilder buf = new StringBuilder();
+    if ( leg instanceof OTP.TransitLeg){
+      OTP.TransitLeg t = (OTP.TransitLeg) leg; 
+      buf.append(t.label);
+      buf.append(" (");
+      buf.append(Formatting.formatTime(leg.startTime));
+      buf.append(") ");
+      buf.append(t.from.name);
+      buf.append(" -> ");
+      buf.append(t.to.name);
+      buf.append(" (");
+      buf.append(Formatting.formatTime(leg.endTime));
+      buf.append(")");
+    } else if ( leg instanceof OTP.WalkLeg ) {
+      buf.append("Walk (");
+      buf.append(Formatting.formatTime(leg.startTime));
+      buf.append(") ");
+      buf.append(Formatting.straightDistance(leg.distance));
+    }
+    return buf.toString();
+  }
   class ItineraryAdapter extends ArrayAdapter<OTP.Leg> {
     public ItineraryAdapter() {
       super(OTPItineraryActivity.this, R.layout.list_item, itinerary.legs); 
@@ -63,14 +85,7 @@ public class OTPItineraryActivity extends ListActivity {
     public View getView(int position, View convertView, ViewGroup parent) {
       TextView view = (TextView) super.getView(position, convertView, parent);
       OTP.Leg leg = itinerary.legs[position];
-      String text = "";
-      if ( leg instanceof OTP.TransitLeg){
-        OTP.TransitLeg t = (OTP.TransitLeg) leg; 
-        text = t.label + " (" + Formatting.formatTime(leg.startTime) + ") " + t.from.name + " -> " + t.to.name +
-            " (" + Formatting.formatTime(leg.endTime) + ")";
-      } else if ( leg instanceof OTP.WalkLeg ) {
-        text = "Walk " + " (" + Formatting.formatTime(leg.startTime) + ") " + Formatting.straightDistance(leg.distance);
-      }
+      String text = legLabel(leg);
       view.setText( text );
       return view;
     }
@@ -84,11 +99,11 @@ public class OTPItineraryActivity extends ListActivity {
      return true;
   }
   
-  void showSchedule() {
+  void showSequence() {
     try {
       Sequence sequence = new PlanConverter(Info.routeManager(this)).convertToSequence(itinerary);
       Info.setSequence(this, sequence);
-      startActivity(new Intent(this, SequenceScheduleActivity.class));
+      startActivity(new Intent(this, SequenceActivity.class));
     } catch (MismatchException e) {
       Toast toast = Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT);
       toast.show();    
@@ -98,8 +113,8 @@ public class OTPItineraryActivity extends ListActivity {
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
     switch(item.getItemId()) {
-      case R.id.schedule:
-        showSchedule();
+      case R.id.sequence:
+        showSequence();
         handled = true;
         break;
     }
