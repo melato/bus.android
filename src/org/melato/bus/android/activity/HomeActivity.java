@@ -138,24 +138,6 @@ public class HomeActivity extends Activity implements OnItemClickListener {
     }
   }  
   
-  static class Pezh extends Help {    
-    public Pezh() {
-      super(R.drawable.pezh, R.string.pezh, "pezh");
-    }
-  }  
-  
-   static class Twitter extends InternalLaunchItem {       
-     public Twitter() {
-       super(R.drawable.twitter, R.string.twitter);
-     }
-  
-     public void invoke(Context context) {
-       Uri uri = Uri.parse("http://twitter.com/athensnextbus");
-       Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-       context.startActivity(intent);
-     }
-   }
-  
   // references to our images
   private InternalLaunchItem[] internalItems = {
       new InternalLaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
@@ -168,8 +150,6 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       new InternalLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
       new InternalLaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
       new About(),
-      //new Twitter(),
-      //new Pezh(),
   };
   
   void initMenus() {
