@@ -65,13 +65,14 @@
 
         <EditText
             android:id="@+id/time"
-            android:layout_width="wrap_content"
+            android:layout_width="30pt"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:ems="10" >
+            android:ems="10"
+            android:inputType="time" >
 
             <requestFocus android:layout_width="wrap_content" />
-
+            
         </EditText>
 
         <CheckBox
