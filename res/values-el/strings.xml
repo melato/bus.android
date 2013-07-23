@@ -65,6 +65,7 @@
     <string name="terms_of_use">Όροι Χρήσης</string>
     <string name="sequence">Συνδυασμός</string>
     <string name="empty_sequence">Συνδυασμός γραμμών</string>
+    <string name="search">Αναζήτηση</string>
     <string name="select">Επιλογή</string>
     <string name="add_stop_after">Συνδυασμός</string>
     <string name="add_stop_before">Πρίν</string>

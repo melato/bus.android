@@ -142,41 +142,22 @@ public class StopActivity extends ListActivity implements OnItemClickListener
     }
     startActivity(new Intent(this, SequenceActivity.class));    
   }
-  private void addToPlan() {
-    Intent intent = new Intent(this, PlanActivity.class);
-    Stop stop = this.stop.getMarker();
-    NamedPoint point = new NamedPoint(stop);
-    Route route = activities.getRoute();
-    point.setName(stop.getName() + " " + route.getLabel());
-    intent.putExtra(PlanActivity.POINT, point);
-    startActivity(intent);    
-  }
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
     switch (item.getItemId()) {
-      case R.id.nearby:
-        showNearby();
+      case R.id.search:
+        PointSelectionActivity.selectPoint(this,rstop);
         handled = true;
         break;
       case R.id.schedule:
         showStopSchedule();
         handled = true;
         break;
-      case R.id.add_stop_after:
+      case R.id.add:
         addToSequence(true);
         handled = true;
         break;
-      case R.id.plan:
-        addToPlan();
-        handled = true;
-        break;
-      /**
-      case R.id.add_stop_before:
-        addToSequence(false);
-        handled = true;
-        break;
-      */
       default:
         break;
     }

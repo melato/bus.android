@@ -65,6 +65,7 @@
     <string name="terms_of_use">Terms of Use</string>
     <string name="sequence">Sequence</string>
     <string name="empty_sequence">Route Sequence</string>
+    <string name="search">Search</string>
     <string name="select">Select</string>
     <string name="add_stop_after">Add Stop</string>
     <string name="add_stop_before">Prepend Stop</string>
