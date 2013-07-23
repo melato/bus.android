@@ -26,11 +26,13 @@ import java.util.List;
 
 import org.melato.android.progress.ActivityProgressHandler;
 import org.melato.android.progress.ProgressTitleHandler;
+import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPClient;
 import org.melato.bus.otp.OTPRequest;
 import org.melato.bus.plan.NamedPoint;
+import org.melato.gps.Point2D;
 import org.melato.progress.ProgressGenerator;
 
 import android.app.Activity;
@@ -54,8 +56,8 @@ import android.widget.Toast;
 public class PlanActivity extends Activity {
   public static final String POINT = "POINT";
   private ActivityProgressHandler progress;
-  private static NamedPoint origin;
-  private static NamedPoint destination;
+  public static NamedPoint origin;
+  public static NamedPoint destination;
   public static OTP.Plan plan;
   private Mode[] modes;
 
@@ -93,7 +95,7 @@ public class PlanActivity extends Activity {
     @Override
     protected OTP.Plan doInBackground(OTPRequest... params) {
       ProgressGenerator.setHandler(progress);
-      OTP.Planner planner = new OTPClient();
+      OTP.Planner planner = new OTPClient(getString(R.string.otp_url));
       try {
         return planner.plan(params[0]);
       } catch(Exception e) {
@@ -121,9 +123,9 @@ public class PlanActivity extends Activity {
   
   void showEndpoints() {
     TextView view = (TextView) findViewById(R.id.from);
-    view.setText(origin != null ? origin.getName() : "");
+    view.setText(origin != null ? origin.toString() : "");
     view = (TextView) findViewById(R.id.to);
-    view.setText(destination != null ? destination.getName() : "");
+    view.setText(destination != null ? destination.toString() : "");
   }
   
   /** Called when the activity is first created. */
@@ -131,15 +133,17 @@ public class PlanActivity extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     progress = new ProgressTitleHandler(this);
+    /*
     Intent intent = getIntent();
     NamedPoint point = (NamedPoint) intent.getSerializableExtra(POINT);
     if ( point != null) {
-      if ( origin == null ) {
-        origin = point;
-      } else {
+      if ( destination == null ) {
         destination = point;
+      } else {
+        origin = point;
       }
     }
+    */
     setContentView(R.layout.plan);
     LinearLayout modeView = (LinearLayout)findViewById(R.id.modeView);
     modes = new Mode[] {
@@ -173,9 +177,9 @@ public class PlanActivity extends Activity {
     }
     return -1;
   }
-  OTPRequest buildRequest() {
+  OTPRequest buildRequest(Point2D from) {
     OTPRequest request = new OTPRequest();
-    request.setFromPlace(origin);
+    request.setFromPlace(from);
     request.setToPlace(destination);
     Date date = new Date();
     TextView timeView = (TextView) findViewById(R.id.time);
@@ -209,12 +213,16 @@ public class PlanActivity extends Activity {
   }
   
   void plan() {
+    Point2D from = this.origin;
+    if ( from == null) {
+      from = Info.trackHistory(this).getLocation();
+    }
     if ( destination == null) {
       setTitle("Missing Destination");
-    } else if ( origin == null) {
+    } else if ( from == null) {
       setTitle("Missing Origin");
     } else {
-      OTPRequest request = buildRequest();
+      OTPRequest request = buildRequest(from);
       new PlanTask().execute(request);      
     }
   }
@@ -242,6 +250,12 @@ public class PlanActivity extends Activity {
         break;
       case R.id.plan:
         plan();
+        handled = true;
+        break;
+      case R.id.last:
+        if ( PlanActivity.plan != null ) {
+          startActivity(new Intent(PlanActivity.this, OTPItinerariesActivity.class));
+        }
         handled = true;
         break;
     }
