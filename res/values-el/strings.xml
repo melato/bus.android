@@ -65,8 +65,15 @@
     <string name="terms_of_use">Όροι Χρήσης</string>
     <string name="sequence">Συνδυασμός</string>
     <string name="empty_sequence">Συνδυασμός γραμμών</string>
+    <string name="select">Επιλογή</string>
     <string name="add_stop_after">Συνδυασμός</string>
     <string name="add_stop_before">Πρίν</string>
+    
+    <string name="point_selection">Επιλογή Σημείου</string>    
+    <string name="add_to_sequence">Συνδυασμός</string>
+    <string name="set_origin">Αρχή</string>
+    <string name="set_destination">Προορισμός</string>
+    
     <string name="clear">Διαγραφή όλων</string>
     <string name="remove_last">Διαγραφή τελευταίας</string>
     <string name="remove_first">Διαγραφή πρώτης</string>
@@ -89,6 +96,7 @@
     <string name="pezh">ΠΕΖΗ</string>
     
     <string name="plan">Σχεδιασμός</string>
+    <string name="last_plan">Προηγούμενο </string>
     <string name="swap">Αλλαγή Κατεύθυνσης</string>
     <string name="from">Από:</string>
     <string name="to">Έως:</string>

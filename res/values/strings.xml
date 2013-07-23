@@ -65,8 +65,15 @@
     <string name="terms_of_use">Terms of Use</string>
     <string name="sequence">Sequence</string>
     <string name="empty_sequence">Route Sequence</string>
+    <string name="select">Select</string>
     <string name="add_stop_after">Add Stop</string>
     <string name="add_stop_before">Prepend Stop</string>
+    
+    <string name="point_selection">Point Selection</string>
+    <string name="add_to_sequence">Add to Sequence</string>
+    <string name="set_origin">Set as Origin</string>
+    <string name="set_destination">Set as Destination</string>
+    
     <string name="clear">Clear All</string>
     <string name="remove_last">Clear Last</string>
     <string name="remove_first">Clear First</string>
@@ -89,6 +96,7 @@
     <string name="pezh">ΠΕΖΗ</string>
 
     <string name="plan">Plan</string>
+    <string name="last_plan">Last Results</string>
     <string name="swap">Swap</string>
     <string name="from">From:</string>
     <string name="to">To:</string>
