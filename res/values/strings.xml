@@ -74,6 +74,8 @@
     <string name="add_to_sequence">Add to Sequence</string>
     <string name="set_origin">Set as Origin</string>
     <string name="set_destination">Set as Destination</string>
+    <string name="fewer_transfers">Fewer Transfers</string>
+    <string name="max_walk">Max Walk (m)</string>
     
     <string name="clear">Clear All</string>
     <string name="remove_last">Clear Last</string>
@@ -97,7 +99,7 @@
     <string name="pezh">ΠΕΖΗ</string>
 
     <string name="plan">Plan</string>
-    <string name="last_plan">Last Results</string>
+    <string name="last_plan">Last</string>
     <string name="swap">Swap</string>
     <string name="from">From:</string>
     <string name="to">To:</string>

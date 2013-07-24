@@ -60,6 +60,9 @@ public class PlanActivity extends Activity {
   public static NamedPoint destination;
   public static OTP.Plan plan;
   private Mode[] modes;
+  
+  private static final String PREF_WALK = "max_walk";
+  private static final String PREF_TRANSFERS = "tranfers";
 
   static class Mode {
     String code;
@@ -128,22 +131,20 @@ public class PlanActivity extends Activity {
     view.setText(destination != null ? destination.toString() : "");
   }
   
+  void showRequest() {
+    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+    TextView walkView = (TextView) findViewById(R.id.max_walk);
+    int maxWalk = settings.getInt(PREF_WALK, 1000);
+    walkView.setText(String.valueOf(maxWalk));
+    CheckBox transfersCheck = (CheckBox) findViewById(R.id.fewer_transfers);
+    transfersCheck.setChecked(settings.getBoolean(PREF_TRANSFERS, true));    
+  }
+  
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     progress = new ProgressTitleHandler(this);
-    /*
-    Intent intent = getIntent();
-    NamedPoint point = (NamedPoint) intent.getSerializableExtra(POINT);
-    if ( point != null) {
-      if ( destination == null ) {
-        destination = point;
-      } else {
-        origin = point;
-      }
-    }
-    */
     setContentView(R.layout.plan);
     LinearLayout modeView = (LinearLayout)findViewById(R.id.modeView);
     modes = new Mode[] {
@@ -154,6 +155,7 @@ public class PlanActivity extends Activity {
     for( int i = 0; i < modes.length; i++ ) {
       modeView.addView(modes[i].check);
     }
+    showRequest();
     showEndpoints();
   }
     
@@ -200,7 +202,19 @@ public class PlanActivity extends Activity {
       }
     }
     request.setMode(modeList);
+    request.setMaxWalkDistance(getMaxWalkDistance());
+    request.setMin(isMinTransfers() ? OTPRequest.OPT_TRANSFERS : OTPRequest.OPT_QUICK);
     return request;
+  }
+
+  private int getMaxWalkDistance() {
+    TextView text = (TextView) findViewById(R.id.max_walk);
+    return Integer.parseInt(text.getText().toString());    
+  }
+  
+  private boolean isMinTransfers() {
+    CheckBox transfers = (CheckBox) findViewById(R.id.fewer_transfers);
+    return transfers.isChecked();    
   }
   
   void savePreferences() {
@@ -209,6 +223,8 @@ public class PlanActivity extends Activity {
     for( Mode mode: modes ) {
       mode.setPreference(editor);
     }
+    editor.putBoolean(PREF_TRANSFERS, isMinTransfers());    
+    editor.putInt(PREF_WALK, getMaxWalkDistance());    
     editor.commit();
   }
   
@@ -256,6 +272,16 @@ public class PlanActivity extends Activity {
         if ( PlanActivity.plan != null ) {
           startActivity(new Intent(PlanActivity.this, OTPItinerariesActivity.class));
         }
+        handled = true;
+        break;
+      case R.id.remove_first:
+        origin = null;
+        showEndpoints();
+        handled = true;
+        break;
+      case R.id.remove_last:
+        destination = null;
+        showEndpoints();
         handled = true;
         break;
     }
