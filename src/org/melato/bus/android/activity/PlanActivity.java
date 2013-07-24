@@ -98,7 +98,8 @@ public class PlanActivity extends Activity {
     @Override
     protected OTP.Plan doInBackground(OTPRequest... params) {
       ProgressGenerator.setHandler(progress);
-      OTP.Planner planner = new OTPClient(getString(R.string.otp_url));
+      String url = Info.routeManager(PlanActivity.this).getPlannerUrl();
+      OTP.Planner planner = new OTPClient(url);
       try {
         return planner.plan(params[0]);
       } catch(Exception e) {

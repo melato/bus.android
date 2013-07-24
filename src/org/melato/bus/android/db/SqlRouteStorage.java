@@ -86,6 +86,7 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
   public static final String PROPERTY_DAY_CHANGE = "day_change";
   public static final String PROPERTY_DEFAULT_AGENCY = "default_agency";
   public static final String PROPERTY_TRANSLITERATION = "transliteration";
+  public static final String PROPERTY_PLANNER_URL = "planner_url";
   
   private Map<String,String> loadProperties(SQLiteDatabase db) {
     String sql = "select name, value from properties";
@@ -141,6 +142,11 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
 
   public String getBuildDate() {
     return getProperty(PROPERTY_DATE, null);
+  }
+
+  @Override
+  public String getPlannerUrl() {
+    return getProperty(PROPERTY_PLANNER_URL, null);
   }
 
   @Override
