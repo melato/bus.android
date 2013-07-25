@@ -89,11 +89,11 @@
         </activity>
         <activity
             android:name=".activity.OTPItinerariesActivity"
-            android:label="@string/plan" >
+            android:label="@string/itineraries" >
         </activity>
         <activity
             android:name=".activity.OTPItineraryActivity"
-            android:label="@string/plan" >
+            android:label="@string/itinerary" >
         </activity>
         <activity
             android:name=".activity.PlanResultsActivity"
