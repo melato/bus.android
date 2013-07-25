@@ -96,7 +96,9 @@
     <string name="sunset">Δύση</string>
     <string name="pezh">ΠΕΖΗ</string>
     
-    <string name="plan">Σχεδιασμός</string>
+    <string name="plan">Αναζήτηση Διαδρομής</string>
+    <string name="itineraries">Διαδρομές</string>
+    <string name="itinerary">Διαδρομή</string>
     <string name="last_plan">Προηγούμενο </string>
     <string name="swap">Αλλαγή Κατεύθυνσης</string>
     <string name="from">Από:</string>
