@@ -58,17 +58,23 @@ public class OTPItineraryActivity extends ListActivity {
   String legLabel(OTP.Leg leg) {
     StringBuilder buf = new StringBuilder();
     if ( leg instanceof OTP.TransitLeg){
-      buf.append(Formatting.formatTime(leg.startTime));
-      buf.append(" ");
       OTP.TransitLeg t = (OTP.TransitLeg) leg; 
       buf.append(t.label);
       buf.append(" ");
+      buf.append(Formatting.formatTime(leg.startTime));
+      buf.append(" ");
       buf.append(t.from.name);
       buf.append(" -> ");
-      buf.append(t.to.name);
-      buf.append(" (");
       buf.append(Formatting.formatTime(leg.endTime));
-      buf.append(")");
+      buf.append(" ");
+      buf.append(t.to.name);
+      if ( t.diffTime >= 0 ) {
+        buf.append(" (");
+        buf.append( getString(R.string.wait));
+        buf.append(" ");
+        buf.append(Schedule.formatDuration(t.diffTime));
+        buf.append(")");
+      }
     } else if ( leg instanceof OTP.WalkLeg ) {
       buf.append(getString(R.string.walk));
       buf.append(Formatting.straightDistance(leg.distance));
