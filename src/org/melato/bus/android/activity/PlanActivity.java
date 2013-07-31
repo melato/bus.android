@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.melato.android.progress.ActivityProgressHandler;
-import org.melato.android.progress.ProgressTitleHandler;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.otp.OTP;
@@ -33,7 +31,6 @@ import org.melato.bus.otp.OTPClient;
 import org.melato.bus.otp.OTPRequest;
 import org.melato.bus.plan.NamedPoint;
 import org.melato.gps.Point2D;
-import org.melato.progress.ProgressGenerator;
 
 import android.app.Activity;
 import android.content.Context;
@@ -46,6 +43,7 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -55,7 +53,6 @@ import android.widget.Toast;
  **/
 public class PlanActivity extends Activity {
   public static final String POINT = "POINT";
-  private ActivityProgressHandler progress;
   public static NamedPoint origin;
   public static NamedPoint destination;
   public static OTP.Plan plan;
@@ -93,11 +90,12 @@ public class PlanActivity extends Activity {
     private Exception exception;
     @Override
     protected void onPreExecute() {
+      setProgressBarIndeterminate(true);
+      setProgressBarVisibility(true);
     }
 
     @Override
     protected OTP.Plan doInBackground(OTPRequest... params) {
-      ProgressGenerator.setHandler(progress);
       String url = Info.routeManager(PlanActivity.this).getPlannerUrl();
       OTP.Planner planner = new OTPClient(url);
       try {
@@ -111,7 +109,7 @@ public class PlanActivity extends Activity {
 
     @Override
     protected void onPostExecute(OTP.Plan plan) {
-      progress.end();
+      setProgressBarVisibility(false);
       if ( plan == null) {
         if ( exception != null) {
           Toast toast = Toast.makeText(PlanActivity.this, exception.toString(), Toast.LENGTH_SHORT);
@@ -145,7 +143,7 @@ public class PlanActivity extends Activity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    progress = new ProgressTitleHandler(this);
+    requestWindowFeature(Window.FEATURE_PROGRESS);
     setContentView(R.layout.plan);
     LinearLayout modeView = (LinearLayout)findViewById(R.id.modeView);
     modes = new Mode[] {
