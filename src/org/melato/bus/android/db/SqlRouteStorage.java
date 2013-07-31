@@ -49,7 +49,7 @@ import org.melato.bus.model.Schedule;
 import org.melato.bus.model.ScheduleId;
 import org.melato.bus.model.ScheduleSummary;
 import org.melato.bus.model.Stop;
-import org.melato.bus.plan.Leg;
+import org.melato.bus.plan.RouteLeg;
 import org.melato.gps.Point2D;
 import org.melato.log.Log;
 import org.melato.progress.ProgressGenerator;
@@ -843,15 +843,15 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
   }
   
   @Override
-  public List<Leg> loadLegsBetween(String stop1, String stop2) {
+  public List<RouteLeg> loadLegsBetween(String stop1, String stop2) {
     SQLiteDatabase db = getDatabase();
     try {
       List<String> symbols = Arrays.asList(new String[] { stop1, stop2});
       Collection<RouteId> routes = loadRoutesBetween(stop1, stop2);
-      List<Leg> legs = new ArrayList<Leg>();
+      List<RouteLeg> legs = new ArrayList<RouteLeg>();
       for(RouteId routeId: routes) {
         List<Stop> stops = loadStops(db, routeId, symbols);
-        Leg.findLegs(routeId, stops, stop1, stop2, legs);
+        RouteLeg.findLegs(routeId, stops, stop1, stop2, legs);
       }
       return legs;
     } finally {

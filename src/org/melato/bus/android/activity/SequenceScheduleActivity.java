@@ -69,7 +69,10 @@ public class SequenceScheduleActivity extends Activity implements OnItemClickLis
       ProgressGenerator progress = ProgressGenerator.get();
       progress.setText(getString(R.string.computing));
       scheduleFactory = scheduleFactory();
-      SequenceSchedule schedule = new SequenceSchedule(sequence, scheduleFactory, Info.routeManager(SequenceScheduleActivity.this));
+      SequenceSchedule schedule = new SequenceSchedule(sequence, scheduleFactory,
+            Info.routeManager(SequenceScheduleActivity.this),
+            Info.walkModel(SequenceScheduleActivity.this)
+            );
       instances = schedule.getInstances();
       return schedule;
     }

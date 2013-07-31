@@ -61,7 +61,7 @@ public class PlanActivity extends Activity {
   public static OTP.Plan plan;
   private Mode[] modes;
   
-  private static final String PREF_WALK = "max_walk";
+  private static final String PREF_MAX_WALK = "max_walk";
   private static final String PREF_TRANSFERS = "tranfers";
 
   static class Mode {
@@ -135,7 +135,7 @@ public class PlanActivity extends Activity {
   void showRequest() {
     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
     TextView walkView = (TextView) findViewById(R.id.max_walk);
-    int maxWalk = settings.getInt(PREF_WALK, 1000);
+    int maxWalk = settings.getInt(PREF_MAX_WALK, 1000);
     walkView.setText(String.valueOf(maxWalk));
     CheckBox transfersCheck = (CheckBox) findViewById(R.id.fewer_transfers);
     transfersCheck.setChecked(settings.getBoolean(PREF_TRANSFERS, true));    
@@ -225,12 +225,12 @@ public class PlanActivity extends Activity {
       mode.setPreference(editor);
     }
     editor.putBoolean(PREF_TRANSFERS, isMinTransfers());    
-    editor.putInt(PREF_WALK, getMaxWalkDistance());    
+    editor.putInt(PREF_MAX_WALK, getMaxWalkDistance());    
     editor.commit();
   }
   
   void plan() {
-    Point2D from = this.origin;
+    Point2D from = PlanActivity.origin;
     if ( from == null) {
       from = Info.trackHistory(this).getLocation();
     }
