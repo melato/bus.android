@@ -42,7 +42,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -63,6 +62,12 @@ public class HomeActivity extends Activity implements OnItemClickListener {
   static interface LaunchItem extends Invokable {
     public void init(Button button);
   }
+
+  static void setButtonColors(Button button) {
+    button.setBackgroundColor(Color.TRANSPARENT);
+    button.setTextColor(Color.WHITE);
+  }
+  
   static class InternalLaunchItem implements LaunchItem {
     Class<? extends Activity> activity;
     int drawable;
@@ -118,11 +123,8 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       button.setText(menu.getLabel());
       button.setCompoundDrawablesWithIntrinsicBounds(null, drawable, null, null);
       setButtonColors(button);
-    }    
-  }
-  static void setButtonColors(Button button) {
-    button.setBackgroundColor(Color.TRANSPARENT);
-    button.setTextColor(Color.WHITE);
+    }
+    
   }
   static class Help extends InternalLaunchItem {
     private String helpName;
@@ -149,7 +151,6 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       new InternalLaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
       new InternalLaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
       new InternalLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
-      new InternalLaunchItem(PlanActivity.class, R.drawable.plan, R.string.plan),
       new InternalLaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
       new InternalLaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
       new InternalLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
