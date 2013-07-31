@@ -29,10 +29,7 @@ import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.Stop;
-import org.melato.bus.plan.NamedPoint;
 import org.melato.bus.plan.Sequence;
-import org.melato.gps.Point2D;
-import org.melato.log.Log;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -121,10 +118,6 @@ public class StopActivity extends ListActivity implements OnItemClickListener
     return true;
   }
  
-  private void showNearby() {
-    Stop point = stop.getMarker();
-    NearbyActivity.start(this, point);
-  }
   /**
    * Start the Schedule activity for the given stop.
    */
