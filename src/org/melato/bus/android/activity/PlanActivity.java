@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.melato.bus.android.Info;
+import org.melato.bus.android.PlanOptions;
 import org.melato.bus.android.R;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPClient;
@@ -58,9 +59,6 @@ public class PlanActivity extends Activity {
   public static OTP.Plan plan;
   private Mode[] modes;
   
-  private static final String PREF_MAX_WALK = "max_walk";
-  private static final String PREF_TRANSFERS = "tranfers";
-
   static class Mode {
     String code;
     int     resource;
@@ -130,13 +128,8 @@ public class PlanActivity extends Activity {
     view.setText(destination != null ? destination.toString() : "");
   }
   
-  void showRequest() {
-    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-    TextView walkView = (TextView) findViewById(R.id.max_walk);
-    int maxWalk = settings.getInt(PREF_MAX_WALK, 1000);
-    walkView.setText(String.valueOf(maxWalk));
-    CheckBox transfersCheck = (CheckBox) findViewById(R.id.fewer_transfers);
-    transfersCheck.setChecked(settings.getBoolean(PREF_TRANSFERS, true));    
+  private PlanOptions getOptions() {
+    return new PlanOptions(this);
   }
   
   /** Called when the activity is first created. */
@@ -154,10 +147,14 @@ public class PlanActivity extends Activity {
     for( int i = 0; i < modes.length; i++ ) {
       modeView.addView(modes[i].check);
     }
-    showRequest();
-    showEndpoints();
   }
     
+  @Override
+  protected void onResume() {
+    super.onResume();
+    showEndpoints();
+  }
+
   @Override
   protected void onDestroy() {
     savePreferences();
@@ -201,29 +198,19 @@ public class PlanActivity extends Activity {
       }
     }
     request.setMode(modeList);
-    request.setMaxWalkDistance(getMaxWalkDistance());
-    request.setMin(isMinTransfers() ? OTPRequest.OPT_TRANSFERS : OTPRequest.OPT_QUICK);
+    PlanOptions options = getOptions();
+    request.setMaxWalkDistance(options.getMaxWalk());
+    request.setWalkSpeed(options.getWalkSpeedMetric());
+    request.setMin(options.isFewerTransfers() ? OTPRequest.OPT_TRANSFERS : OTPRequest.OPT_QUICK);
     return request;
   }
 
-  private int getMaxWalkDistance() {
-    TextView text = (TextView) findViewById(R.id.max_walk);
-    return Integer.parseInt(text.getText().toString());    
-  }
-  
-  private boolean isMinTransfers() {
-    CheckBox transfers = (CheckBox) findViewById(R.id.fewer_transfers);
-    return transfers.isChecked();    
-  }
-  
   void savePreferences() {
     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
     Editor editor = settings.edit();
     for( Mode mode: modes ) {
       mode.setPreference(editor);
     }
-    editor.putBoolean(PREF_TRANSFERS, isMinTransfers());    
-    editor.putInt(PREF_MAX_WALK, getMaxWalkDistance());    
     editor.commit();
   }
   
@@ -283,10 +270,10 @@ public class PlanActivity extends Activity {
         showEndpoints();
         handled = true;
         break;
+      case R.id.pref:
+        startActivity(new Intent(this, PlanPreferencesActivity.class));      
+        break;
     }
     return handled ? true : false;
   }
-  
-  
-
 }

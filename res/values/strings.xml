@@ -76,6 +76,7 @@
     <string name="set_destination">Set as Destination</string>
     <string name="fewer_transfers">Fewer Transfers</string>
     <string name="max_walk">Max Walk (m)</string>
+    <string name="walk_speed">Walk Speed (Km/h)</string>
     
     <string name="clear">Clear All</string>
     <string name="remove_last">Clear Last</string>

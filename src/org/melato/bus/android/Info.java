@@ -204,9 +204,8 @@ public class Info {
       synchronized(Info.class) {
         if ( walkModel == null ) {
           context = context.getApplicationContext();
-          SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-          float speed = prefs.getFloat(PREF_WALK_SPEED, 5f);
-          walkModel = new WalkModel(speed*1000f/3600f);
+          PlanOptions options = new PlanOptions(context);
+          walkModel = new WalkModel(options.getWalkSpeedMetric());
         }
       }
     }

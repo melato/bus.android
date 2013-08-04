@@ -20,20 +20,16 @@
  */
 package org.melato.bus.android.activity;
 
-/** Preference keys */
-public class Pref {
-  public static final String GPS_TIME= "gps_time";
-  public static final String GPS_DISTANCE = "gps_distance";
-  public static final String ROUTE_COLORS = "route_colors";
-  public static final String COLOR_ORIGINAL = "original";
-  public static final String COLOR_BLACK_ON_WHITE = "black_on_white";
-  public static final String COLOR_WHITE_ON_BLACK = "white_on_black";
-  public static final String NEARBY_TIMES = "nearby_times";
-  public static final String DEFAULT_AGENCY = "agency";
-  public static final String LANG = "pref_lang";
-  public static final String MAYOR = "mayor";
+import org.melato.bus.android.R;
 
-  public static final String WALK_SPEED = "walk_speed";
-  public static final String MAX_WALK_DISTANCE = "max_walk";
-  public static final String FEWER_TRANSFERS = "fewer_transfers";
+import android.os.Bundle;
+import android.preference.PreferenceActivity;
+
+public class PlanPreferencesActivity extends PreferenceActivity {
+  @Override
+  protected void onCreate( Bundle savedInstanceState ) 
+  {
+      super.onCreate( savedInstanceState );
+      addPreferencesFromResource( R.layout.settings_plan );
+  }
 }

@@ -6,12 +6,16 @@
     <item android:id="@+id/last"
           android:icon="@drawable/last_plan"                  
           android:title="@string/last_plan" />
-    <item android:id="@+id/swap"
-          android:icon="@drawable/reload"                  
-          android:title="@string/swap" />
     <item android:id="@+id/remove_first"
           android:icon="@drawable/remove_first"                  
           android:title="@string/remove_first" />
     <item android:id="@+id/remove_last"
           android:icon="@drawable/back"                  
-          android:title="@string/remove_last" /></menu>
+          android:title="@string/remove_last" />
+    <item android:id="@+id/swap"
+          android:icon="@drawable/reload"                  
+          android:title="@string/swap" />
+    <item android:id="@+id/pref"
+          android:icon="@drawable/preferences"                  
+          android:title="@string/pref_menu" />
+</menu>

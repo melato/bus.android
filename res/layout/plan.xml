@@ -85,48 +85,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/modeView"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/textView4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/max_walk"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <EditText
-            android:id="@+id/max_walk"
-            android:layout_width="30pt"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="number" >
-
-            <requestFocus android:layout_width="wrap_content" />
-            
-        </EditText>
     </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/modeView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-
-        <CheckBox
-            android:id="@+id/fewer_transfers"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="left|center_vertical"
-            android:text="@string/fewer_transfers" />
-        
-    </LinearLayout>
-
-    <ListView
-        android:id="@+id/modeView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
 
 </LinearLayout>
