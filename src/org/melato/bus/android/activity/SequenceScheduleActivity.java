@@ -34,6 +34,7 @@ import org.melato.bus.model.Schedule.ScheduleIdScheduleFactory;
 import org.melato.bus.model.ScheduleId;
 import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.SequenceInstance;
+import org.melato.bus.plan.SequenceItinerary;
 import org.melato.bus.plan.SequenceSchedule;
 import org.melato.progress.ProgressGenerator;
 
@@ -116,8 +117,9 @@ public class SequenceScheduleActivity extends Activity implements OnItemClickLis
   @Override
   public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
     SequenceInstance instance = instances.get(position);
+    SequenceItinerary itinerary = instance.getItinerary();
     Intent intent = new Intent(this, SequenceInstanceActivity.class);
-    intent.putExtra(SequenceInstanceActivity.KEY_LEGS, instance.getLegInstances());
+    intent.putExtra(SequenceInstanceActivity.KEY_ITINERARY, itinerary);
     startActivity(intent);
   }
   
