@@ -30,10 +30,9 @@ import org.melato.bus.client.Formatting;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.Stop;
-import org.melato.bus.plan.RouteLeg;
 import org.melato.bus.plan.LegGroup;
+import org.melato.bus.plan.RouteLeg;
 import org.melato.bus.plan.Sequence;
-import org.melato.bus.plan.SequenceInstance.WalkInstance;
 import org.melato.bus.plan.WalkModel;
 import org.melato.gps.Point2D;
 
@@ -100,10 +99,6 @@ public class SequenceActivity extends ListActivity {
       super();
       distance = routeManager.getMetric().distance(point1, point2);
       System.out.println( "WalkItem: from=" + point1 + " to=" + point2 + " distance=" + distance);
-      initLabel(context);
-    }
-    public WalkItem(WalkInstance walk, Context context) {
-      this.distance = walk.getDistance();
       initLabel(context);
     }
     @Override
