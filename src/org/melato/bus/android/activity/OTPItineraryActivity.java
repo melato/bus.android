@@ -23,9 +23,11 @@ package org.melato.bus.android.activity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.otp.OTP;
+import org.melato.bus.otp.OTP.Leg;
 import org.melato.bus.otp.PlanConverter;
 import org.melato.bus.otp.PlanConverter.MismatchException;
 import org.melato.bus.plan.OTPLegAdapter;
+import org.melato.bus.plan.RouteLeg;
 import org.melato.bus.plan.Sequence;
 
 import android.app.ListActivity;
@@ -37,6 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -102,4 +105,20 @@ public class OTPItineraryActivity extends ListActivity {
     return handled ? true : false;
   }
 
+  @Override
+  protected void onListItemClick(ListView l, View v, int position, long id) {
+    Leg leg = itinerary.legs[position];
+    if ( leg instanceof OTP.TransitLeg) {
+      OTP.TransitLeg transit = (OTP.TransitLeg) leg;
+      try {
+        RouteLeg routeLeg = new PlanConverter(Info.routeManager(this)).convertLeg(transit);
+        BusActivities activities = new BusActivities(this);
+        activities.showRoute(routeLeg.getRStop1());    
+      } catch (MismatchException e) {
+        Toast toast = Toast.makeText(OTPItineraryActivity.this, R.string.error_convert_route, Toast.LENGTH_SHORT);
+        toast.show();              
+      }
+    }
+  }    
+  
 }

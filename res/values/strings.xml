@@ -112,5 +112,6 @@
     <string name="mode_bus">Bus</string>
     <string name="mode_tram">Tram</string>
     <string name="mode_subway">Subway</string>
+    <string name="error_convert_route">Cannot find route</string>
     
 </resources>
