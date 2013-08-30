@@ -8,16 +8,19 @@
         android:id="@+id/nearby"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/nearby"
         android:text="@string/nearby_routes" />
     <Button
         android:id="@+id/origin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/start"
         android:text="@string/set_origin" />
     <Button
         android:id="@+id/destination"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/finish"
         android:text="@string/set_destination" />
     
 </LinearLayout>
