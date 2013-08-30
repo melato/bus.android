@@ -59,6 +59,7 @@ public class PointSelectionActivity extends Activity implements OnClickListener 
     setContentView(R.layout.point_selection);
     Intent intent = getIntent();
     IntentHelper intentHelper = new IntentHelper(intent);
+    setTitle(R.string.point_selection);
     rstop = intentHelper.getRStop();
     if ( rstop == null) {
       point = (NamedPoint) intent.getSerializableExtra(POINT);
