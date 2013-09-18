@@ -20,6 +20,8 @@
  */
 package org.melato.bus.android.activity;
 
+import java.net.ConnectException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -100,7 +102,6 @@ public class PlanActivity extends Activity {
         return planner.plan(params[0]);
       } catch(Exception e) {
         exception = e;
-        e.printStackTrace();
         return null;
       }
     }
@@ -110,7 +111,7 @@ public class PlanActivity extends Activity {
       setProgressBarVisibility(false);
       if ( plan == null) {
         if ( exception != null) {
-          Toast toast = Toast.makeText(PlanActivity.this, exception.toString(), Toast.LENGTH_SHORT);
+          Toast toast = Toast.makeText(PlanActivity.this, exceptionToString(exception), Toast.LENGTH_SHORT);
           toast.show();              
         }        
       } else {
@@ -119,6 +120,18 @@ public class PlanActivity extends Activity {
         startActivity(new Intent(PlanActivity.this, OTPItinerariesActivity.class));
       }
     }
+  }
+  
+  String exceptionToString(Exception e) {
+    int resId = 0;
+    if ( e instanceof UnknownHostException) {
+      resId = R.string.error_connect;
+    } else if ( e instanceof ConnectException) {
+        resId = R.string.error_connect;
+    } else {
+      return e.toString();
+    }
+    return getString(resId);
   }
   
   void showEndpoints() {
@@ -177,6 +190,7 @@ public class PlanActivity extends Activity {
   }
   OTPRequest buildRequest(Point2D from) {
     OTPRequest request = new OTPRequest();
+    Info.routeManager(this).setOtpDefaults(request);
     request.setFromPlace(from);
     request.setToPlace(destination);
     Date date = new Date();
