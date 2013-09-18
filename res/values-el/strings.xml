@@ -110,5 +110,6 @@
     <string name="mode_tram">Τραμ</string>
     <string name="mode_subway">Μετρό/Προαστιακός</string>
     <string name="error_convert_route">Άγνωστη γραμμή</string>
+    <string name="error_connect">Δεν είναι δυνατή η σύνδεση.</string>
     
 </resources>
