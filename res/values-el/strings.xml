@@ -99,7 +99,7 @@
     <string name="plan">Αναζήτηση Διαδρομής</string>
     <string name="itineraries">Διαδρομές</string>
     <string name="itinerary">Διαδρομή</string>
-    <string name="last_plan">Προηγούμενο </string>
+    <string name="last_plan">Αποτελέσματα</string>
     <string name="swap">Αλλαγή Κατεύθυνσης</string>
     <string name="from">Από:</string>
     <string name="to">Έως:</string>

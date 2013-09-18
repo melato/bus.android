@@ -29,6 +29,7 @@ import java.util.List;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.PlanOptions;
 import org.melato.bus.android.R;
+import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPClient;
 import org.melato.bus.otp.OTPRequest;
@@ -46,15 +47,18 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 /** Computes and displays a list of plans for going to a destination.
  **/
-public class PlanActivity extends Activity {
+public class PlanActivity extends Activity implements OnClickListener {
   public static final String POINT = "POINT";
   public static NamedPoint origin;
   public static NamedPoint destination;
@@ -145,6 +149,21 @@ public class PlanActivity extends Activity {
     return new PlanOptions(this);
   }
   
+  
+  @Override
+  public void onClick(View v) {
+    switch( v.getId() ) {
+    case R.id.delete_from:
+      origin = null;
+      showEndpoints();
+      break;
+    case R.id.delete_to:
+      destination = null;
+      showEndpoints();
+      break;
+    }
+  }
+
   /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -152,6 +171,8 @@ public class PlanActivity extends Activity {
     requestWindowFeature(Window.FEATURE_PROGRESS);
     setContentView(R.layout.plan);
     LinearLayout modeView = (LinearLayout)findViewById(R.id.modeView);
+    ((ImageButton)findViewById(R.id.delete_from)).setOnClickListener(this);
+    ((ImageButton)findViewById(R.id.delete_to)).setOnClickListener(this);
     modes = new Mode[] {
         new Mode(this, OTPRequest.BUS, R.string.mode_bus),
         new Mode(this, OTPRequest.TRAM, R.string.mode_tram),
@@ -248,7 +269,7 @@ public class PlanActivity extends Activity {
   {
      MenuInflater inflater = getMenuInflater();
      inflater.inflate(R.menu.plan_menu, menu);
-     //HelpActivity.addItem(menu, this, Help.PLAN);
+     HelpActivity.addItem(menu, this, Help.PLAN);
      return true;
   }
 

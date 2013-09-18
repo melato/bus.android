@@ -24,8 +24,15 @@
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"
 			        android:layout_marginLeft="10dp"
-			        android:text=""
+					android:layout_weight='1.0'
+    			    android:text=""
 			        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+			    <ImageButton
+			        android:id="@+id/delete_from"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:src="@drawable/delete" />
 
         </TableRow>
 
@@ -45,10 +52,16 @@
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
 			        android:layout_marginLeft="10dp"
+					android:layout_weight='1.0'
 			        android:text=""
 			        android:textAppearance="?android:attr/textAppearanceMedium" />
 			      
-        </TableRow>
+			    <ImageButton
+			        android:id="@+id/delete_to"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:src="@drawable/delete" />
+			    </TableRow>
 
     </TableLayout>
 
