@@ -49,6 +49,7 @@ import org.melato.bus.model.Schedule;
 import org.melato.bus.model.ScheduleId;
 import org.melato.bus.model.ScheduleSummary;
 import org.melato.bus.model.Stop;
+import org.melato.bus.otp.OTPRequest;
 import org.melato.bus.plan.RouteLeg;
 import org.melato.gps.Point2D;
 import org.melato.log.Log;
@@ -87,6 +88,8 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
   public static final String PROPERTY_DEFAULT_AGENCY = "default_agency";
   public static final String PROPERTY_TRANSLITERATION = "transliteration";
   public static final String PROPERTY_PLANNER_URL = "planner_url";
+  public static final String PROPERTY_OTP_MIN_TRANSFER_TIME = "otp.minTransferTime";
+  public static final String PROPERTY_OTP_MAX_TRANSFERS = "otp.maxTransfers";
   
   private Map<String,String> loadProperties(SQLiteDatabase db) {
     String sql = "select name, value from properties";
@@ -148,6 +151,11 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
   public String getPlannerUrl() {
     return getProperty(PROPERTY_PLANNER_URL, null);
   }
+  @Override
+  public void applyOtpDefaults(OTPRequest request) {
+    //request.setMinTransferTime(Integer.parseInt(getProperty(PROPERTY_OTP_MIN_TRANSFER_TIME, "300")));
+    request.setMaxTransfers(Integer.parseInt(getProperty(PROPERTY_OTP_MAX_TRANSFERS, "5")));
+  }  
 
   @Override
   public Point2D getCenter() {
