@@ -26,29 +26,33 @@ import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTP.Leg;
 import org.melato.bus.otp.OTP.TransitLeg;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 /** Displays the itineraries of an OTP plan */
-public class OTPItinerariesActivity extends ListActivity {
+public class OTPItinerariesActivity extends Activity implements OnItemClickListener {
   private OTP.Plan plan;
 
 /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.planresults);
+    ListView listView = (ListView) findViewById(R.id.listView);
     plan = PlanActivity.plan;    
-    setListAdapter(new ItinerariesAdapter());
+    listView.setAdapter(new ItinerariesAdapter());
   }
 
   @Override
-  protected void onListItemClick(ListView l, View v, int position, long id) {
+  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     OTP.Itinerary itinerary = plan.itineraries[position];
     Intent intent = new Intent(this, OTPItineraryActivity.class);
     intent.putExtra(OTPItineraryActivity.ITINERARY, itinerary);
