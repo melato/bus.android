@@ -29,7 +29,6 @@ import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPClient;
 import org.melato.bus.otp.OTPRequest;
-import org.melato.bus.plan.NamedPoint;
 import org.melato.gps.Point2D;
 
 import android.content.Intent;
@@ -109,6 +108,19 @@ public class PlanTabsActivity extends FragmentActivity {
      HelpActivity.addItem(menu, this, Help.PLAN);
      return true;
   }
+  
+  @Override
+  public boolean onPrepareOptionsMenu(Menu menu) {
+    boolean enabled = TAB_SEARCH.equals(tabHost.getCurrentTabTag());
+    return enabled;
+    /*
+    for( int id: new int[] { R.id.swap, R.id.plan }) {
+      MenuItem item = menu.findItem(id);
+      item.setEnabled(enabled);
+    }
+    return super.onPrepareOptionsMenu(menu);
+    */
+  }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
@@ -159,9 +171,9 @@ public class PlanTabsActivity extends FragmentActivity {
     setContentView(R.layout.plantabs);
     tabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
     tabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);  
-    tabHost.addTab(tabHost.newTabSpec(TAB_SEARCH).setIndicator("Search"),
+    tabHost.addTab(tabHost.newTabSpec(TAB_SEARCH).setIndicator(getString(R.string.search)),
         PlanFragment.class, null);
-    tabHost.addTab(tabHost.newTabSpec(TAB_RESULTS).setIndicator("Itineraries"),
+    tabHost.addTab(tabHost.newTabSpec(TAB_RESULTS).setIndicator(getString(R.string.itineraries)),
         OTPItinerariesFragment.class, null);
     String tab = getIntent().getStringExtra(KEY_TAB);
     if ( TAB_RESULTS.equals(tab)) {
