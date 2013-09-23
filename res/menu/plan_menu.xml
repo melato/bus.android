@@ -3,9 +3,6 @@
     <item android:id="@+id/plan"
           android:icon="@drawable/plan"                  
           android:title="@string/plan" />
-    <item android:id="@+id/last"
-          android:icon="@drawable/last_plan"                  
-          android:title="@string/last_plan" />
     <item android:id="@+id/swap"
           android:icon="@drawable/reload"                  
           android:title="@string/swap" />

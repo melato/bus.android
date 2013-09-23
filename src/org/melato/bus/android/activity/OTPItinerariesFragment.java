@@ -26,9 +26,10 @@ import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTP.Leg;
 import org.melato.bus.otp.OTP.TransitLeg;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -38,23 +39,35 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 /** Displays the itineraries of an OTP plan */
-public class OTPItinerariesActivity extends Activity implements OnItemClickListener {
+public class OTPItinerariesFragment extends Fragment implements OnItemClickListener {
   private OTP.Plan plan;
+  ListView listView;
 
-/** Called when the activity is first created. */
+  
   @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setContentView(R.layout.planresults);
-    ListView listView = (ListView) findViewById(R.id.listView);
-    plan = PlanActivity.plan;    
-    listView.setAdapter(new ItinerariesAdapter());
+  public View onCreateView(LayoutInflater inflater, ViewGroup container,
+          Bundle savedInstanceState) {
+      View view = inflater.inflate(R.layout.planresults, container, false);
+      listView = (ListView) view.findViewById(R.id.listView);
+      listView.setOnItemClickListener(this);
+      return view;
   }
+  
+  @Override
+  public void onResume() {
+    super.onResume();
+    plan = PlanFragment.plan;    
+    if ( plan != null) {
+      listView.setAdapter(new ItinerariesAdapter());
+    }
+  }
+
+
 
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     OTP.Itinerary itinerary = plan.itineraries[position];
-    Intent intent = new Intent(this, OTPItineraryActivity.class);
+    Intent intent = new Intent(getActivity(), OTPItineraryActivity.class);
     intent.putExtra(OTPItineraryActivity.ITINERARY, itinerary);
     startActivity(intent);
   }
@@ -85,7 +98,7 @@ public class OTPItinerariesActivity extends Activity implements OnItemClickListe
   
   class ItinerariesAdapter extends ArrayAdapter<OTP.Itinerary> {
     public ItinerariesAdapter() {
-      super(OTPItinerariesActivity.this, R.layout.list_item, plan.itineraries); 
+      super(getActivity(), R.layout.list_item, plan.itineraries); 
     }
 
     @Override
