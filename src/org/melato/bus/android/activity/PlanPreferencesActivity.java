@@ -20,10 +20,13 @@
  */
 package org.melato.bus.android.activity;
 
+import org.melato.bus.android.PlanOptions;
 import org.melato.bus.android.R;
 
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
+import android.util.Log;
 
 public class PlanPreferencesActivity extends PreferenceActivity {
   @Override
@@ -32,4 +35,23 @@ public class PlanPreferencesActivity extends PreferenceActivity {
       super.onCreate( savedInstanceState );
       addPreferencesFromResource( R.layout.settings_plan );
   }
+
+  private void setTextSummary(String key, String summary) {
+    EditTextPreference pref = (EditTextPreference) findPreference(key);
+    if ( pref != null) {
+      pref.setSummary(summary);
+    } else {
+      Log.i("aa", "cannot find " + key );
+    }
+  }
+  
+  @Override
+  protected void onResume() {
+    super.onResume();
+    PlanOptions options = new PlanOptions(this);
+
+    setTextSummary(Pref.WALK_SPEED, String.valueOf(Math.round(options.getWalkSpeed())) + " Km/h");
+    setTextSummary(Pref.MAX_WALK_DISTANCE, String.valueOf(Math.round(options.getMaxWalk())) + " m");
+  }
+  
 }

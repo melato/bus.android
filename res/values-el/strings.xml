@@ -76,6 +76,10 @@
     <string name="add_to_sequence">Συνδυασμός</string>
     <string name="set_origin">Αρχή</string>
     <string name="set_destination">Προορισμός</string>
+    <string name="fewer_transfers">Λιγότερες Γραμμές</string>
+    <string name="max_walk">Μέγιστη Απόσταση Περπατήματος (m)</string>
+    <string name="walk_speed">Ταχύτητα Περπατήματος Speed (Km/h)</string>
+    <string name="fewer_transfers_summary">Προτιμώ διαδρομές με λιγότερες ανταποκρίσεις</string>
     
     <string name="clear">Διαγραφή όλων</string>
     <string name="remove_last">Διαγραφή τελευταίας</string>
