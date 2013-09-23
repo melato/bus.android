@@ -11,7 +11,9 @@
     <string name="all_routes">All Routes</string>
     <string name="recent_routes">Recent Routes</string>
     <string name="nearby_routes">Nearby Routes</string>
-    <string name="best_route">Best Route</string>
+    <string name="suggested_routes">Suggested Itineraries</string>
+    <string name="missing_origin">Please select origin</string>
+    <string name="missing_destination">Please select destination</string>
     <string name="schedule">Schedule</string>
     <string name="fast_gps">Fast GPS</string>
     <string name="gps_speed">GPS Updates</string>

@@ -37,7 +37,9 @@
     <string name="untimed_stops">Στάσεις χωρίς χρόνους</string>
     <string name="stop_counts">%1$s πριν, %2$s μετά</string>
     <string name="nearby_routes">Κοντινές Γραμμές</string>
-    <string name="best_route">Βέλτιστη Γραμμή</string>
+    <string name="suggested_routes">Προτεινόμενες Διαδρομές</string>
+    <string name="missing_origin">Επιλέξτε Αρχή</string>
+    <string name="missing_destination">Επιλέξτε Προορισμό</string>
     <string name="map">Χάρτης</string>
     <string name="browse">Ιστοσελίδα</string>
     <string name="straight_distance">Ευθεία Απόσταση</string>

@@ -23,6 +23,7 @@ package org.melato.bus.android.activity;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 
+import org.melato.android.location.Locations;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.HelpActivity;
@@ -31,7 +32,10 @@ import org.melato.bus.otp.OTPClient;
 import org.melato.bus.otp.OTPRequest;
 import org.melato.gps.Point2D;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -77,17 +81,23 @@ public class PlanTabsActivity extends FragmentActivity {
       setProgressBarVisibility(false);
       if ( plan == null) {
         if ( exception != null) {
-          Toast toast = Toast.makeText(PlanTabsActivity.this, exceptionToString(exception), Toast.LENGTH_SHORT);
-          toast.show();              
+          showError(exceptionToString(exception));
         }        
       } else {
         PlanFragment.plan = plan;
-        setTitle(R.string.best_route);
+        //setTitle(R.string.suggested_routes);
         tabHost.setCurrentTabByTag(TAB_RESULTS);
       }
     }
   }
 
+  void showError(String error) {
+    Toast toast = Toast.makeText(PlanTabsActivity.this, error, Toast.LENGTH_SHORT);
+    toast.show();              
+  }
+  void showError(int errorResource) {
+    showError(getString(errorResource));
+  }
   String exceptionToString(Exception e) {
     int resId = 0;
     if ( e instanceof UnknownHostException) {
@@ -145,18 +155,24 @@ public class PlanTabsActivity extends FragmentActivity {
     return handled ? true : false;
   }
 
+  Point2D getCurrentLocation() {
+    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+    return Locations.location2Point(location);    
+  }
+  
   void plan() {
     tabHost.setCurrentTabByTag(TAB_SEARCH);
     FragmentManager fm = getSupportFragmentManager();
     PlanFragment planFragment = (PlanFragment) fm.findFragmentByTag(TAB_SEARCH);
     Point2D from = PlanFragment.origin;
     if ( from == null) {
-      from = Info.trackHistory(this).getLocation();
+      from = getCurrentLocation();
     }
     if ( PlanFragment.destination == null) {
-      setTitle("Missing Destination");
+      showError(R.string.missing_destination);
     } else if ( from == null) {
-      setTitle("Missing Origin");
+      showError(R.string.missing_origin);
     } else {
       OTPRequest request = planFragment.buildRequest(from);
       new PlanTask().execute(request);      
