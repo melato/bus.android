@@ -56,10 +56,15 @@ public class PlanFragment extends Fragment implements OnClickListener {
   private Mode[] modes;
   private View view;
   
+  /** A mode of transport. */
   static class Mode {
-    String code;
-    int     resource;
-    CheckBox check;
+    /** the programmatic code of the mode, e.g. TRANSIT */
+    private String code;
+    /** The resourse id for the mode label */
+    private int     labelResourceId;
+    /** Whether or not this mode is enabled. */
+    private boolean enabled;
+    private CheckBox check;
     
     public String prefKey() {
       return "mode." + code;
@@ -74,10 +79,14 @@ public class PlanFragment extends Fragment implements OnClickListener {
     public Mode(Context context, String code, int resource) {
       super();
       this.code = code;
-      this.resource = resource;
+      this.labelResourceId = resource;
+      enabled = getPreference(context);
+    }
+    public CheckBox createCheckBox(Context context) {
       check = new CheckBox(context);
-      check.setText(resource);
-      check.setChecked(getPreference(context));
+      check.setText(labelResourceId);
+      check.setChecked(enabled);
+      return check;
     }
     
   }
@@ -128,7 +137,7 @@ public class PlanFragment extends Fragment implements OnClickListener {
           new Mode(context, OTPRequest.SUBWAY, R.string.mode_subway),        
       };
       for( int i = 0; i < modes.length; i++ ) {
-        modeView.addView(modes[i].check);
+        modeView.addView(modes[i].createCheckBox(context));
       }
       showEndpoints();
       return view;
@@ -139,9 +148,9 @@ public class PlanFragment extends Fragment implements OnClickListener {
     super.onResume();
     showEndpoints();
   }
-
+  
   @Override
-  public void onDestroy() {
+  public void onDestroyView() {
     savePreferences();
     super.onDestroy();
   }
