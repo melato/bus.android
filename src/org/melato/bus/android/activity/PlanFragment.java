@@ -27,17 +27,23 @@ import java.util.List;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.PlanOptions;
 import org.melato.bus.android.R;
+import org.melato.bus.model.Schedule;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPRequest;
 import org.melato.bus.plan.NamedPoint;
 import org.melato.gps.Point2D;
 
+import android.app.Dialog;
+import android.app.TimePickerDialog;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -46,15 +52,18 @@ import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 /** Computes and displays a list of plans for going to a destination.
  **/
-public class PlanFragment extends Fragment implements OnClickListener {
+public class PlanFragment extends Fragment implements OnClickListener, OnTimeSetListener {
   public static NamedPoint origin;
   public static NamedPoint destination;
   public static OTP.Plan plan;
   private Mode[] modes;
   private View view;
+  private TextView timeView;
+  private Integer timeInMinutes;
   
   /** A mode of transport. */
   static class Mode {
@@ -90,6 +99,28 @@ public class PlanFragment extends Fragment implements OnClickListener {
     }
     
   }
+  
+  /** Fragment for displaying the time picker dialog */
+  class TimeFragment extends DialogFragment {
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+      int time = 0;
+      if ( timeInMinutes != null) {
+        time = timeInMinutes;
+      } else {
+        time = Schedule.getTime(new Date());
+      }
+      TimePickerDialog dialog = new TimePickerDialog(getActivity(), PlanFragment.this, time / 60, time % 60, true);
+      return dialog;
+    }    
+  }
+  
+  @Override
+  public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    timeInMinutes = hourOfDay * 60 + minute;
+    timeView.setText(Schedule.formatTime(timeInMinutes));
+  }
+  
   void showEndpoints() {
     TextView v = (TextView) view.findViewById(R.id.from);
     v.setText(origin != null ? origin.toString() : "");
@@ -112,6 +143,14 @@ public class PlanFragment extends Fragment implements OnClickListener {
   @Override
   public void onClick(View v) {
     switch( v.getId() ) {
+    case R.id.time:
+    case R.id.timeLabel:
+    {
+      TimeFragment timeFragment = new TimeFragment();
+      FragmentActivity activity = (FragmentActivity) getActivity();
+      timeFragment.show(activity.getSupportFragmentManager(), "timePicker");      
+    }
+    break;
     case R.id.delete_from:
       origin = null;
       showEndpoints();
@@ -130,6 +169,9 @@ public class PlanFragment extends Fragment implements OnClickListener {
       LinearLayout modeView = (LinearLayout)view.findViewById(R.id.modeView);
       ((ImageButton)view.findViewById(R.id.delete_from)).setOnClickListener(this);
       ((ImageButton)view.findViewById(R.id.delete_to)).setOnClickListener(this);
+      ((TextView)view.findViewById(R.id.timeLabel)).setOnClickListener(this);
+      timeView = (TextView)view.findViewById(R.id.time);
+      timeView.setOnClickListener(this);
       Context context = getActivity();
       modes = new Mode[] {
           new Mode(context, OTPRequest.BUS, R.string.mode_bus),
@@ -155,6 +197,10 @@ public class PlanFragment extends Fragment implements OnClickListener {
     super.onDestroy();
   }
 
+  /** Parse a time string
+   * @param s A string of the form hh:mm
+   * @return seconds since midnight.
+   */
   int parseTime(String s) {
     if ( s == null )
       return -1;
@@ -175,10 +221,8 @@ public class PlanFragment extends Fragment implements OnClickListener {
     request.setFromPlace(from);
     request.setToPlace(destination);
     Date date = new Date();
-    TextView timeView = (TextView) view.findViewById(R.id.time);
-    int time = parseTime(timeView.getText().toString());
-    if ( time >= 0) {
-      date = OTPRequest.replaceTime(date, time);
+    if ( timeInMinutes >= 0) {
+      date = OTPRequest.replaceTime(date, timeInMinutes * 60);
     }
     request.setDate(date);
     CheckBox arriveView = (CheckBox) view.findViewById(R.id.arrive);
