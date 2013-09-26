@@ -49,6 +49,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -56,14 +58,15 @@ import android.widget.TimePicker;
 
 /** Computes and displays a list of plans for going to a destination.
  **/
-public class PlanFragment extends Fragment implements OnClickListener, OnTimeSetListener {
+public class PlanFragment extends Fragment implements OnClickListener, OnTimeSetListener, OnCheckedChangeListener {
   public static NamedPoint origin;
   public static NamedPoint destination;
   public static OTP.Plan plan;
   private Mode[] modes;
   private View view;
   private TextView timeView;
-  private Integer timeInMinutes;
+  private static Integer timeInMinutes;
+  private static boolean arriveAt;
   
   /** A mode of transport. */
   static class Mode {
@@ -114,25 +117,43 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       return dialog;
     }    
   }
-  
+
   @Override
   public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
     timeInMinutes = hourOfDay * 60 + minute;
     timeView.setText(Schedule.formatTime(timeInMinutes));
   }
   
-  void showEndpoints() {
+  
+  @Override
+  public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+    switch( buttonView.getId()) {
+    case R.id.arrive:
+      arriveAt = isChecked;
+      break;
+    default:
+      break;
+    }
+  }
+
+
+  void showParameters() {
     TextView v = (TextView) view.findViewById(R.id.from);
     v.setText(origin != null ? origin.toString() : "");
     v = (TextView) view.findViewById(R.id.to);
     v.setText(destination != null ? destination.toString() : "");
+    if ( timeInMinutes != null) {
+      timeView.setText(Schedule.formatTime(timeInMinutes));      
+    }
+    CheckBox check = (CheckBox) view.findViewById(R.id.arrive);
+    check.setChecked(arriveAt);
   }
   
   public void swap() {
     NamedPoint temp = origin;
     origin = destination;
     destination = temp;
-    showEndpoints();    
+    showParameters();    
   }
   
   private PlanOptions getOptions() {
@@ -153,11 +174,11 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     break;
     case R.id.delete_from:
       origin = null;
-      showEndpoints();
+      showParameters();
       break;
     case R.id.delete_to:
       destination = null;
-      showEndpoints();
+      showParameters();
       break;
     }
   }
@@ -171,7 +192,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       ((ImageButton)view.findViewById(R.id.delete_to)).setOnClickListener(this);
       ((TextView)view.findViewById(R.id.timeLabel)).setOnClickListener(this);
       timeView = (TextView)view.findViewById(R.id.time);
-      timeView.setOnClickListener(this);
+      ((CheckBox)view.findViewById(R.id.arrive)).setOnCheckedChangeListener(this);
       Context context = getActivity();
       modes = new Mode[] {
           new Mode(context, OTPRequest.BUS, R.string.mode_bus),
@@ -181,14 +202,14 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       for( int i = 0; i < modes.length; i++ ) {
         modeView.addView(modes[i].createCheckBox(context));
       }
-      showEndpoints();
+      showParameters();
       return view;
   }
 
   @Override
   public void onResume() {
     super.onResume();
-    showEndpoints();
+    showParameters();
   }
   
   @Override
@@ -221,14 +242,11 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     request.setFromPlace(from);
     request.setToPlace(destination);
     Date date = new Date();
-    if ( timeInMinutes >= 0) {
+    if ( timeInMinutes != null) {
       date = OTPRequest.replaceTime(date, timeInMinutes * 60);
     }
     request.setDate(date);
-    CheckBox arriveView = (CheckBox) view.findViewById(R.id.arrive);
-    if ( arriveView.isChecked()) {
-      request.setArriveBy(true);
-    }
+    request.setArriveBy(arriveAt);
     List<String> modeList = new ArrayList<String>();
     modeList.add(OTPRequest.WALK);
     for( Mode mode: modes ) {
