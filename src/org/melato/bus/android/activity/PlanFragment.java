@@ -65,6 +65,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   private Mode[] modes;
   private View view;
   private TextView timeView;
+  private CheckBox arriveView;
   private static Integer timeInMinutes;
   private static boolean arriveAt;
   
@@ -145,8 +146,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     if ( timeInMinutes != null) {
       timeView.setText(Schedule.formatTime(timeInMinutes));      
     }
-    CheckBox check = (CheckBox) view.findViewById(R.id.arrive);
-    check.setChecked(arriveAt);
+    arriveView.setChecked(arriveAt);
   }
   
   public void swap() {
@@ -172,6 +172,11 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       timeFragment.show(activity.getSupportFragmentManager(), "timePicker");      
     }
     break;
+    case R.id.delete_time:
+      timeInMinutes = null;
+      timeView.setText(null);
+      arriveView.setChecked(arriveAt = false);
+     break;
     case R.id.delete_from:
       origin = null;
       showParameters();
@@ -190,9 +195,11 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       LinearLayout modeView = (LinearLayout)view.findViewById(R.id.modeView);
       ((ImageButton)view.findViewById(R.id.delete_from)).setOnClickListener(this);
       ((ImageButton)view.findViewById(R.id.delete_to)).setOnClickListener(this);
+      ((ImageButton)view.findViewById(R.id.delete_time)).setOnClickListener(this);
       ((TextView)view.findViewById(R.id.timeLabel)).setOnClickListener(this);
       timeView = (TextView)view.findViewById(R.id.time);
-      ((CheckBox)view.findViewById(R.id.arrive)).setOnCheckedChangeListener(this);
+      arriveView = (CheckBox)view.findViewById(R.id.arrive);
+      arriveView.setOnCheckedChangeListener(this);
       Context context = getActivity();
       modes = new Mode[] {
           new Mode(context, OTPRequest.BUS, R.string.mode_bus),
