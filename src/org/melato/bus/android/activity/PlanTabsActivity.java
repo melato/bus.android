@@ -45,16 +45,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.Window;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.Toast;
 
 /** Computes and displays a list of plans for going to a destination.
  **/
-public class PlanTabsActivity extends FragmentActivity {
+public class PlanTabsActivity extends FragmentActivity implements OnTabChangeListener {
   public static final String POINT = "POINT";
   public static final String KEY_TAB = "tab";
   public static final String TAB_SEARCH = "search";
   public static final String TAB_RESULTS = "itineraries";
   private FragmentTabHost tabHost;
+  private boolean justSearched;
   
   class PlanTask extends AsyncTask<OTPRequest,Void,OTP.Plan> {    
     private Exception exception;
@@ -87,9 +89,26 @@ public class PlanTabsActivity extends FragmentActivity {
         PlanFragment.plan = plan;
         //setTitle(R.string.suggested_routes);
         tabHost.setCurrentTabByTag(TAB_RESULTS);
+        justSearched = true;
       }
     }
   }
+  
+  @Override
+  public void onTabChanged(String tabId) {
+    justSearched = false;
+  }
+      
+  @Override
+  public void onBackPressed() {
+    if ( justSearched ) {
+      tabHost.setCurrentTabByTag(TAB_SEARCH);
+    } else {
+      super.onBackPressed();
+    }
+  }
+
+
 
   void showError(String error) {
     Toast toast = Toast.makeText(PlanTabsActivity.this, error, Toast.LENGTH_SHORT);
@@ -186,6 +205,7 @@ public class PlanTabsActivity extends FragmentActivity {
     requestWindowFeature(Window.FEATURE_PROGRESS);  
     setContentView(R.layout.plantabs);
     tabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
+    tabHost.setOnTabChangedListener(this);
     tabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);  
     tabHost.addTab(tabHost.newTabSpec(TAB_SEARCH).setIndicator(getString(R.string.search)),
         PlanFragment.class, null);
