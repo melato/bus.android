@@ -148,7 +148,7 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       new InternalLaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
       new InternalLaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
       new InternalLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
-      new InternalLaunchItem(PlanTabsActivity.class, R.drawable.plan, R.string.plan),
+      new InternalLaunchItem(PlanTabsActivity.class, R.drawable.plan, R.string.search),
       new InternalLaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
       new InternalLaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
       new InternalLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
