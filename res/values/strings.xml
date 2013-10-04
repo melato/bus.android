@@ -103,6 +103,7 @@
     <string name="pezh">ΠΕΖΗ</string>
 
     <string name="plan">Trip Planner</string>
+    <string name="compute">Compute</string>
     <string name="itineraries">Itineraries</string>
     <string name="itinerary">Itinerary</string>
     <string name="last_plan">Last Results</string>

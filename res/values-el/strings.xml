@@ -103,6 +103,7 @@
     <string name="pezh">ΠΕΖΗ</string>
     
     <string name="plan">Αναζήτηση Διαδρομής</string>
+    <string name="compute">Υπολογισμός</string>
     <string name="itineraries">Διαδρομές</string>
     <string name="itinerary">Διαδρομή</string>
     <string name="last_plan">Αποτελέσματα</string>
