@@ -26,6 +26,7 @@ import java.net.UnknownHostException;
 import org.melato.android.location.Locations;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.app.BusPreferencesActivity;
 import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPClient;
@@ -168,7 +169,7 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
         handled = true;
         break;
       case R.id.pref:
-        startActivity(new Intent(this, PlanPreferencesActivity.class));      
+        startActivity(new Intent(this, BusPreferencesActivity.class));      
         break;
     }
     return handled ? true : false;

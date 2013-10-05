@@ -125,10 +125,6 @@
             android:name=".app.BusPreferencesActivity"
             android:label="@string/pref_title" >
         </activity>
-        <activity
-            android:name=".activity.PlanPreferencesActivity"
-            android:label="@string/pref_title" >
-        </activity>
         </application>
 
 </manifest>
