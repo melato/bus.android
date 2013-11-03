@@ -62,6 +62,7 @@ public class BusPreferencesActivity extends PreferenceActivity {
 
     setTextSummary(Pref.WALK_SPEED, String.valueOf(Math.round(options.getWalkSpeed())) + " Km/h");
     setTextSummary(Pref.MAX_WALK_DISTANCE, String.valueOf(Math.round(options.getMaxWalk())) + " m");
+    //setTextSummary(Pref.MIN_TRANSFER_TIME, String.valueOf(Math.round(options.getMinTransferTime() / 60f)) + "'");
   }
   void updateLocale(String lang) {
     Locale locale = new Locale(lang);
