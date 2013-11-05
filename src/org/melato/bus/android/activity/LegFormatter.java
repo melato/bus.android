@@ -36,10 +36,12 @@ public class LegFormatter {
       buf.append(Schedule.formatTime(leg.getStartTime() / 60));
       buf.append(" ");
       buf.append(leg.getFromName());
-      buf.append(" -> ");
-      buf.append(Schedule.formatTime(leg.getEndTime() / 60));
-      buf.append(" ");
-      buf.append(leg.getToName());
+      if ( leg.hasEnd()) {
+        buf.append(" -> ");
+        buf.append(Schedule.formatTime(leg.getEndTime() / 60));
+        buf.append(" ");
+        buf.append(leg.getToName());
+      }
       int diffTime = leg.getDiffTime();
       if ( diffTime >= 0 ) {
         buf.append(" (");
