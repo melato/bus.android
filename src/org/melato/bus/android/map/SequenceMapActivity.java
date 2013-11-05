@@ -119,21 +119,23 @@ public class SequenceMapActivity extends MapActivity {
     }
   }
   
+  public static int computeZoom(float diameter) {
+    int baseZoom = 14;
+    float baseDistance = 5000f;
+    if ( diameter < baseDistance ) {
+      return baseZoom;
+    }
+    int z = baseZoom - Math.round((float) (Math.log(diameter/baseDistance ) / Math.log(2)));
+    if ( z < 1 )
+      z = 1;
+    return z;
+  }
   int computeZoom(Rect boundary) {
     Point2D p1 = GMap.point(new GeoPoint(boundary.top, boundary.left));
     Point2D p2 = GMap.point(new GeoPoint(boundary.bottom, boundary.right));
     Metric metric = new GlobalDistance();
     float distance = metric.distance(p1, p2);
-    int baseZoom = 14;
-    float baseDistance = 5000f;
-    if ( distance < baseDistance ) {
-      return baseZoom;
-    }
-    int z = baseZoom - Math.round((float) (Math.log(distance/baseDistance ) / Math.log(2)));
-    if ( z < 1 )
-      z = 1;
-    return z;
-    
+    return computeZoom(distance);    
   }
   void setPaths(RoutePath[] paths) {
     boundary = getBoundary(paths);
