@@ -97,6 +97,10 @@
             android:label="@string/map" >
         </activity>
         <activity
+            android:name=".map.SequenceMapActivity"
+            android:label="@string/map" >
+        </activity>
+        <activity
             android:name=".activity.StopActivity"
             android:label="@string/stop" >
         </activity>

@@ -22,6 +22,7 @@ package org.melato.bus.android.activity;
 
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.map.SequenceMapActivity;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTP.Leg;
 import org.melato.bus.otp.PlanConverter;
@@ -93,12 +94,25 @@ public class OTPItineraryActivity extends ListActivity {
       toast.show();    
     }
   }
+  void showMap() {
+    try {
+      Sequence sequence = new PlanConverter(Info.routeManager(this)).convertToSequence(itinerary);
+      SequenceMapActivity.showMap(this, sequence);
+    } catch (MismatchException e) {
+      Toast toast = Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT);
+      toast.show();    
+    }
+  }
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
     switch(item.getItemId()) {
       case R.id.sequence:
         showSequence();
+        handled = true;
+        break;
+      case R.id.map:
+        showMap();
         handled = true;
         break;
     }
