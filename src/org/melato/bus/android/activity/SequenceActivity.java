@@ -210,7 +210,7 @@ public class SequenceActivity extends ListActivity {
         handled = true;
         break;
       case R.id.map:
-        SequenceMapActivity.showMap(this, sequence);
+        SequenceActivities.showMap(this, sequence);
         handled = true;
         break;
     }

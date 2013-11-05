@@ -27,9 +27,13 @@ import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.Keys;
+import org.melato.bus.android.activity.SequenceActivities;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.Stop;
 import org.melato.bus.model.cache.RoutePoints;
+import org.melato.bus.otp.OTP;
+import org.melato.bus.otp.PlanConverter;
+import org.melato.bus.otp.PlanConverter.MismatchException;
 import org.melato.bus.plan.LegGroup;
 import org.melato.bus.plan.RouteLeg;
 import org.melato.bus.plan.Sequence;
@@ -37,11 +41,14 @@ import org.melato.gps.GlobalDistance;
 import org.melato.gps.Metric;
 import org.melato.gps.Point2D;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -50,6 +57,7 @@ import com.google.android.maps.MapView;
 /** An activity that displays a map of a sequence. */
 public class SequenceMapActivity extends MapActivity {
   private Sequence sequence;
+  private OTP.Itinerary itinerary;
   private MapView map;
   private Rect boundary;
   private GeoPoint center;
@@ -152,18 +160,47 @@ public class SequenceMapActivity extends MapActivity {
     super.onCreate(icicle);
     Intent intent = getIntent();
     sequence = (Sequence) intent.getSerializableExtra(Keys.SEQUENCE);
+    if ( sequence == null) {
+      itinerary = (OTP.Itinerary) intent.getSerializableExtra(Keys.ITINERARY);
+      try {
+        sequence = new PlanConverter(Info.routeManager(this)).convertToSequence(itinerary);
+      } catch (MismatchException e) {
+        Toast.makeText(this, R.string.error_convert_route, Toast.LENGTH_SHORT).show();
+      }      
+    }
+    if ( sequence == null ) {
+      finish();
+    }
     setTitle( sequence.getLabel(Info.routeManager(this)));
     setContentView(R.layout.map);
     map = (MapView) findViewById(R.id.mapview);
     map.setBuiltInZoomControls(true);
     new LoadTask().execute(sequence);
   }
-
-  public static void showMap(Context context, Sequence sequence) {
-    Intent intent = new Intent(context, SequenceMapActivity.class);
-    intent.putExtra(Keys.SEQUENCE, sequence);
-    context.startActivity(intent);    
+  
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    if ( itinerary != null ) {
+      MenuInflater inflater = getMenuInflater();
+      inflater.inflate(R.menu.sequence_map_menu, menu);
+      //HelpActivity.addItem(menu, this, Help.PLAN);
+    }
+    return true;
   }
   
-  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    boolean handled = false;
+    switch(item.getItemId()) {
+      case R.id.list:
+        if ( itinerary != null) {
+          SequenceActivities.showList(this, itinerary);
+        }
+        handled = true;
+        break;
+      default:
+        break;
+    }
+    return handled ? true : false;
+  }
 }
