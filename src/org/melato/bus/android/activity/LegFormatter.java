@@ -30,7 +30,7 @@ import android.content.Context;
 public class LegFormatter {
   public static String label(LegAdapter leg, Context context) {
     StringBuilder buf = new StringBuilder();
-    if ( ! leg.isWalk()) {
+    if ( leg.isTransit()) {
       buf.append(leg.getLabel());
       buf.append(" ");
       buf.append(Schedule.formatTime(leg.getStartTime() / 60));
