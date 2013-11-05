@@ -23,6 +23,7 @@ package org.melato.bus.android.map;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.Keys;
@@ -32,17 +33,18 @@ import org.melato.bus.model.cache.RoutePoints;
 import org.melato.bus.plan.LegGroup;
 import org.melato.bus.plan.RouteLeg;
 import org.melato.bus.plan.Sequence;
+import org.melato.gps.GlobalDistance;
+import org.melato.gps.Metric;
+import org.melato.gps.Point2D;
 
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
-import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 
 /** An activity that displays a map of a sequence. */
@@ -96,8 +98,10 @@ public class SequenceMapActivity extends MapActivity {
       RoutePoints routePoints = routePointManager.getRoutePoints(t.getRouteId());
       RoutePath path = new RoutePath();
       path.route = routeManager.getRoute(t.getRouteId());
+      Stop stop2 = t.getStop2();
+      int index2 = stop2 != null ? stop2.getIndex() : routePoints.size() - 1;
       path.points = new RoutePointsGeoPointList(routePoints,
-          t.getStop1().getIndex(), t.getStop2().getIndex()); 
+          t.getStop1().getIndex(), index2); 
       paths.add(path);
     }
     return paths.toArray(new RoutePath[0]);
@@ -115,13 +119,29 @@ public class SequenceMapActivity extends MapActivity {
     }
   }
   
+  int computeZoom(Rect boundary) {
+    Point2D p1 = GMap.point(new GeoPoint(boundary.top, boundary.left));
+    Point2D p2 = GMap.point(new GeoPoint(boundary.bottom, boundary.right));
+    Metric metric = new GlobalDistance();
+    float distance = metric.distance(p1, p2);
+    int baseZoom = 14;
+    float baseDistance = 5000f;
+    if ( distance < baseDistance ) {
+      return baseZoom;
+    }
+    int z = baseZoom - Math.round((float) (Math.log(distance/baseDistance ) / Math.log(2)));
+    if ( z < 1 )
+      z = 1;
+    return z;
+    
+  }
   void setPaths(RoutePath[] paths) {
     boundary = getBoundary(paths);
     center = new GeoPoint((boundary.bottom+boundary.top)/2, (boundary.left+boundary.right)/2);
-    Log.i("aa", "boundary: " + boundary);
-    Log.i("aa", "center: " + center);
+    int zoom = computeZoom(boundary);
     map.getOverlays().add(new RoutePathsOverlay(paths)); 
     map.getController().setCenter(center);
+    map.getController().setZoom(zoom);
   }
   
   
@@ -134,10 +154,6 @@ public class SequenceMapActivity extends MapActivity {
     setContentView(R.layout.map);
     map = (MapView) findViewById(R.id.mapview);
     map.setBuiltInZoomControls(true);
-    
-    MapController mapController = map.getController();
-    mapController.setZoom(RouteMapActivity.defaultZoom);
-    //setPaths(loadPaths(sequence));
     new LoadTask().execute(sequence);
   }
 
