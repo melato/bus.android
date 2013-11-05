@@ -28,6 +28,7 @@ import org.melato.bus.android.R;
 import org.melato.bus.android.activity.Keys;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.Stop;
+import org.melato.bus.model.cache.RoutePoints;
 import org.melato.bus.plan.LegGroup;
 import org.melato.bus.plan.RouteLeg;
 import org.melato.bus.plan.Sequence;
@@ -88,13 +89,15 @@ public class SequenceMapActivity extends MapActivity {
   
   RoutePath[] loadPaths(Sequence sequence) {
     RouteManager routeManager = Info.routeManager(SequenceMapActivity.this);
+    RoutePointManager routePointManager = RoutePointManager.getInstance(this);
     List<RoutePath> paths = new ArrayList<RoutePath>();
     for( LegGroup leg: sequence.getLegs()) {
       RouteLeg t = leg.leg;
-      Stop[] stops = routeManager.getStops(t.getRouteId());
+      RoutePoints routePoints = routePointManager.getRoutePoints(t.getRouteId());
       RoutePath path = new RoutePath();
       path.route = routeManager.getRoute(t.getRouteId());
-      path.points = new StopsGeoPointList(stops,  t.getStop1(), t.getStop2()); 
+      path.points = new RoutePointsGeoPointList(routePoints,
+          t.getStop1().getIndex(), t.getStop2().getIndex()); 
       paths.add(path);
     }
     return paths.toArray(new RoutePath[0]);

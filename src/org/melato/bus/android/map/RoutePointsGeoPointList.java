@@ -18,11 +18,11 @@ public class RoutePointsGeoPointList extends AbstractList<GeoPoint> {
     size = points.size();
   }
 
-  public RoutePointsGeoPointList(RoutePoints points, int start, int end) {
+  public RoutePointsGeoPointList(RoutePoints points, int stop1, int stop2) {
     super();
     this.points = points;
-    offset = start;
-    size = end - start;
+    offset = stop1;
+    size = stop2 - stop1 + 1;
   }
 
   @Override
