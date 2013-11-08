@@ -193,7 +193,6 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
   }
   public static File databaseFile(Context context) {
     File dir = context.getExternalFilesDir(null);
-    Log.info("externalFilesDir: " + dir);
     /*
     if ( dir == null ) {
       dir = context.getFilesDir();
@@ -879,7 +878,6 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
     if ( dbVersion >= MIN_VERSION ) {
       return true;
     }
-    Log.info("db version = " + dbVersion + " required: " + MIN_VERSION);
     return false;
   }
 

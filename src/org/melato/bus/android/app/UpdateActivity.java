@@ -251,7 +251,6 @@ public class UpdateActivity extends Activity {
      */
     public boolean checkUpdates() {
       if ( updateManager.isRequired() ) {
-        Log.info("update required");
         // assume that we have not data.  We have to update or die.
         startUpdateActivity();
         return false;
