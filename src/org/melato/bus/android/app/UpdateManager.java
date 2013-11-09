@@ -44,6 +44,9 @@ public class UpdateManager extends PortableUpdateManager {
     this.context = context;
     setIndexUrl(context.getResources().getString(R.string.update_url));
     setFilesDir(context.getFilesDir());
+    if ( ! Info.isValidDatabase(context) ) {
+      addMissingFile(ROUTES_UPDATE);
+    }
   }
   
   public void update(List<UpdateFile> updates) throws IOException {
@@ -63,17 +66,4 @@ public class UpdateManager extends PortableUpdateManager {
       }
     }
   }
-
-  @Override
-  public boolean isRequired() {
-    if ( super.isRequired() )
-      return true;
-    if ( ! Info.isValidDatabase(context) ) {
-      forceUpdates();
-      return true;
-    }
-    return false;
-  }
-  
-  
 }
