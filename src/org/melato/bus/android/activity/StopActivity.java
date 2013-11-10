@@ -25,6 +25,7 @@ import org.melato.android.util.Invokable;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.HelpActivity;
+import org.melato.bus.android.track.EditStopActivity;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
@@ -114,6 +115,7 @@ public class StopActivity extends ListActivity implements OnItemClickListener
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.stop_menu, menu);
+    inflater.inflate(R.menu.edit_menu, menu);
     HelpActivity.addItem(menu,this, Help.STOP);
     return true;
   }
@@ -150,6 +152,9 @@ public class StopActivity extends ListActivity implements OnItemClickListener
       case R.id.add:
         addToSequence(true);
         handled = true;
+        break;
+      case R.id.edit:
+        EditStopActivity.editStop(this, rstop.getStop());
         break;
       default:
         break;

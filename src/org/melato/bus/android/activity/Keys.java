@@ -21,6 +21,10 @@
 package org.melato.bus.android.activity;
 
 public class Keys {
+  /** OTP.Itinerary */
   public static final String ITINERARY = "org.melato.bus.android.itinerary";
+  /** Sequence */
   public static final String SEQUENCE = "org.melato.bus.android.sequence";
+  /** Stop */
+  public static final String STOP = "org.melato.bus.android.stop";
 }
