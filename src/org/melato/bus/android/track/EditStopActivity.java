@@ -6,7 +6,6 @@ import org.melato.bus.model.Stop;
 import org.melato.bus.transit.StopDetails;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,10 +14,10 @@ import android.widget.RadioGroup;
 
 public class EditStopActivity extends Activity {
   private Stop stop;
-  public static void editStop(Context context, Stop stop) {
-    Intent intent = new Intent(context, EditStopActivity.class);
+  public static void editStop(Activity activity, Stop stop) {
+    Intent intent = new Intent(activity, EditStopActivity.class);
     intent.putExtra(Keys.STOP, stop);
-    context.startActivity(intent);
+    activity.startActivityForResult(intent, 0);
   }
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +63,12 @@ public class EditStopActivity extends Activity {
     s.setCover(getBoolean(R.id.cover_group, R.id.cover_yes, R.id.cover_no));
     StopsDatabase db = StopsDatabase.getInstance(this);
     db.updateStop(s);
+    setResult(RESULT_OK);
     finish();
+    
   }
   public void cancel(View view) {
+    setResult(RESULT_CANCELED);
     finish();
   }
 }

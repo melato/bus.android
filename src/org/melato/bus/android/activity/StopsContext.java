@@ -131,5 +131,8 @@ public class StopsContext extends LocationContext {
       return view;
     }
   }
+  public void refresh() {
+    adapter.notifyDataSetChanged();    
+  }
 
 }

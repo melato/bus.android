@@ -45,6 +45,7 @@ import org.melato.geometry.gpx.SpeedTracker;
 import org.melato.gps.Earth;
 import org.melato.gps.PointTime;
 
+import android.app.Activity;
 import android.content.Context;
 import android.widget.ArrayAdapter;
 
@@ -53,6 +54,7 @@ public class StopContext extends LocationContext {
   public static final float BIKE_SPEED = 15f;
   public static final float MIN_SPEED = 1f / (3600f / 1000f); // 1 Km/h
 
+  private Activity activity;
   private TrackContext track;
   private SpeedTracker speed;
   private int markerIndex;
@@ -107,9 +109,10 @@ public class StopContext extends LocationContext {
     refresh();
   }
 
-  public StopContext(Context context) {
-    super(context);
-    properties = new PropertiesDisplay(context);
+  public StopContext(Activity activity) {
+    super(activity);
+    properties = new PropertiesDisplay(activity);
+    this.activity = activity;
   }
 
   public PropertiesDisplay getProperties() {
@@ -201,16 +204,11 @@ public class StopContext extends LocationContext {
   }
 
   class Amenities implements Invokable {
-    private void append(StringBuilder buf, Boolean value, int labelId) {
+    private void append(StringBuilder buf, int labelId) {
       if ( buf.length() > 0 ) {
         buf.append( ", " );
       }
-      String label = context.getString(labelId); 
-      if ( value == null) {
-        buf.append( context.getString(R.string.unknown, label));
-      } else if ( value ) {
-        buf.append(label);
-      }
+      buf.append(context.getString(labelId));
     }
     public String toString() {
       StringBuilder buf = new StringBuilder();
@@ -219,13 +217,23 @@ public class StopContext extends LocationContext {
       if ( flags == null) {
         flags = marker.getFlags();
       }
-      append(buf, StopFlags.hasSeat(flags), R.string.seat);
-      append(buf, StopFlags.hasCover(flags), R.string.cover);
+      Boolean hasSeat = StopFlags.hasSeat(flags);
+      Boolean hasCover = StopFlags.hasCover(flags);
+      if ( hasSeat != null && hasCover != null) {
+        if ( hasSeat ) {
+          append(buf, R.string.seat);
+        }
+        if ( hasCover ) {
+          append(buf, R.string.cover);
+        }
+      } else {
+        append(buf, R.string.unknown);
+      }
       return properties.formatProperty(R.string.amenities, buf);
     }
     @Override
     public void invoke(Context context) {
-      EditStopActivity.editStop(context,  marker);
+      EditStopActivity.editStop(activity,  marker);
     }    
   }
 
@@ -282,6 +290,14 @@ public class StopContext extends LocationContext {
       String label = context.getResources().getString(R.string.gps_speed);
       int resourceId = Info.trackHistory(context).isFast() ? R.string.gps_fast : R.string.gps_normal;
       String value = context.getResources().getString(resourceId);
+      return PropertiesDisplay.formatProperty(label, value);
+    }
+  }
+
+  class StopCode {
+    public String toString() {
+      String label = context.getString(R.string.stop_code);
+      String value = marker.getSymbol();
       return PropertiesDisplay.formatProperty(label, value);
     }
   }
@@ -376,6 +392,7 @@ public class StopContext extends LocationContext {
     //properties.add(new LatitudeField(context.getString(R.string.latitude), getMarker()));
     //properties.add(new LongitudeField(context.getString(R.string.longitude), getMarker()));
     LabeledPoint p = new LabeledPoint(stop, stop.getName());
+    properties.add(new StopCode());
     properties.add(new LocationField(context.getString(R.string.coordinates), p));
     // properties.add(new StraightETA(R.string.bikeETA, BIKE_SPEED,
     // BIKE_OVERHEAD));

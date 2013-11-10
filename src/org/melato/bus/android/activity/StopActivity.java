@@ -25,7 +25,6 @@ import org.melato.android.util.Invokable;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.HelpActivity;
-import org.melato.bus.android.track.EditStopActivity;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
@@ -91,6 +90,16 @@ public class StopActivity extends ListActivity implements OnItemClickListener
     stop.close();
     super.onDestroy();
   }  
+  
+  
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if ( resultCode == RESULT_OK) {
+      stop.refresh();
+      setResult(RESULT_OK);
+    }
+  }
 
   static int findWaypointIndex(Stop[] waypoints, Stop p) {
     int size = waypoints.length;
@@ -151,9 +160,6 @@ public class StopActivity extends ListActivity implements OnItemClickListener
       case R.id.add:
         addToSequence(true);
         handled = true;
-        break;
-      case R.id.edit:
-        EditStopActivity.editStop(this, rstop.getStop());
         break;
       default:
         break;

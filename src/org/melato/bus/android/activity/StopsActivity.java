@@ -72,10 +72,17 @@ public class StopsActivity extends ListActivity {
     Intent intent = new Intent(this, StopActivity.class);
     IntentHelper helper = new IntentHelper(intent);
     helper.putRStop(rstop);
-    startActivity(intent);    
+    startActivityForResult(intent, 0);
   }
- 
   
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if ( resultCode == RESULT_OK) {
+      stops.refresh();
+    }
+  }
+
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
