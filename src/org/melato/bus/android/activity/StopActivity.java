@@ -115,7 +115,6 @@ public class StopActivity extends ListActivity implements OnItemClickListener
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.stop_menu, menu);
-    inflater.inflate(R.menu.edit_menu, menu);
     HelpActivity.addItem(menu,this, Help.STOP);
     return true;
   }
