@@ -2,9 +2,13 @@
 <resources>
     <string name="edit">Edit</string>
     <string name="edit_stop">Edit Stop</string>
-	<string name="seat">Seat: </string>
-    <string name="cover">Cover: </string>
+    <string name="seatLabel">Seat: </string>
+    <string name="coverLabel">Cover: </string>
+    <string name="seat">Seat</string>
+    <string name="cover">Cover</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="unknown">Unknown %1$s</string>
+    <string name="amenities">Amenities</string>
     <string name="save">Save</string>
 </resources>

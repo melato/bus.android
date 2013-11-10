@@ -29,6 +29,9 @@ import org.melato.android.util.LabeledPoint;
 import org.melato.android.util.LocationField;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.track.EditStopActivity;
+import org.melato.bus.android.track.StopFlags;
+import org.melato.bus.android.track.StopsDatabase;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.client.TrackContext;
 import org.melato.bus.model.Municipality;
@@ -190,8 +193,40 @@ public class StopContext extends LocationContext {
           bearing = context.getString(R.string.bearing_straight);
         }
       }
+      if ( Info.trackHistory(context).isFast() ) {
+        bearing += " (" + context.getResources().getString(R.string.gps_fast) + ")";
+      }
       return properties.formatProperty(R.string.bearing, bearing);
     }
+  }
+
+  class Amenities implements Invokable {
+    private void append(StringBuilder buf, Boolean value, int labelId) {
+      if ( buf.length() > 0 ) {
+        buf.append( ", " );
+      }
+      String label = context.getString(labelId); 
+      if ( value == null) {
+        buf.append( context.getString(R.string.unknown, label));
+      } else if ( value ) {
+        buf.append(label);
+      }
+    }
+    public String toString() {
+      StringBuilder buf = new StringBuilder();
+      StopsDatabase stopsDB = StopsDatabase.getInstance(context);
+      Integer flags = stopsDB.getFlags(marker.getSymbol());
+      if ( flags == null) {
+        flags = marker.getFlags();
+      }
+      append(buf, StopFlags.hasSeat(flags), R.string.seat);
+      append(buf, StopFlags.hasCover(flags), R.string.cover);
+      return properties.formatProperty(R.string.amenities, buf);
+    }
+    @Override
+    public void invoke(Context context) {
+      EditStopActivity.editStop(context,  marker);
+    }    
   }
 
   class RouteDistance {
@@ -217,7 +252,7 @@ public class StopContext extends LocationContext {
       String label = String.format(context.getString(R.string.time_from_start),
           name);
       int seconds = getTimeFromStart();
-      String value = seconds > 0 ? Schedule.formatTime(seconds / 60) : "";
+      String value = seconds > 0 ? Schedule.formatTime(seconds / 60) : "";      
       return PropertiesDisplay.formatProperty(label, value);
     }
   }
@@ -324,7 +359,8 @@ public class StopContext extends LocationContext {
     }
     properties.add(new StraightDistance());
     properties.add(new Bearing());
-    properties.add(new GpsMode());
+    properties.add(new Amenities());
+    //properties.add(new GpsMode());
     properties.add(new RouteDistance());
     properties.add(new DistanceFromStart());
     properties.add(new TimeFromStart());
