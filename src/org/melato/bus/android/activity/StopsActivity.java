@@ -36,10 +36,8 @@ import android.view.View;
 import android.widget.ListView;
 
 /**
- * Displays the schedule for a route
- * 
+ * Displays the list of stops of a route
  * @author Alex Athanasopoulos
- * 
  */
 public class StopsActivity extends ListActivity {
   private BusActivities activities;

@@ -1,5 +1,7 @@
 package org.melato.bus.android.track;
 
+import org.melato.bus.transit.StopDetails;
+
 public class StopFlags {
   /**
    * we need 3 bits for each flag:  (unknown=0, yes=3, no=2) x 2 flags (seat,cover)
@@ -33,5 +35,8 @@ public class StopFlags {
     } else {
       return null;
     }
+  }
+  public static int getFlags(StopDetails stop) {
+    return coverFlag(stop.getCover()) | seatFlag(stop.getSeat());    
   }
 }

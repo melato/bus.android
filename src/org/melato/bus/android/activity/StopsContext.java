@@ -21,6 +21,8 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
+import org.melato.bus.android.track.StopFlags;
+import org.melato.bus.android.track.StopsDatabase;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.client.TrackContext;
 import org.melato.bus.model.RStop;
@@ -33,6 +35,7 @@ import android.app.ListActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class StopsContext extends LocationContext {
@@ -41,6 +44,7 @@ public class StopsContext extends LocationContext {
   private boolean isSelected;
   private StopsAdapter adapter;
   private int markedIndex = -1;
+  private StopsDatabase stopsDB;
 
   private ListActivity list;
 
@@ -60,6 +64,7 @@ public class StopsContext extends LocationContext {
   public StopsContext(ListActivity activity) {
     super(activity);
     this.list = activity;
+    stopsDB = StopsDatabase.getInstance(activity);
   }
 
   @Override
@@ -83,26 +88,46 @@ public class StopsContext extends LocationContext {
 
   class StopsAdapter extends ArrayAdapter<Stop> {
     public StopsAdapter() {
-      super(context, R.layout.list_item, track.getStops()); 
+      super(context, R.layout.stop_list_item, R.id.text, track.getStops()); 
     }
 
+    private void setIcon(ImageView view, Boolean value, int yesId) {
+      if ( value == null ) {
+        view.setImageResource(R.drawable.unknown);
+      } else if ( value ) {
+        view.setImageResource(yesId);
+      } else {
+        view.setImageDrawable(null);
+      }
+    }
+    
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-      TextView view = (TextView) super.getView(position, convertView, parent);
-      Stop waypoint = track.getStops()[position];
-      String text = waypoint.getName();
+      View view = super.getView(position, convertView, parent);
+      TextView textView = (TextView) view.findViewById(R.id.text);
+      ImageView seatView = (ImageView) view.findViewById(R.id.seat_icon);
+      ImageView coverView = (ImageView) view.findViewById(R.id.cover_icon);
+      Stop stop = track.getStops()[position];
+      int flags = stop.getFlags();
+      Integer localFlags = stopsDB.getFlags(stop.getSymbol());
+      if ( localFlags != null ) {
+        flags = localFlags;
+      }
+      setIcon(seatView, StopFlags.hasSeat(flags), R.drawable.seat);
+      setIcon(coverView, StopFlags.hasCover(flags), R.drawable.cover);
+      String text = stop.getName();
       PointTime here = getLocation();
       if ( here != null && closestStop == position ) {
-        float straightDistance = Earth.distance(here, waypoint); 
+        float straightDistance = Earth.distance(here, stop); 
         text += " " + Formatting.straightDistance(straightDistance);
       }
       if ( position == markedIndex ) {
-        view.setBackgroundColor(context.getResources().getColor(R.color.stop_background));
-        view.setTextColor(context.getResources().getColor(R.color.list_highlighted_text));
+        textView.setBackgroundColor(context.getResources().getColor(R.color.stop_background));
+        textView.setTextColor(context.getResources().getColor(R.color.list_highlighted_text));
       } else {
-        UI.highlight(view, position == closestStop );        
+        UI.highlight(textView, position == closestStop );        
       }
-      view.setText( text );
+      textView.setText( text );
       return view;
     }
   }

@@ -28,6 +28,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  * */
 public class StopsDatabase extends SQLiteOpenHelper {
   private static StopsDatabase instance;
+  /** All stop flags from the database, cached in memory for easy access in the stops activity. */
+  private Map<String,Integer> allFlags;
+
   
   public static StopsDatabase getInstance(Context context) {
     if ( instance == null) {
@@ -75,8 +78,7 @@ public class StopsDatabase extends SQLiteOpenHelper {
     ContentValues args = new ContentValues();
     args.put(StopColumns.TIMESTAMP, stop.getDate().getTime());
     args.put(StopColumns.SYMBOL, stop.getSymbol());
-    int flags = StopFlags.coverFlag(stop.getCover()) | StopFlags.seatFlag(stop.getSeat());
-    args.put(StopColumns.FLAGS, flags);
+    args.put(StopColumns.FLAGS, StopFlags.getFlags(stop));
     Point2D point = stop.getLocation();
     if ( point != null ) {
       args.put(StopColumns.LAT, (float) point.getLat());
@@ -95,6 +97,9 @@ public class StopsDatabase extends SQLiteOpenHelper {
     try {
       deleteStop(db, stop.getSymbol());
       insertStop(db, stop);
+      if ( allFlags != null) {
+        allFlags.put(stop.getSymbol(),  StopFlags.getFlags(stop));
+      }
     } finally {
       db.close();
     }
@@ -187,10 +192,18 @@ public class StopsDatabase extends SQLiteOpenHelper {
     }
   }
   
+  public Integer getFlags(String symbol) {
+    if ( allFlags == null) {
+      allFlags = loadFlags();
+    }
+    return allFlags.get(symbol);
+  }
+  
   public synchronized void deleteAll() {
     SQLiteDatabase db = getWritableDatabase();
     try {
       db.delete(Stops.TABLE, null, null);
+      allFlags.clear();
     } finally {
       db.close();
     }
