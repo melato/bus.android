@@ -19,7 +19,7 @@ public final class StopsSchema {
       new Column(TIMESTAMP, "INTEGER NOT NULL"),
       new Column(LAT, "FLOAT"),
       new Column(LON, "FLOAT"),
-      new Column(SYMBOL, "STRING"),
+      new Column(SYMBOL, "TEXT NOT NULL"),
       new Column(FLAGS, "INTEGER NOT NULL"),
       new Column(BaseColumns._ID, "INTEGER PRIMARY KEY AUTOINCREMENT")};      
   }
