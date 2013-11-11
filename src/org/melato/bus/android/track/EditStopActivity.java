@@ -8,6 +8,10 @@ import org.melato.bus.transit.StopDetails;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -71,4 +75,34 @@ public class EditStopActivity extends Activity {
     setResult(RESULT_CANCELED);
     finish();
   }
+  
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.edit_menu, menu);
+    //HelpActivity.addItem(menu,this, Help.STOP);
+    return true;
+  }
+  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    boolean handled = false;
+    switch (item.getItemId()) {
+      case R.id.remove:
+        StopsDatabase db = StopsDatabase.getInstance(this);
+        db.deleteStop(stop.getSymbol());
+        setResult(RESULT_OK);
+        finish();
+        handled = true;
+        break;
+      default:
+        break;
+    }
+    return handled;
+  }
+  
+  
+  
+ 
+  
 }

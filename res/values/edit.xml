@@ -11,5 +11,6 @@
     <string name="unknown">Unknown</string>
     <string name="amenities">Amenities</string>
     <string name="save">Save</string>
+    <string name="remove">Remove</string>
     <string name="stop_code">Stop Code</string>
 </resources>

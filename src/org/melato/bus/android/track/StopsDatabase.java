@@ -88,8 +88,21 @@ public class StopsDatabase extends SQLiteOpenHelper {
   }
 
   private synchronized void deleteStop(SQLiteDatabase db, String symbol) {
-    String where = Stops.SYMBOL + " = '" + symbol + "'";
-    db.delete(Stops.TABLE, where, null);
+    String where = Stops.SYMBOL + " = ?";
+    db.delete(Stops.TABLE, where, new String[] { symbol });
+  }
+  
+  public void deleteStop(String symbol) {
+    SQLiteDatabase db = getWritableDatabase();
+    try {
+      String where = Stops.SYMBOL + " = ?";
+      db.delete(Stops.TABLE, where, new String[] { symbol });
+      if ( allFlags != null) {
+        allFlags.remove(symbol);
+      }
+    } finally {
+      db.close();
+    }
   }
   
   public void updateStop(StopDetails stop) {
@@ -142,10 +155,10 @@ public class StopsDatabase extends SQLiteOpenHelper {
    * @param selection
    * @param collector
    */
-  private void loadStops(String selection, Collection<StopDetails> collector) {
+  private void loadStops(String selection, String[] selectionArgs, Collection<StopDetails> collector) {
     SQLiteDatabase db = getReadableDB();
     try {
-      Cursor cursor = db.query( Stops.TABLE, STOPS_COLUMNS, selection, null, null, null, Stops._ID + " ASC");
+      Cursor cursor = db.query( Stops.TABLE, STOPS_COLUMNS, selection, selectionArgs, null, null, Stops._ID + " ASC");
       readStops(cursor, collector);
     } finally {
       db.close();
@@ -153,12 +166,12 @@ public class StopsDatabase extends SQLiteOpenHelper {
   }
   
   public void loadAllStops(Collection<StopDetails> collector) {
-    loadStops(null, collector);
+    loadStops(null, null, collector);
   }
   
   public StopDetails loadStop(String symbol) {
     List<StopDetails> list = new ArrayList<StopDetails>();
-    loadStops(Stops.SYMBOL + "=" + symbol, list);
+    loadStops(Stops.SYMBOL + "= ?", new String[] {symbol}, list);
     return list.isEmpty() ? null : list.get(list.size()-1);
   }
   
