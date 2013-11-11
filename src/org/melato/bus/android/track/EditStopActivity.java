@@ -3,12 +3,12 @@ package org.melato.bus.android.track;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.Keys;
 import org.melato.bus.model.Stop;
+import org.melato.bus.model.StopFlags;
 import org.melato.bus.transit.StopDetails;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,8 +36,9 @@ public class EditStopActivity extends Activity {
     StopsDatabase db = StopsDatabase.getInstance(this);
     StopDetails s = db.loadStop(stop.getSymbol());
     if ( s != null) {
-      setBoolean(s.getSeat(), R.id.seat_yes, R.id.seat_no);
-      setBoolean(s.getCover(), R.id.cover_yes, R.id.cover_no);
+      int flags = s.getFlags();
+      setBoolean(StopFlags.getSeat(flags), R.id.seat_yes, R.id.seat_no);
+      setBoolean(StopFlags.getCover(flags), R.id.cover_yes, R.id.cover_no);
     }
     
   }
@@ -63,8 +64,10 @@ public class EditStopActivity extends Activity {
   public void save(View view) {
     StopDetails s = new StopDetails();    
     s.setSymbol(stop.getSymbol());
-    s.setSeat(getBoolean(R.id.seat_group, R.id.seat_yes, R.id.seat_no));
-    s.setCover(getBoolean(R.id.cover_group, R.id.cover_yes, R.id.cover_no));
+    int flags = 0;
+    flags |= StopFlags.seatFlag(getBoolean(R.id.seat_group, R.id.seat_yes, R.id.seat_no));
+    flags |= StopFlags.coverFlag(getBoolean(R.id.cover_group, R.id.cover_yes, R.id.cover_no));
+    s.setFlags(flags);;
     StopsDatabase db = StopsDatabase.getInstance(this);
     db.updateStop(s);
     setResult(RESULT_OK);

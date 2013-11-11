@@ -78,7 +78,7 @@ public class StopsDatabase extends SQLiteOpenHelper {
     ContentValues args = new ContentValues();
     args.put(StopColumns.TIMESTAMP, stop.getDate().getTime());
     args.put(StopColumns.SYMBOL, stop.getSymbol());
-    args.put(StopColumns.FLAGS, StopFlags.getFlags(stop));
+    args.put(StopColumns.FLAGS, stop.getFlags());
     Point2D point = stop.getLocation();
     if ( point != null ) {
       args.put(StopColumns.LAT, (float) point.getLat());
@@ -111,7 +111,7 @@ public class StopsDatabase extends SQLiteOpenHelper {
       deleteStop(db, stop.getSymbol());
       insertStop(db, stop);
       if ( allFlags != null) {
-        allFlags.put(stop.getSymbol(),  StopFlags.getFlags(stop));
+        allFlags.put(stop.getSymbol(), stop.getFlags());
       }
     } finally {
       db.close();
@@ -130,9 +130,7 @@ public class StopsDatabase extends SQLiteOpenHelper {
           int i = 0;
           stop.setSymbol(cursor.getString(i++));
           stop.setDate(new Date(cursor.getLong(i++)));
-          int flags = cursor.getInt(i++);
-          stop.setSeat(StopFlags.hasSeat(flags));
-          stop.setCover(StopFlags.hasCover(flags));
+          stop.setFlags(cursor.getInt(i++));
           Float lat = cursor.isNull(i) ? null : cursor.getFloat(i);
           i++;
           Float lon = cursor.isNull(i) ? null : cursor.getFloat(i);

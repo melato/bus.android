@@ -30,7 +30,6 @@ import org.melato.android.util.LocationField;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.track.EditStopActivity;
-import org.melato.bus.android.track.StopFlags;
 import org.melato.bus.android.track.StopsDatabase;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.client.TrackContext;
@@ -39,6 +38,7 @@ import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.Stop;
 import org.melato.bus.model.StopCount;
+import org.melato.bus.model.StopFlags;
 import org.melato.bus.plan.WalkModel;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.geometry.gpx.SpeedTracker;
@@ -210,30 +210,37 @@ public class StopContext extends LocationContext {
       }
       buf.append(context.getString(labelId));
     }
+    @Override
     public String toString() {
       StringBuilder buf = new StringBuilder();
-      StopsDatabase stopsDB = StopsDatabase.getInstance(context);
-      Integer flags = stopsDB.getFlags(marker.getSymbol());
-      if ( flags == null) {
-        flags = marker.getFlags();
-      }
-      Boolean hasSeat = StopFlags.hasSeat(flags);
-      Boolean hasCover = StopFlags.hasCover(flags);
-      if ( hasSeat != null && hasCover != null) {
-        if ( hasSeat ) {
-          append(buf, R.string.seat);
-        }
-        if ( hasCover ) {
-          append(buf, R.string.cover);
-        }
+      if ( marker.isStation()) {
+        append(buf, R.string.station);
       } else {
-        append(buf, R.string.unknown);
+        StopsDatabase stopsDB = StopsDatabase.getInstance(context);
+        Integer flags = stopsDB.getFlags(marker.getSymbol());
+        if ( flags == null) {
+          flags = marker.getFlags();
+        }
+        Boolean hasSeat = StopFlags.getSeat(flags);
+        Boolean hasCover = StopFlags.getCover(flags);
+        if ( hasSeat != null && hasCover != null) {
+          if ( hasSeat ) {
+            append(buf, R.string.seat);
+          }
+          if ( hasCover ) {
+            append(buf, R.string.cover);
+          }
+        } else {
+          append(buf, R.string.unknown);
+        }
       }
       return properties.formatProperty(R.string.amenities, buf);
     }
     @Override
     public void invoke(Context context) {
-      EditStopActivity.editStop(activity,  marker);
+      if ( ! marker.isStation()) {
+        EditStopActivity.editStop(activity,  marker);
+      }
     }    
   }
 

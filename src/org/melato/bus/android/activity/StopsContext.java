@@ -21,13 +21,13 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
-import org.melato.bus.android.track.StopFlags;
 import org.melato.bus.android.track.StopsDatabase;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.client.TrackContext;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Stop;
+import org.melato.bus.model.StopFlags;
 import org.melato.gps.Earth;
 import org.melato.gps.PointTime;
 
@@ -113,8 +113,8 @@ public class StopsContext extends LocationContext {
       if ( localFlags != null ) {
         flags = localFlags;
       }
-      setIcon(seatView, StopFlags.hasSeat(flags), R.drawable.seat);
-      setIcon(coverView, StopFlags.hasCover(flags), R.drawable.cover);
+      setIcon(seatView, StopFlags.getSeat(flags), R.drawable.seat);
+      setIcon(coverView, StopFlags.getCover(flags), R.drawable.cover);
       String text = stop.getName();
       PointTime here = getLocation();
       if ( here != null && closestStop == position ) {
