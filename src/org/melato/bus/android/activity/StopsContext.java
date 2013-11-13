@@ -108,13 +108,19 @@ public class StopsContext extends LocationContext {
       ImageView seatView = (ImageView) view.findViewById(R.id.seat_icon);
       ImageView coverView = (ImageView) view.findViewById(R.id.cover_icon);
       Stop stop = track.getStops()[position];
-      int flags = stop.getFlags();
-      Integer localFlags = stopsDB.getFlags(stop.getSymbol());
-      if ( localFlags != null ) {
-        flags = localFlags;
+      Boolean hasSeat = Boolean.TRUE;
+      Boolean hasCover = Boolean.TRUE;
+      if ( ! stop.isStation()) {
+        int flags = stop.getFlags();
+        Integer localFlags = stopsDB.getFlags(stop.getSymbol());
+        if ( localFlags != null ) {
+          flags = localFlags;
+        }
+        hasSeat = StopFlags.getSeat(flags);
+        hasCover = StopFlags.getCover(flags);
       }
-      setIcon(seatView, StopFlags.getSeat(flags), R.drawable.seat);
-      setIcon(coverView, StopFlags.getCover(flags), R.drawable.cover);
+      setIcon(seatView, hasSeat, R.drawable.seat);
+      setIcon(coverView, hasCover, R.drawable.cover);
       String text = stop.getName();
       PointTime here = getLocation();
       if ( here != null && closestStop == position ) {
