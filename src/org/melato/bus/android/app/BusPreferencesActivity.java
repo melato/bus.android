@@ -33,7 +33,6 @@ import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 public class BusPreferencesActivity extends PreferenceActivity {
   private String lang;
