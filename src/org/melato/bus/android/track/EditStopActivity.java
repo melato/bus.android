@@ -32,6 +32,7 @@ public class EditStopActivity extends Activity {
       finish();
       return;
     }
+    setTitle(stop.getName());
     setContentView(R.layout.edit_stop);
     StopsDatabase db = StopsDatabase.getInstance(this);
     StopDetails s = db.loadStop(stop.getSymbol());
