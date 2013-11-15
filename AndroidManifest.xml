@@ -134,6 +134,10 @@
             android:name=".track.EditStopActivity"
             android:label="@string/edit_stop" >
         </activity>
+        <activity
+            android:name=".track.UploadActivity"
+            android:label="@string/upload" >
+        </activity>
         </application>
 
 </manifest>

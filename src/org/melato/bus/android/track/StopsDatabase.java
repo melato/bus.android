@@ -31,7 +31,17 @@ public class StopsDatabase extends SQLiteOpenHelper {
   /** All stop flags from the database, cached in memory for easy access in the stops activity. */
   private Map<String,Integer> allFlags;
 
-  
+  public static class Count {
+    public int totalSize;
+    public int newCount;
+    public int totalSize() {
+      return totalSize;
+    }
+    public Count(int totalSize) {
+      super();
+      this.totalSize = totalSize;
+    }    
+  }
   public static StopsDatabase getInstance(Context context) {
     if ( instance == null) {
       instance = new StopsDatabase(context.getApplicationContext(), "STOPS.db");
@@ -61,6 +71,9 @@ public class StopsDatabase extends SQLiteOpenHelper {
   
   @Override
   public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    if ( oldVersion <= 1 ) {
+      db.execSQL(Column.addColumnStatement(Stops.TABLE, Column.find(Stops.columns, Stops.STATUS)));
+    }
   }
 
   public void vacuum() {
@@ -167,6 +180,10 @@ public class StopsDatabase extends SQLiteOpenHelper {
     loadStops(null, null, collector);
   }
   
+  public void loadNewStops(Collection<StopDetails> collector) {
+    loadStops(Stops.STATUS + " = 0", null, collector);
+  }
+  
   public StopDetails loadStop(String symbol) {
     List<StopDetails> list = new ArrayList<StopDetails>();
     loadStops(Stops.SYMBOL + "= ?", new String[] {symbol}, list);
@@ -219,4 +236,45 @@ public class StopsDatabase extends SQLiteOpenHelper {
       db.close();
     }
   }
+  
+  public synchronized void markUploaded() {
+    SQLiteDatabase db = getWritableDatabase();
+    try {
+      ContentValues args = new ContentValues();
+      args.put(Stops.STATUS, 1);
+      db.update(Stops.TABLE, args, null, null );
+    } finally {
+      db.close();
+    }
+  }
+  
+  public Count getCount() {
+    SQLiteDatabase db = getReadableDB();
+    try {
+      String sql = "select status, count(status) from stops group by status";
+      Cursor cursor = db.rawQuery( sql, null);
+      try {
+        if ( cursor.moveToFirst() ) {
+          int total = 0;
+          int newCount = 0;
+          do {
+            int status = cursor.getInt(0);
+            int count = cursor.getInt(1);
+            if ( status == 0 ) {
+              newCount = count;
+            }
+            total += count;
+          } while (cursor.moveToNext());
+          Count count = new Count(total);
+          count.newCount = newCount;
+          return count;
+        }
+        return null;
+      } finally {
+        cursor.close();
+      }
+    } finally {
+      db.close();
+    }
+ }
 }

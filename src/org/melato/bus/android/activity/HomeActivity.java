@@ -33,6 +33,7 @@ import org.melato.bus.android.app.BusPreferencesActivity;
 import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.android.app.UpdateActivity;
 import org.melato.bus.android.map.RouteMapActivity;
+import org.melato.bus.android.track.UploadActivity;
 import org.melato.bus.client.Menu;
 import org.melato.bus.client.MenuStorage;
 import org.melato.util.DateId;
@@ -153,6 +154,7 @@ public class HomeActivity extends Activity implements OnItemClickListener {
       new InternalLaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
       new InternalLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
       new InternalLaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
+      new InternalLaunchItem(UploadActivity.class, R.drawable.upload, R.string.upload),
       new About(),
   };
   

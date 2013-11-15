@@ -14,4 +14,9 @@
     <string name="remove">Remove</string>
     <string name="stop_code">Stop Code</string>
     <string name="station">Station</string>
+    <string name="saved_stops">Saved Stops</string>
+    <string name="new_stops">New Stops</string>
+    <string name="upload">Upload</string>
+    <string name="upload_ok">Thank you for your upload.</string>
+    <string name="upload_error">There was an error.</string>
 </resources>

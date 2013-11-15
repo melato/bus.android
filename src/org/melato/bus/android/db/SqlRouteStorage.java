@@ -52,7 +52,6 @@ import org.melato.bus.model.Stop;
 import org.melato.bus.otp.OTPRequest;
 import org.melato.bus.plan.RouteLeg;
 import org.melato.gps.Point2D;
-import org.melato.log.Log;
 import org.melato.progress.ProgressGenerator;
 import org.melato.sun.SunsetProvider;
 import org.melato.util.DateId;
@@ -123,6 +122,7 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
     }
   }
   
+  @Override
   public String getProperty( String name, String defaultValue) {
     if ( properties == null ) {
       properties = loadProperties();
