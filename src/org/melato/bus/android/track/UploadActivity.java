@@ -20,6 +20,7 @@ import android.widget.Toast;
 public class UploadActivity extends ListActivity {
   private PropertiesDisplay properties;
   private StopsDatabase.Count count;
+  private MenuItem uploadMenu;
   
   class LoadTask extends AsyncTask<Void, Void, StopsDatabase.Count> {
     @Override
@@ -35,6 +36,9 @@ public class UploadActivity extends ListActivity {
       properties.add(properties.formatProperty(R.string.new_stops, count.newCount));
       setListAdapter(properties.createAdapter(R.layout.list_item));
       UploadActivity.this.count = count;
+      if ( count.newCount > 0) {
+        uploadMenu.setEnabled(true);        
+      }
     }
   }
   
@@ -80,6 +84,7 @@ public class UploadActivity extends ListActivity {
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.upload_menu, menu);
+    uploadMenu = menu.findItem(R.id.upload);
     //HelpActivity.addItem(menu,this, Help.STOP);
     return true;
   }
