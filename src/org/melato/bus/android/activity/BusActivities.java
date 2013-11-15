@@ -47,7 +47,7 @@ import android.view.MenuItem;
 public class BusActivities  {
   public static final int MRU_SIZE = 10;
   
-  private static Class<? extends Activity> defaultView = ScheduleActivity.class;
+  private static Class<? extends Activity> defaultView = StopsActivity.class;
   
   MRU<RecentRoute> mru;
   
