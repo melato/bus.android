@@ -85,30 +85,19 @@
         </TableRow>
         </TableLayout>
 
+	    <Button
+	        android:id="@+id/save"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginLeft="10dp"
+	        android:onClick="save"
+	        android:text="@string/save"
+	        android:textAppearance="?android:attr/textAppearanceMedium" />
+
     <LinearLayout
+        android:id="@+id/modeView"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom" >
-
-			    <Button
-			        android:id="@+id/save"
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:layout_marginLeft="10dp"
-					android:layout_weight='1.0'
-    			    android:text="@string/save"
-            		android:onClick="save"
-			        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-			    <Button
-			        android:id="@+id/cancel"
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:layout_marginLeft="10dp"
-					android:layout_weight='1.0'
-    			    android:text="@string/cancel"
-            		android:onClick="cancel"
-			        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_height="wrap_content" >
     </LinearLayout>
-
 </LinearLayout>
