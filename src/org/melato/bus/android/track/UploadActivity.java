@@ -36,12 +36,15 @@ public class UploadActivity extends ListActivity {
       properties.add(properties.formatProperty(R.string.new_stops, count.newCount));
       setListAdapter(properties.createAdapter(R.layout.list_item));
       UploadActivity.this.count = count;
-      if ( count.newCount > 0) {
-        uploadMenu.setEnabled(true);        
-      }
+      enableMenu();
     }
   }
-  
+
+  private void enableMenu() {
+    if ( uploadMenu != null && count != null && count.newCount > 0) {
+      uploadMenu.setEnabled(true);        
+    }    
+  }
   class UploadTask extends AsyncTask<Count, Void, HttpUtils.Result> {
     @Override
     protected HttpUtils.Result doInBackground(Count... params) {
@@ -85,6 +88,7 @@ public class UploadActivity extends ListActivity {
     MenuInflater inflater = getMenuInflater();
     inflater.inflate(R.menu.upload_menu, menu);
     uploadMenu = menu.findItem(R.id.upload);
+    enableMenu();
     //HelpActivity.addItem(menu,this, Help.STOP);
     return true;
   }
