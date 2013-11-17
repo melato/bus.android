@@ -11,7 +11,6 @@ import org.melato.mobile.HttpUtils;
 import android.app.ListActivity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -49,21 +48,24 @@ public class UploadActivity extends ListActivity {
     @Override
     protected HttpUtils.Result doInBackground(Count... params) {
       File file = UploadInfo.createFile(UploadActivity.this);
-      Log.i("aa", file.toString());
-      String url = UploadInfo.getUrl(UploadActivity.this);
-      String clientId = UploadInfo.getClientId(UploadActivity.this);
-      TransitUpload upload = new TransitUpload(url, clientId);
-      HttpUtils.Result result = upload.uploadStops(file);
-      if ( result.isSuccess()) {
-        StopsDatabase.getInstance(UploadActivity.this).markUploaded();
+      try {
+        String url = UploadInfo.getUrl(UploadActivity.this);
+        String clientId = UploadInfo.getClientId(UploadActivity.this);
+        TransitUpload upload = new TransitUpload(url, clientId);
+        HttpUtils.Result result = upload.uploadStops(file);
+        if ( result.isSuccess()) {
+          StopsDatabase.getInstance(UploadActivity.this).markUploaded();
+        }
+        return result;
+      } finally {
+        file.delete();
       }
-      return result;
     }
 
     @Override
     protected void onPostExecute(HttpUtils.Result result) {
       String msg = null;
-      if ( result.status ) {
+      if ( result.isSuccess() ) {
         msg = getString(R.string.upload_ok);
       } else {
         if ( result.error != null && result.error.length() != 0) {
@@ -77,7 +79,7 @@ public class UploadActivity extends ListActivity {
   }
   
   @Override
-  public void onCreate(Bundle savedInstanceState) {
+  public void onCreate(Bundle savedInstanceState) {    
     super.onCreate(savedInstanceState);
     properties = new PropertiesDisplay(this);
     new LoadTask().execute((Void) null);
