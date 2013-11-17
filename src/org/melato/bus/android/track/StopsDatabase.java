@@ -12,6 +12,7 @@ import org.melato.bus.android.track.StopsSchema.StopColumns;
 import org.melato.bus.android.track.StopsSchema.Stops;
 import org.melato.bus.transit.StopDetails;
 import org.melato.gps.Point2D;
+import org.melato.log.Log;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -89,7 +90,7 @@ public class StopsDatabase extends SQLiteOpenHelper {
 
   private long insertStop(SQLiteDatabase db, StopDetails stop) {
     ContentValues args = new ContentValues();
-    args.put(StopColumns.TIMESTAMP, stop.getDate().getTime());
+    args.put(StopColumns.TIMESTAMP, stop.getTimeMillis());
     args.put(StopColumns.SYMBOL, stop.getSymbol());
     args.put(StopColumns.FLAGS, stop.getFlags());
     Point2D point = stop.getLocation();
@@ -151,7 +152,6 @@ public class StopsDatabase extends SQLiteOpenHelper {
           if ( lat != null && lon != null) {
             stop.setLocation(new Point2D(lat, lon));            
           }
-          stop.setDate(new Date( cursor.getLong(i++)));
           if ( ! collector.add(stop) )
             break;
         } while (cursor.moveToNext());
