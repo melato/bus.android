@@ -125,7 +125,6 @@ public class UploadTrackActivity extends Activity implements OnItemClickListener
   public void onCreate(Bundle savedInstanceState) {    
     super.onCreate(savedInstanceState);
     requestWindowFeature(Window.FEATURE_PROGRESS);    
-    Log.setLogger(new AndroidLogger(this));
     setContentView(R.layout.upload);    
     listView = (ListView) findViewById(R.id.list);
     textView = (TextView) findViewById(R.id.text);
