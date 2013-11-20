@@ -27,4 +27,8 @@ public class Keys {
   public static final String SEQUENCE = "org.melato.bus.android.sequence";
   /** Stop */
   public static final String STOP = "org.melato.bus.android.stop";
+  /** Is selector */
+  public static final String SELECTOR = "org.melato.bus.android.selector";
+  /** Route */
+  public static final String ROUTE = "org.melato.bus.android.route";
 }

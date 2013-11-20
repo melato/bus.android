@@ -45,6 +45,7 @@ public abstract class RoutesActivity extends ListActivity {
   private Object[] items = new Object[0];
   private ColorScheme colors;
   private RoutesAdapter adapter;
+  private boolean isSelector;
 
   protected void initializeRoutes() {    
     setRoutes(initialRoutes());
@@ -69,26 +70,59 @@ public abstract class RoutesActivity extends ListActivity {
       //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
       colors = UI.getColorScheme(this);
       //prefs.registerOnSharedPreferenceChangeListener(this);
+      Intent intent = getIntent();
+      isSelector = intent.getBooleanExtra(Keys.SELECTOR, false);
   }   
 
-  void showGroup(RouteGroup group) {
+  void selectGroup(RouteGroup group) {
     if ( group.getRoutes().length == 1 ) {
-      activities.showRoute(group.getRoutes()[0]);
+      selectRoute(group.getRoutes()[0]);
     } else {
       Intent intent = new Intent(this, RouteGroupActivity.class);
       IntentHelper helper = new IntentHelper(intent);
       helper.putRoutes(group);
-      startActivity(intent);
+      if ( isSelector ) {
+        intent.putExtra(Keys.SELECTOR, true);
+        startActivityForResult(intent, 0);
+      } else {
+        startActivity(intent);
+      }
     }
   }
+
+  private void returnRoute(Route route) {
+    Intent intent = new Intent();
+    intent.putExtra(Keys.ROUTE,  route);
+    setResult(RESULT_OK, intent);
+    finish();    
+  }
+  private void selectRoute(Route route) {
+    if ( isSelector ) {
+      returnRoute(route);
+    } else {
+      activities.showRoute(route);
+    }
+  }
+  
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+    if ( resultCode == RESULT_OK) {
+      Route route = (Route) data.getSerializableExtra(Keys.ROUTE);
+      if ( route != null) {
+        returnRoute(route);
+      }
+    }
+  }
+  
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
     Object item = items[position];
     if ( item instanceof Route ) {
-      activities.showRoute((Route)item);
+      selectRoute((Route) item);
     } else if ( item instanceof RouteGroup ) {
-      showGroup((RouteGroup)item);
+      selectGroup((RouteGroup)item);
     }
   }
 
