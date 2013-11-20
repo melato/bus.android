@@ -72,10 +72,9 @@ public class AllRoutesActivity extends RoutesActivity {
       }
     }    
   }
-  
-  protected void initializeRoutes() {    
+
+  public void setAgency(String agencyName) {
     RouteManager routeManager = activities.getRouteManager();
-    String agencyName = Info.getDefaultAgencyName(this);
     agency = routeManager.getAgency(agencyName);
     if ( agency != null) {
       setTitle(agency.getLabel());
@@ -83,6 +82,11 @@ public class AllRoutesActivity extends RoutesActivity {
     List<RouteGroup> groups = RouteGroup.group(routeManager.getRoutesForAgency(agencyName));
     all_groups = groups.toArray(new RouteGroup[0]);
     setRoutes(all_groups);
+  }
+  
+  protected void initializeRoutes() {    
+    String agencyName = Info.getDefaultAgencyName(this);
+    setAgency(agencyName);
   }
     
   @Override
@@ -100,13 +104,6 @@ public class AllRoutesActivity extends RoutesActivity {
     if ( agencyName != null && agency != null && ! agencyName.equals(agency.getName())) {
       initializeRoutes();
     }
-    /*
-    if ( all_groups.length > 10 ) {
-      editView.setVisibility(View.VISIBLE);                        
-    } else {
-      editView.setVisibility(View.INVISIBLE);                        
-    }
-    */
   }
 
   private char transliterate(char c) {
@@ -162,11 +159,36 @@ public class AllRoutesActivity extends RoutesActivity {
      return true;
   }
 
+  private void showAgencies() {
+    Intent intent = new Intent(this, AgenciesActivity.class);
+    if ( isSelector ) {
+      intent.putExtra(Keys.SELECTOR, true);
+      startActivityForResult(intent, REQUEST_AGENCY);      
+    } else {
+      startActivity(intent);
+    }
+  }
+  
+  private void selectAgency(String agencyName) {    
+  }
+  
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if ( requestCode == REQUEST_AGENCY && resultCode == RESULT_OK) {
+      String agencyName = data.getStringExtra(Keys.AGENCY);
+      if ( agencyName != null) {
+        selectAgency(agencyName);
+      }
+    } else {
+      super.onActivityResult(requestCode, resultCode, data);
+    }
+  }
+    
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.agencies:
-        startActivity(new Intent(this, AgenciesActivity.class));
+        showAgencies();
         return true;
       default:
         return super.onOptionsItemSelected(item);

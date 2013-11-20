@@ -31,4 +31,6 @@ public class Keys {
   public static final String SELECTOR = "org.melato.bus.android.selector";
   /** Route */
   public static final String ROUTE = "org.melato.bus.android.route";
+  /** Agency name */
+  public static final String AGENCY = "org.melato.bus.android.agency";
 }

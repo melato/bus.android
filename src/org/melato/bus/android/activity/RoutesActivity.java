@@ -42,10 +42,13 @@ import android.widget.TextView;
  */
 public abstract class RoutesActivity extends ListActivity {
   protected BusActivities activities;
+  protected boolean isSelector;
   private Object[] items = new Object[0];
   private ColorScheme colors;
   private RoutesAdapter adapter;
-  private boolean isSelector;
+  
+  protected static final int REQUEST_ROUTE = 1;
+  protected static final int REQUEST_AGENCY = 2;
 
   protected void initializeRoutes() {    
     setRoutes(initialRoutes());
@@ -83,7 +86,7 @@ public abstract class RoutesActivity extends ListActivity {
       helper.putRoutes(group);
       if ( isSelector ) {
         intent.putExtra(Keys.SELECTOR, true);
-        startActivityForResult(intent, 0);
+        startActivityForResult(intent, REQUEST_ROUTE);
       } else {
         startActivity(intent);
       }
@@ -106,12 +109,13 @@ public abstract class RoutesActivity extends ListActivity {
   
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-    if ( resultCode == RESULT_OK) {
+    if ( requestCode == REQUEST_ROUTE && resultCode == RESULT_OK) {
       Route route = (Route) data.getSerializableExtra(Keys.ROUTE);
       if ( route != null) {
         returnRoute(route);
       }
+    } else {
+      super.onActivityResult(requestCode, resultCode, data);
     }
   }
   

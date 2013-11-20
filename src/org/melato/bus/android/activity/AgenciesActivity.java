@@ -44,6 +44,7 @@ import android.widget.ListView;
  */
 public class AgenciesActivity extends ListActivity {
   private Agency[] agencies;
+  private boolean isSelector;
   
   class AgencyAdapter extends ArrayAdapter<Agency> {
     
@@ -72,6 +73,8 @@ public class AgenciesActivity extends ListActivity {
     box.setOrientation(LinearLayout.VERTICAL);
     agencies = Info.routeManager(this).getAgencies();
     setListAdapter(new AgencyAdapter());
+    Intent intent = getIntent();
+    isSelector = intent.getBooleanExtra(Keys.SELECTOR, false);
   }
   
   @Override
@@ -84,8 +87,16 @@ public class AgenciesActivity extends ListActivity {
   @Override
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
-    Info.setDefaultAgencyName(this, agencies[position].getName());
-    startActivity(new Intent(this, AllRoutesActivity.class));      
+    String agencyName = agencies[position].getName();
+    Info.setDefaultAgencyName(this, agencyName);
+    if ( isSelector ) {
+      Intent intent = new Intent();
+      intent.putExtra(Keys.AGENCY, agencyName);
+      setResult(RESULT_OK, intent);
+      finish();    
+    } else {
+      startActivity(new Intent(this, AllRoutesActivity.class));
+    }
   }
 
   @Override
