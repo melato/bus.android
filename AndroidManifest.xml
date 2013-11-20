@@ -135,9 +135,23 @@
             android:label="@string/edit_stop" >
         </activity>
         <activity
-            android:name=".track.UploadActivity"
+            android:name=".track.UploadStopsActivity"
             android:label="@string/upload" >
         </activity>
-        </application>
+        <activity
+            android:name=".track.UploadTrackActivity"
+            android:label="@string/upload_track" >
+        	<intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="file" />
+                <data android:mimeType="*/*" />
+                <data android:pathPattern=".*\\.gpx" />
+                <data android:host="*" />
+            </intent-filter>
+        </activity>
+        
+    </application>
 
 </manifest>
