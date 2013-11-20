@@ -18,5 +18,9 @@
     <string name="new_stops">New Stops</string>
     <string name="upload">Upload</string>
     <string name="upload_ok">Thank you for your upload.</string>
-    <string name="upload_error">There was an error.</string>
+    <string name="upload_error">Could not upload.</string>
+    <string name="upload_track">Upload Track</string>
+    <string name="file">File</string>
+    <string name="select_route">Select Route</string>
+    <string name="route">Route</string>
 </resources>
