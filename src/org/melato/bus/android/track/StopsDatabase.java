@@ -254,9 +254,9 @@ public class StopsDatabase extends SQLiteOpenHelper {
       String sql = "select status, count(status) from stops group by status";
       Cursor cursor = db.rawQuery( sql, null);
       try {
+        int total = 0;
+        int newCount = 0;
         if ( cursor.moveToFirst() ) {
-          int total = 0;
-          int newCount = 0;
           do {
             int status = cursor.getInt(0);
             int count = cursor.getInt(1);
@@ -265,11 +265,10 @@ public class StopsDatabase extends SQLiteOpenHelper {
             }
             total += count;
           } while (cursor.moveToNext());
-          Count count = new Count(total);
-          count.newCount = newCount;
-          return count;
         }
-        return null;
+        Count count = new Count(total);
+        count.newCount = newCount;
+        return count;
       } finally {
         cursor.close();
       }
