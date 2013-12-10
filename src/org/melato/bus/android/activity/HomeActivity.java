@@ -34,25 +34,6 @@ import android.content.Context;
 
 /** The main activity checks for updates and launches the next activity. */
 public class HomeActivity extends BaseHomeActivity {
-  static class Help extends InternalLaunchItem {
-    private String helpName;
-    
-    public Help(int icon, int label, String helpName) {
-      super(icon, label);
-      this.helpName = helpName;
-    }
-
-    public void invoke(Context context) {
-      HelpActivity.showHelp(context, helpName);
-    }
-  }
-
-  static class About extends Help {    
-    public About() {
-      super(R.drawable.about, R.string.about, "about");
-    }
-  }  
-  
   // references to our images
   private InternalLaunchItem[] internalItems = {
       new InternalLaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
@@ -65,7 +46,7 @@ public class HomeActivity extends BaseHomeActivity {
       new InternalLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
       new InternalLaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
       new InternalLaunchItem(UploadStopsActivity.class, R.drawable.upload, R.string.upload),
-      new About(),
+      new HelpItem(R.drawable.about, R.string.about, "about"),
   };
 
   
