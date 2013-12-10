@@ -82,6 +82,16 @@
 			<location>/main/dev/melato.util/src/main/java</location>
 		</link>
 		<link>
+			<name>mobile</name>
+			<type>2</type>
+			<location>/main/dev/mobile_user/lib/src/main/java</location>
+		</link>
+		<link>
+			<name>transit</name>
+			<type>2</type>
+			<location>/main/dev/bus.transit/src/main/java</location>
+		</link>
+		<link>
 			<name>xml</name>
 			<type>2</type>
 			<location>/main/dev/java/xml/src/main/java</location>
