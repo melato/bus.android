@@ -56,7 +56,6 @@
     <string name="longitude">Longitude</string>
     <string name="cancel">Cancel</string>
     <string name="empty"></string>
-    <string name="help">Help</string>
     <string name="refresh">Refresh</string>
     <string name="pin_route">Pin</string>
     <string name="unpin_route">Unpin</string>

@@ -20,11 +20,11 @@
  */
 package org.melato.bus.android.activity;
 
+import org.melato.android.app.HelpActivity;
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.android.util.Invokable;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;

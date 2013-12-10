@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.melato.android.app.HelpActivity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.RouteStorage;
 import org.melato.sun.SunsetProvider;
 

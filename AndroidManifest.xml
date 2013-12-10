@@ -117,7 +117,7 @@
             android:label="@string/available_updates" >
         </activity>
         <activity
-            android:name=".app.HelpActivity"
+            android:name="org.melato.android.app.HelpActivity"
             android:label="@string/help" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

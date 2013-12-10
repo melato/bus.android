@@ -55,8 +55,6 @@
     <string name="longitude">Γεωγραφικό μήκος</string>
     <string name="coordinates">Συντεταγμένες</string>
     <string name="cancel">Άκυρο</string>
-    <string name="empty"></string>
-    <string name="help">Βοήθεια</string>
     <string name="refresh">Εμφάνιση Όλων</string>    
     <string name="pin_route">Καρφίτσωμα</string>    
     <string name="unpin_route">Ξεκαρφίτσωμα</string>    

@@ -24,13 +24,10 @@ import org.melato.android.app.BaseHomeActivity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
-import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.android.app.UpdateActivity;
 import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.android.track.UploadStopsActivity;
 import org.melato.client.MenuStorage;
-
-import android.content.Context;
 
 /** The main activity checks for updates and launches the next activity. */
 public class HomeActivity extends BaseHomeActivity {
@@ -60,11 +57,8 @@ public class HomeActivity extends BaseHomeActivity {
     return internalItems;
   }
   @Override
-  protected void showHelp(Context context, String target) {
-    HelpActivity.showHelp(context, target);
-  }
-  @Override
   protected boolean checkUpdates() {
     return UpdateActivity.checkUpdates(this);
-  }  
+  }
+  
 }

@@ -22,9 +22,9 @@ package org.melato.bus.android.activity;
 
 import java.util.List;
 
+import org.melato.android.app.HelpActivity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.RouteGroup;

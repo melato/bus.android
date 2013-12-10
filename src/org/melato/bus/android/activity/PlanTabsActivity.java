@@ -23,11 +23,11 @@ package org.melato.bus.android.activity;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 
+import org.melato.android.app.HelpActivity;
 import org.melato.android.location.Locations;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
-import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPClient;
 import org.melato.bus.otp.OTPRequest;

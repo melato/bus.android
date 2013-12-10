@@ -20,9 +20,9 @@
  */
 package org.melato.bus.android.activity;
 
+import org.melato.android.app.HelpActivity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.Agency;
 
 import android.app.ListActivity;

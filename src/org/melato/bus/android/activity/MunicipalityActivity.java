@@ -20,13 +20,13 @@
  */
 package org.melato.bus.android.activity;
 
+import org.melato.android.app.HelpActivity;
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.android.util.Invokable;
 import org.melato.android.util.LocationField;
 import org.melato.android.util.PhoneField;
 import org.melato.android.util.UrlField;
 import org.melato.bus.android.R;
-import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.Municipality;
 import org.melato.gps.Point2D;
 

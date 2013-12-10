@@ -21,13 +21,13 @@
 package org.melato.bus.android.map;
 
 import org.melato.android.AndroidLogger;
+import org.melato.android.app.HelpActivity;
 import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.BusActivities;
 import org.melato.bus.android.activity.Help;
 import org.melato.bus.android.activity.IntentHelper;
-import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;

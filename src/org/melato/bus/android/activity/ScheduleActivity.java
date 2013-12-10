@@ -23,10 +23,10 @@ package org.melato.bus.android.activity;
 import java.util.Date;
 import java.util.List;
 
+import org.melato.android.app.HelpActivity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.ExceptionActivity.ExceptionSpecifier;
-import org.melato.bus.android.app.HelpActivity;
 import org.melato.bus.client.TimeOfDay;
 import org.melato.bus.client.TimeOfDayList;
 import org.melato.bus.model.Agency;
