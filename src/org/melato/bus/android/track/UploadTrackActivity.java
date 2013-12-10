@@ -2,6 +2,7 @@ package org.melato.bus.android.track;
 
 import java.io.File;
 
+import org.melato.android.AndroidLogger;
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.android.util.Invokable;
 import org.melato.bus.android.R;
@@ -9,6 +10,7 @@ import org.melato.bus.android.activity.AllRoutesActivity;
 import org.melato.bus.android.activity.Keys;
 import org.melato.bus.model.Route;
 import org.melato.bus.transit.TransitUpload;
+import org.melato.log.Log;
 import org.melato.mobile.HttpUtils;
 
 import android.app.Activity;
@@ -17,6 +19,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,18 +56,16 @@ public class UploadTrackActivity extends Activity implements OnItemClickListener
     
     @Override
     protected HttpUtils.Result doInBackground(Void... params) {
-      File file = UploadInfo.createFile(UploadTrackActivity.this);
+      //File file = UploadInfo.createTrackFile(UploadTrackActivity.this, route.getRouteId(), gpxFile);
+      File file = new File(Environment.getExternalStorageDirectory(), "a.tst");
       try {
         String url = UploadInfo.getUrl(UploadTrackActivity.this);
         String clientId = UploadInfo.getClientId(UploadTrackActivity.this);
         TransitUpload upload = new TransitUpload(url, clientId);
-        HttpUtils.Result result = upload.uploadStops(file);
-        if ( result.isSuccess()) {
-          StopsDatabase.getInstance(UploadTrackActivity.this).markUploaded();
-        }
+        HttpUtils.Result result = upload.uploadTracks(file);
         return result;
       } finally {
-        file.delete();
+        //file.delete();
       }
     }
 
@@ -115,15 +116,16 @@ public class UploadTrackActivity extends Activity implements OnItemClickListener
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
     if ( resultCode == RESULT_OK) {
-      Route route = (Route) data.getSerializableExtra(Keys.ROUTE);
-      this.route = route;
+      this.route = (Route) data.getSerializableExtra(Keys.ROUTE);
       adapter.notifyDataSetChanged();
+      enableMenu();
     }
   }
 
   @Override
   public void onCreate(Bundle savedInstanceState) {    
     super.onCreate(savedInstanceState);
+    Log.setLogger(new AndroidLogger(this));
     requestWindowFeature(Window.FEATURE_PROGRESS);    
     setContentView(R.layout.upload);    
     listView = (ListView) findViewById(R.id.list);

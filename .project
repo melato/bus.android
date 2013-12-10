@@ -57,29 +57,9 @@
 			<location>/main/dev/geometry/src/main/java</location>
 		</link>
 		<link>
-			<name>gps</name>
-			<type>2</type>
-			<location>/main/dev/gps/src/main/java</location>
-		</link>
-		<link>
 			<name>gpx</name>
 			<type>2</type>
 			<location>/main/dev/gpx/src/main/java</location>
-		</link>
-		<link>
-			<name>melato.android</name>
-			<type>2</type>
-			<location>/main/dev/melato.android/src/main/java</location>
-		</link>
-		<link>
-			<name>melato.progress</name>
-			<type>2</type>
-			<location>/main/dev/melato.progress/src/main/java</location>
-		</link>
-		<link>
-			<name>melato.util</name>
-			<type>2</type>
-			<location>/main/dev/melato.util/src/main/java</location>
 		</link>
 		<link>
 			<name>mobile</name>
@@ -90,11 +70,6 @@
 			<name>transit</name>
 			<type>2</type>
 			<location>/main/dev/bus.transit/src/main/java</location>
-		</link>
-		<link>
-			<name>xml</name>
-			<type>2</type>
-			<location>/main/dev/java/xml/src/main/java</location>
 		</link>
 	</linkedResources>
 </projectDescription>

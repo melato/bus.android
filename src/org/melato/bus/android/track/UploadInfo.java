@@ -3,7 +3,8 @@ package org.melato.bus.android.track;
 import java.io.File;
 import java.io.IOException;
 
-import org.melato.bus.android.Info;
+import org.melato.bus.model.RouteId;
+import org.melato.bus.transit.ZipTrackWriter;
 import org.melato.bus.transit.ZipTransitWriter;
 import org.melato.mobile.MobileUser;
 
@@ -26,16 +27,33 @@ public class UploadInfo {
     return uuid;
   }
   public static String getUrl(Context context) {
-    return Info.routeManager(context).getUploadUrl();
+    //return Info.routeManager(context).getUploadUrl();
+    return "http://transit.test.melato.org:8120";
+    //return "http://metakinisi.melato.org:3011";
   }
   public static File createFile(Context context) {
-    File file;
     try {
-      file = File.createTempFile("transit", ".zip");
+      File file = File.createTempFile("transit", ".zip");
       ZipTransitWriter zip = new ZipTransitWriter(file);
       zip.begin(null);
       StopsDatabase.getInstance(context).loadNewStops(zip);
       zip.end();
+      return file;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+  public static File createTrackFile(Context context, RouteId routeId, File trackFile) {
+    try {
+      File file = File.createTempFile("transit", ".zip");
+      ZipTrackWriter zip = new ZipTrackWriter(file);
+      zip.open();
+      try {
+        zip.addTrack(routeId, trackFile);
+      } finally {
+        zip.close();
+      }
       return file;
     } catch (IOException e) {
       e.printStackTrace();

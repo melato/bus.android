@@ -26,8 +26,8 @@ import java.util.Map;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.db.SqlRouteStorage;
-import org.melato.bus.client.HelpItem;
-import org.melato.bus.client.HelpStorage;
+import org.melato.client.HelpItem;
+import org.melato.client.HelpStorage;
 import org.melato.util.VariableSubstitution;
 
 import android.app.Activity;

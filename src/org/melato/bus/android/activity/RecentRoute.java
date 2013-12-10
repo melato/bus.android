@@ -25,12 +25,12 @@ import java.io.IOException;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
 
-import org.melato.bus.client.Serialization;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.Stop;
+import org.melato.client.Serialization;
 
 public class RecentRoute implements Serializable {
   private static final long serialVersionUID = 1L;

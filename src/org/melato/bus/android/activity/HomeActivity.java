@@ -20,14 +20,15 @@
  */
 package org.melato.bus.android.activity;
 
+import org.melato.android.app.BaseHomeActivity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.app.BaseHomeActivity;
 import org.melato.bus.android.app.BusPreferencesActivity;
 import org.melato.bus.android.app.HelpActivity;
+import org.melato.bus.android.app.UpdateActivity;
 import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.android.track.UploadStopsActivity;
-import org.melato.bus.client.MenuStorage;
+import org.melato.client.MenuStorage;
 
 import android.content.Context;
 
@@ -77,4 +78,12 @@ public class HomeActivity extends BaseHomeActivity {
   protected LaunchItem[] getInternalLaunchItems() {
     return internalItems;
   }
+  @Override
+  protected void showHelp(Context context, String target) {
+    HelpActivity.showHelp(context, target);
+  }
+  @Override
+  protected boolean checkUpdates() {
+    return UpdateActivity.checkUpdates(this);
+  }  
 }
