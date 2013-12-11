@@ -25,9 +25,25 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.melato.android.app.FrameworkApplication;
+import org.melato.android.app.HomeActivity;
+import org.melato.android.app.HomeActivity.InternalLaunchItem;
+import org.melato.android.app.HomeActivity.LaunchItem;
+import org.melato.bus.android.activity.AgenciesActivity;
+import org.melato.bus.android.activity.AllRoutesActivity;
+import org.melato.bus.android.activity.NearbyActivity;
+import org.melato.bus.android.activity.PlanTabsActivity;
 import org.melato.bus.android.activity.Pref;
+import org.melato.bus.android.activity.RecentRoutesActivity;
+import org.melato.bus.android.activity.SequenceActivity;
+import org.melato.bus.android.activity.SunActivity;
+import org.melato.bus.android.app.BusPreferencesActivity;
+import org.melato.bus.android.app.UpdateManager;
 import org.melato.bus.android.db.SqlRouteStorage;
+import org.melato.bus.android.map.RouteMapActivity;
+import org.melato.bus.android.track.UploadStopsActivity;
 import org.melato.client.HelpStorage;
+import org.melato.client.MenuStorage;
+import org.melato.update.PortableUpdateManager;
 
 import android.app.Application;
 import android.content.SharedPreferences;
@@ -44,6 +60,21 @@ public class BusApplication extends Application implements FrameworkApplication 
     return Info.helpManager(this);    
   }
   
+  @Override
+  public MenuStorage getMenuStorage() {
+    return Info.menuManager(this);
+  }
+  
+  @Override
+  public PortableUpdateManager getUpdateManager() {
+    return new UpdateManager(this);
+  }
+
+  @Override
+  public int getEulaResourceId() {
+    return R.string.eula;
+  }
+
   private void updateLocale(Configuration config) {
     config.locale = locale;
     Locale.setDefault(locale);
@@ -93,4 +124,25 @@ public class BusApplication extends Application implements FrameworkApplication 
     vars.put("db.version", databaseDate);
     return vars;
   }
+  
+  private InternalLaunchItem[] internalItems = {
+      new InternalLaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
+      new InternalLaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
+      new InternalLaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
+      new InternalLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
+      new InternalLaunchItem(PlanTabsActivity.class, R.drawable.plan, R.string.search),
+      new InternalLaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
+      new InternalLaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
+      new InternalLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
+      new InternalLaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
+      new InternalLaunchItem(UploadStopsActivity.class, R.drawable.upload, R.string.upload),
+      new HomeActivity.HelpItem(R.drawable.about, R.string.about, "about"),
+  };
+
+  
+  @Override
+  public LaunchItem[] getInternalLaunchItems() {
+    return internalItems;
+  }
+  
 }

@@ -65,5 +65,6 @@ public class UpdateManager extends PortableUpdateManager {
         continue;
       }
     }
+    Info.reload();
   }
 }

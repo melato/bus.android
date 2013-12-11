@@ -54,16 +54,12 @@
     <string name="coordinates">Coordinates</string>
     <string name="latitude">Latitude</string>
     <string name="longitude">Longitude</string>
-    <string name="cancel">Cancel</string>
-    <string name="empty"></string>
     <string name="refresh">Refresh</string>
     <string name="pin_route">Pin</string>
     <string name="unpin_route">Unpin</string>
     <string name="unpin_all">Unpin All</string>
     <string name="loading">Loading &#8230;</string>
     <string name="computing">Computing &#8230;</string>
-    <string name="ok">Ok</string>
-    <string name="terms_of_use">Terms of Use</string>
     <string name="sequence">Sequence</string>
     <string name="empty_sequence">Route Sequence</string>
     <string name="search">Search</string>

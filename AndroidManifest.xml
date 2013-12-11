@@ -17,7 +17,7 @@
         android:label="@string/app_name" >
         <uses-library android:name="com.google.android.maps" />
         <activity
-            android:name=".activity.HomeActivity"
+            android:name="org.melato.android.app.HomeActivity"
             android:label="@string/main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -113,7 +113,7 @@
             android:label="@string/sun" >
         </activity>
         <activity
-            android:name=".app.UpdateActivity"
+            android:name="org.melato.android.app.UpdateActivity"
             android:label="@string/available_updates" >
         </activity>
         <activity

@@ -1,9 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="update">Update</string>
-    <string name="update_comment"></string>
-    <string name="available_updates">Available Updates</string>
-    <string name="update_required">Required Updates</string>
     <string name="routes_database">Routes Database</string>
-    <string name="need_network">You need to have a network connection in order to download the application database.</string>
 </resources>
