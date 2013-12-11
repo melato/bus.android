@@ -25,9 +25,9 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.melato.android.app.FrameworkApplication;
-import org.melato.android.app.HomeActivity;
+import org.melato.android.app.HomeActivity.ActivityLaunchItem;
+import org.melato.android.app.HomeActivity.HelpLaunchItem;
 import org.melato.android.app.HomeActivity.InternalLaunchItem;
-import org.melato.android.app.HomeActivity.LaunchItem;
 import org.melato.bus.android.activity.AgenciesActivity;
 import org.melato.bus.android.activity.AllRoutesActivity;
 import org.melato.bus.android.activity.NearbyActivity;
@@ -126,22 +126,22 @@ public class BusApplication extends Application implements FrameworkApplication 
   }
   
   private InternalLaunchItem[] internalItems = {
-      new InternalLaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
-      new InternalLaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
-      new InternalLaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
-      new InternalLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
-      new InternalLaunchItem(PlanTabsActivity.class, R.drawable.plan, R.string.search),
-      new InternalLaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
-      new InternalLaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
-      new InternalLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
-      new InternalLaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
-      new InternalLaunchItem(UploadStopsActivity.class, R.drawable.upload, R.string.upload),
-      new HomeActivity.HelpItem(R.drawable.about, R.string.about, "about"),
+      new ActivityLaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
+      new ActivityLaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
+      new ActivityLaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
+      new ActivityLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
+      new ActivityLaunchItem(PlanTabsActivity.class, R.drawable.plan, R.string.search),
+      new ActivityLaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
+      new ActivityLaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
+      new ActivityLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
+      new ActivityLaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
+      new ActivityLaunchItem(UploadStopsActivity.class, R.drawable.upload, R.string.upload),
+      new HelpLaunchItem(R.drawable.about, R.string.about, "about"),
   };
 
   
   @Override
-  public LaunchItem[] getInternalLaunchItems() {
+  public InternalLaunchItem[] getInternalLaunchItems() {
     return internalItems;
   }
   
