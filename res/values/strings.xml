@@ -113,5 +113,6 @@
     <string name="mode_subway">Subway</string>
     <string name="error_convert_route">Cannot find route</string>
     <string name="error_connect">Cannot connect to server.</string>
+    <string name="routes_database">Routes Database</string>
     
 </resources>

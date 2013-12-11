@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="update">Ανανέωση</string>
-    <string name="update_comment"></string>
-    <string name="available_updates">Διαθέσιμες Ανανεώσεις</string>
-    <string name="update_required">Υποχρεωτικές Ανανεώσεις</string>
-    <string name="routes_database">Βάση Δρομολογίων</string>
-    <string name="need_network">Απαιτείται σύνδεση δικτύου για να αρχικοποιηθεί η βάση δεδομένων της εφαρμογής.</string>
-</resources>
