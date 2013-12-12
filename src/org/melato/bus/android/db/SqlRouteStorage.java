@@ -47,10 +47,6 @@ import org.melato.bus.model.ScheduleSummary;
 import org.melato.bus.model.Stop;
 import org.melato.bus.otp.OTPRequest;
 import org.melato.bus.plan.RouteLeg;
-import org.melato.client.HelpItem;
-import org.melato.client.HelpStorage;
-import org.melato.client.Menu;
-import org.melato.client.MenuStorage;
 import org.melato.gps.Point2D;
 import org.melato.progress.ProgressGenerator;
 import org.melato.sun.SunsetProvider;
@@ -64,7 +60,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.util.SparseArray;
 
-public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorage, MenuStorage {
+public class SqlRouteStorage implements RouteStorage, SunsetProvider {
   public static final String DATABASE_NAME = "ROUTES.db";
   private String databaseFile;
   private Map<String,String> properties;
@@ -1001,101 +997,4 @@ public class SqlRouteStorage implements RouteStorage, SunsetProvider, HelpStorag
     return null;
   }
 
-  private HelpItem loadHelpWhere(String where) {
-    if ( getVersion() < 8 ) {
-      return null;
-    }
-    String sql = "select title, body, node, name from help where " + where;
-    SQLiteDatabase db = getDatabase();
-    try {
-      Cursor cursor = db.rawQuery( sql, null);
-      try {
-        if ( cursor.moveToFirst() ) {
-          int i = 0;
-          HelpItem h = new HelpItem();
-          h.setTitle(cursor.getString(i++));
-          h.setText(cursor.getString(i++));
-          h.setNode(cursor.getString(i++));
-          if ( ! cursor.isNull(i)) {
-            h.setName(cursor.getString(i));
-          }
-          return h;
-        }
-      } finally {
-        cursor.close();
-      }
-    } finally {
-      db.close();
-    }
-    return null;
-  }
-  
-  @Override
-  public HelpItem loadHelpByName(String name, String lang) {
-    if ( lang == null) {
-      return loadHelpWhere( "name = '" + quote(name) + "'");
-    } else {
-      String name2 = name + "." + lang;      
-      return loadHelpWhere( "name IN ('" + quote(name) + "', '" + quote(name2) + "') ORDER BY name DESC");
-    }
-  }
-
-  @Override
-  public HelpItem loadHelpByNode(String node) {
-    return loadHelpWhere( "node = '" + quote(node) + "'");
-  }
-
-  @Override
-  public List<Menu> loadMenus() {
-    String sql = "select label, type, target, icon, start_date, end_date from menus";
-    List<Menu> menus = new ArrayList<Menu>();
-    SQLiteDatabase db = getDatabase();
-    try {
-      Cursor cursor = db.rawQuery(sql, null);
-      try {
-        if ( cursor.moveToFirst() ) {
-          do {
-            Menu menu = new Menu();        
-            int i = 0;
-            menu.setLabel( cursor.getString(i++));
-            menu.setType( cursor.getString(i++));
-            menu.setTarget( cursor.getString(i++));
-            if ( ! cursor.isNull(i)) {
-              menu.setIcon(cursor.getString(i));
-            }
-            i++;
-            menu.setStartDate(cursor.getInt(i++));
-            menu.setEndDate(cursor.getInt(i++));
-            menus.add(menu);
-          } while( cursor.moveToNext() );
-        }
-      } finally {
-        cursor.close();
-      }
-    } finally {
-      db.close();
-    }
-    return menus;
-  }
-
-  @Override
-  public byte[] loadImage(String name) {
-    String sql = String.format("select image from images where name = '%s'", quote(name));
-    SQLiteDatabase db = getDatabase();
-    try {
-      Cursor cursor = db.rawQuery(sql, null);
-      try {
-        if ( cursor.moveToFirst() ) {
-          do {
-            return cursor.getBlob(0);
-          } while( cursor.moveToNext() );
-        }
-      } finally {
-        cursor.close();
-      }
-    } finally {
-      db.close();
-    }
-    return null;
-  }
 }

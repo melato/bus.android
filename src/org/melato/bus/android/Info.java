@@ -37,8 +37,6 @@ import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.ScheduleId;
 import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.WalkModel;
-import org.melato.client.HelpStorage;
-import org.melato.client.MenuStorage;
 import org.melato.client.Serialization;
 import org.melato.log.Log;
 
@@ -73,13 +71,6 @@ public class Info {
     }
     return routeManager;
   }
-  public static HelpStorage helpManager(Context context) {
-    return (HelpStorage) routeManager(context).getStorage();
-  }
-  public static MenuStorage menuManager(Context context) {
-    return (MenuStorage) routeManager(context).getStorage();
-  }
-  
   public static boolean isValidDatabase(Context context) {
     File file = SqlRouteStorage.databaseFile(context);
     if ( ! file.exists() )

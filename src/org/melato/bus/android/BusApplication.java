@@ -28,6 +28,7 @@ import org.melato.android.app.FrameworkApplication;
 import org.melato.android.app.HomeActivity.ActivityLaunchItem;
 import org.melato.android.app.HomeActivity.HelpLaunchItem;
 import org.melato.android.app.HomeActivity.InternalLaunchItem;
+import org.melato.android.app.MetadataStorage;
 import org.melato.bus.android.activity.AgenciesActivity;
 import org.melato.bus.android.activity.AllRoutesActivity;
 import org.melato.bus.android.activity.NearbyActivity;
@@ -56,13 +57,17 @@ import android.preference.PreferenceManager;
 public class BusApplication extends Application implements FrameworkApplication {
   private Locale locale;
 
+  private MetadataStorage getMetadataStorage() {
+    return new MetadataStorage(SqlRouteStorage.databaseFile(this).toString());
+  }
+  
   public HelpStorage getHelpStorage() {
-    return Info.helpManager(this);    
+    return getMetadataStorage();
   }
   
   @Override
   public MenuStorage getMenuStorage() {
-    return Info.menuManager(this);
+    return getMetadataStorage();
   }
   
   @Override
