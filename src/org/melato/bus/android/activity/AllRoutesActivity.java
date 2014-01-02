@@ -26,6 +26,7 @@ import org.melato.android.app.HelpActivity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.db.SqlRouteStorage;
+import org.melato.bus.client.Transliteration;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.RouteGroup;
 import org.melato.bus.model.RouteManager;
@@ -49,7 +50,7 @@ public class AllRoutesActivity extends RoutesActivity {
   private RouteGroup[] all_groups;
   private EditText editView;
   private Agency agency;
-  private static String transliteration;
+  private static Transliteration transliteration;
   
   class TextListener implements TextWatcher {
 
@@ -106,30 +107,16 @@ public class AllRoutesActivity extends RoutesActivity {
     }
   }
 
-  private char transliterate(char c) {
+  private String transliterateString(String text) {
     if ( transliteration == null) {
       SqlRouteStorage storage = (SqlRouteStorage) Info.routeManager(this).getStorage();
-      transliteration = storage.getTransliteration();
-      if ( transliteration == null) {
-        transliteration = "";
+      String map = storage.getTransliteration();
+      if ( map == null) {
+        map = "";
       }
+      transliteration = new Transliterate(map);
     }
-    int n = transliteration.length() / 2;
-    for( int i = 0; i < n; i++ ) {
-      if ( c == transliteration.charAt(i*2)) {
-        return transliteration.charAt(i*2+1);
-      }
-    }
-    return c;    
-  }
-  
-  private String transliterateString(String text) {
-    char[] chars = text.toCharArray();
-    for(int i = 0; i < chars.length; i++ ) {
-      char c = transliterate(chars[i]);
-      chars[i] = c;
-    }
-    return new String(chars);
+    return transliteration.map(text);
   }
   private int findPosition( String text ) {
     if ( text != null ) {
