@@ -114,7 +114,7 @@ public class AllRoutesActivity extends RoutesActivity {
       if ( map == null) {
         map = "";
       }
-      transliteration = new Transliterate(map);
+      transliteration = new Transliteration(map);
     }
     return transliteration.map(text);
   }
