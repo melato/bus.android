@@ -38,8 +38,8 @@ public class BookmarksActivity extends ListActivity {
     @Override
     protected void onPostExecute(List<Bookmark> result) {
       bookmarks = result;
-      //setListAdapter(new BookmarkAdapter());
-      setListAdapter(new ArrayAdapter<Bookmark>(BookmarksActivity.this, R.layout.list_item, bookmarks));
+      setListAdapter(new BookmarkAdapter());
+      //setListAdapter(new ArrayAdapter<Bookmark>(BookmarksActivity.this, R.layout.list_item, bookmarks));
       super.onPostExecute(result);
     }    
   }
@@ -52,16 +52,11 @@ public class BookmarksActivity extends ListActivity {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
       View view = super.getView(position, convertView, parent);
-      System.out.println("view: " + view);
       TextView textView = (TextView) view.findViewById(R.id.text);
       ImageView iconView = (ImageView) view.findViewById(R.id.icon);
-      System.out.println("textView: " + textView);
-      System.out.println("iconView: " + iconView);
       Bookmark bookmark = bookmarks.get(position);
       textView.setText(bookmark.getName());
-      System.out.println("bookmark: " + bookmark);
-      System.out.println("bookmarkHandler: " + bookmarkHandler);
-      //iconView.setImageResource(bookmarkHandler.getTypeIcon(bookmark.getType()));
+      iconView.setImageResource(bookmarkHandler.getTypeIcon(bookmark.getType()));
       return view;
     }
   }
