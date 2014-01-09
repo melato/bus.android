@@ -131,6 +131,10 @@
             android:label="@string/pref_title" >
         </activity>
         <activity
+            android:name=".bookmark.BusBookmarksActivity"
+            android:label="@string/bookmarks" >
+        </activity>
+        <activity
             android:name=".track.EditStopActivity"
             android:label="@string/edit_stop" >
         </activity>

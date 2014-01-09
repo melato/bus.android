@@ -21,15 +21,18 @@
 package org.melato.bus.android.activity;
 
 import org.melato.android.app.HelpActivity;
+import org.melato.android.bookmark.BookmarkDatabase;
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.android.util.Invokable;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.bookmark.BookmarkTypes;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.Stop;
 import org.melato.bus.plan.Sequence;
+import org.melato.client.Bookmark;
 
 import android.app.ListActivity;
 import android.content.Intent;
@@ -145,6 +148,15 @@ public class StopActivity extends ListActivity implements OnItemClickListener
     }
     startActivity(new Intent(this, SequenceActivity.class));    
   }
+  
+  private void addBookmark() {
+    BookmarkDatabase db = BookmarkDatabase.getInstance(this);
+    String label = Info.routeManager(this).getRoute(rstop.getRouteId()).getLabel();
+    String name = rstop.getStop().getName() + " (" + label + ")"; 
+    Bookmark bookmark = new Bookmark(BookmarkTypes.STOP, name, rstop);
+    db.addBookmark(bookmark);
+  }
+  
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
     boolean handled = false;
@@ -159,6 +171,10 @@ public class StopActivity extends ListActivity implements OnItemClickListener
         break;
       case R.id.add:
         addToSequence(true);
+        handled = true;
+        break;
+      case R.id.bookmark:
+        addBookmark();
         handled = true;
         break;
       default:

@@ -39,6 +39,7 @@ import org.melato.bus.android.activity.SequenceActivity;
 import org.melato.bus.android.activity.SunActivity;
 import org.melato.bus.android.app.BusPreferencesActivity;
 import org.melato.bus.android.app.UpdateManager;
+import org.melato.bus.android.bookmark.BusBookmarksActivity;
 import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.android.track.UploadStopsActivity;
@@ -132,6 +133,7 @@ public class BusApplication extends Application implements FrameworkApplication 
   
   private InternalLaunchItem[] internalItems = {
       new ActivityLaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
+      new ActivityLaunchItem(BusBookmarksActivity.class, R.drawable.bookmark, R.string.bookmarks),
       new ActivityLaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
       new ActivityLaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
       new ActivityLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
