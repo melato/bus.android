@@ -12,7 +12,6 @@ import org.melato.bus.android.track.StopsSchema.StopColumns;
 import org.melato.bus.android.track.StopsSchema.Stops;
 import org.melato.bus.transit.StopDetails;
 import org.melato.gps.Point2D;
-import org.melato.log.Log;
 
 import android.content.ContentValues;
 import android.content.Context;
