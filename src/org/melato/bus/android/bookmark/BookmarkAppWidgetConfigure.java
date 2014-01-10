@@ -2,11 +2,13 @@ package org.melato.bus.android.bookmark;
 
 import org.melato.android.AndroidLogger;
 import org.melato.android.bookmark.SqlBookmark;
+import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.IntentHelper;
 import org.melato.bus.android.activity.Keys;
 import org.melato.bus.android.activity.ScheduleActivity;
 import org.melato.bus.model.RStop;
+import org.melato.bus.model.Route;
 import org.melato.client.Bookmark;
 import org.melato.log.Log;
 
@@ -40,9 +42,12 @@ public class BookmarkAppWidgetConfigure extends BusBookmarksActivity {
     Log.info("bookmark type=" + bookmark.getType());
     if ( bookmark.getType() == BookmarkTypes.STOP ) {
       RStop rstop = (RStop) bookmark.getObject(RStop.class);
+      Route route = Info.routeManager(this).getRoute(rstop.getRouteId());
+      String label = route.getLabel();
       Log.info("rstop=" + rstop);
       Log.info("widgetId=" + widgetId);
       RemoteViews views = new RemoteViews(this.getPackageName(), R.layout.bookmark_appwidget);
+      views.setTextViewText(R.id.label, label);
       Intent intent = new Intent(this, ScheduleActivity.class);
       new IntentHelper(intent).putRStop(rstop);  
       PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, Intent.FILL_IN_DATA);
