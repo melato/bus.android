@@ -131,10 +131,6 @@
             android:label="@string/pref_title" >
         </activity>
         <activity
-            android:name=".bookmark.BusBookmarksActivity"
-            android:label="@string/bookmarks" >
-        </activity>
-        <activity
             android:name=".track.EditStopActivity"
             android:label="@string/edit_stop" >
         </activity>
@@ -155,7 +151,28 @@
                 <data android:host="*" />
             </intent-filter>
         </activity>
-        
+        <activity
+            android:name=".bookmark.BusBookmarksActivity"
+            android:label="@string/bookmarks" >
+        </activity>
+        <activity
+            android:name=".bookmark.BookmarkAppWidgetConfigure"
+            android:label="@string/bookmarks" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+        <receiver android:name=".bookmark.BookmarkAppWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <!-- 
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+                 -->
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+               android:resource="@xml/bookmarkwidget" />
+        </receiver>        
     </application>
 
 </manifest>

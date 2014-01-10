@@ -33,4 +33,6 @@ public class Keys {
   public static final String ROUTE = "org.melato.bus.android.route";
   /** Agency name */
   public static final String AGENCY = "org.melato.bus.android.agency";
+  
+  public static final String BOOKMARK = "org.melato.bus.android.bookmark";
 }
