@@ -24,13 +24,18 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 
 import org.melato.android.app.HelpActivity;
+import org.melato.android.bookmark.BookmarkDatabase;
 import org.melato.android.location.Locations;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
+import org.melato.bus.android.bookmark.BookmarkTypes;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPClient;
 import org.melato.bus.otp.OTPRequest;
+import org.melato.bus.plan.PlanEndpoints;
+import org.melato.client.Bookmark;
+import org.melato.client.Serialization;
 import org.melato.gps.Point2D;
 
 import android.content.Context;
@@ -168,6 +173,10 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
         plan();
         handled = true;
         break;
+      case R.id.bookmark:
+        bookmark();
+        handled = true;
+        break;
       case R.id.pref:
         startActivity(new Intent(this, BusPreferencesActivity.class));      
         break;
@@ -199,7 +208,21 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
     }
   }
 
- 
+  void bookmark() {
+    FragmentManager fm = getSupportFragmentManager();
+    PlanFragment planFragment = (PlanFragment) fm.findFragmentByTag(TAB_SEARCH);
+    PlanEndpoints endpoints = planFragment.getEndpoints();
+    Bookmark bookmark = new Bookmark(BookmarkTypes.PLAN, endpoints.getName(), endpoints);
+    BookmarkDatabase.getInstance(this).addBookmark(bookmark);
+  }
+
+  void setEndpoints(PlanEndpoints endpoints) {
+    tabHost.setCurrentTabByTag(TAB_SEARCH);
+    FragmentManager fm = getSupportFragmentManager();
+    PlanFragment planFragment = (PlanFragment) fm.findFragmentByTag(TAB_SEARCH);
+    planFragment.setEndpoints(endpoints);    
+  }
+  
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -212,16 +235,20 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
         PlanFragment.class, null);
     tabHost.addTab(tabHost.newTabSpec(TAB_RESULTS).setIndicator(getString(R.string.itineraries)),
         OTPItinerariesFragment.class, null);
-    String tab = getIntent().getStringExtra(KEY_TAB);
-    if ( TAB_RESULTS.equals(tab)) {
-      tabHost.setCurrentTabByTag(TAB_RESULTS);      
-    } else if ( TAB_SEARCH.equals(tab)) {
+    PlanEndpoints endpoints = Serialization.cast(getIntent().getSerializableExtra(Keys.ENDPOINTS), PlanEndpoints.class);
+    if ( endpoints != null) {
       tabHost.setCurrentTabByTag(TAB_SEARCH);      
-    } else if ( PlanFragment.plan != null) {
-      tabHost.setCurrentTabByTag(TAB_RESULTS);
     } else {
-      tabHost.setCurrentTabByTag(TAB_SEARCH);
+      String tab = getIntent().getStringExtra(KEY_TAB);
+      if ( TAB_RESULTS.equals(tab)) {
+        tabHost.setCurrentTabByTag(TAB_RESULTS);      
+      } else if ( TAB_SEARCH.equals(tab)) {
+        tabHost.setCurrentTabByTag(TAB_SEARCH);      
+      } else if ( PlanFragment.plan != null) {
+        tabHost.setCurrentTabByTag(TAB_RESULTS);
+      } else {
+        tabHost.setCurrentTabByTag(TAB_SEARCH);
+      }
     }
   }
-  
 }

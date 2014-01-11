@@ -35,4 +35,6 @@ public class Keys {
   public static final String AGENCY = "org.melato.bus.android.agency";
   
   public static final String BOOKMARK = "org.melato.bus.android.bookmark";
+
+  public static final String ENDPOINTS = "org.melato.bus.android.endpoints";
 }

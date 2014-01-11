@@ -31,8 +31,11 @@ import org.melato.bus.model.Schedule;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPRequest;
 import org.melato.bus.plan.NamedPoint;
+import org.melato.bus.plan.PlanEndpoints;
+import org.melato.client.Serialization;
 import org.melato.gps.Point2D;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
@@ -189,6 +192,16 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   }
 
   @Override
+  public void onAttach(Activity activity) {
+    super.onAttach(activity);
+    PlanEndpoints endpoints = Serialization.cast(activity.getIntent().getSerializableExtra(Keys.ENDPOINTS), PlanEndpoints.class);
+    if ( endpoints != null) {
+      setEndpoints(endpoints);
+    }
+  }
+
+
+  @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
           Bundle savedInstanceState) {
       view = inflater.inflate(R.layout.plan, container, false);
@@ -208,7 +221,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       };
       for( int i = 0; i < modes.length; i++ ) {
         modeView.addView(modes[i].createCheckBox(context));
-      }
+      } 
       showParameters();
       return view;
   }
@@ -242,6 +255,21 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       }
     }
     return -1;
+  }
+  
+  public PlanEndpoints getEndpoints() {
+    PlanEndpoints endpoints = new PlanEndpoints();
+    endpoints.origin = origin;
+    endpoints.destination = destination;
+    endpoints.time = timeInMinutes;
+    endpoints.arriveAt = arriveAt;
+    return endpoints;    
+  }
+  public void setEndpoints(PlanEndpoints endpoints) {
+    origin = endpoints.origin;
+    destination = endpoints.destination;
+    timeInMinutes = endpoints.time;
+    arriveAt = endpoints.arriveAt;
   }
   public OTPRequest buildRequest(Point2D from) {
     OTPRequest request = new OTPRequest();

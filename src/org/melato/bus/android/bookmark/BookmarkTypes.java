@@ -1,46 +1,60 @@
 package org.melato.bus.android.bookmark;
 
 import org.melato.android.bookmark.BookmarkHandler;
+import org.melato.android.bookmark.BookmarkType;
 import org.melato.bus.android.R;
-import org.melato.bus.android.activity.BusActivities;
+import org.melato.bus.android.activity.IntentHelper;
+import org.melato.bus.android.activity.Keys;
+import org.melato.bus.android.activity.PlanTabsActivity;
 import org.melato.bus.android.activity.ScheduleActivity;
 import org.melato.bus.model.RStop;
+import org.melato.bus.plan.PlanEndpoints;
 import org.melato.client.Bookmark;
 
 import android.app.Activity;
+import android.content.Intent;
 
 public class BookmarkTypes implements BookmarkHandler {
   public static final int STOP = 1;
   public static final int PLAN = 2;
   
+  static class StopType implements BookmarkType {
+    @Override
+    public int getIcon() {
+      return R.drawable.stops;
+    }
+
+    @Override
+    public Intent createIntent(Activity activity, Bookmark bookmark) {
+      RStop rstop = bookmark.getObject(RStop.class);
+      Intent intent = new Intent(activity, ScheduleActivity.class);
+      new IntentHelper(intent).putRStop(rstop);
+      return intent;
+    }   
+  }
+  static class PlanType implements BookmarkType {
+    @Override
+    public int getIcon() {
+      return R.drawable.search;
+    }
+
+    @Override
+    public Intent createIntent(Activity activity, Bookmark bookmark) {
+      PlanEndpoints endpoints = bookmark.getObject(PlanEndpoints.class);
+      Intent intent = new Intent(activity, PlanTabsActivity.class);
+      intent.putExtra(Keys.ENDPOINTS, endpoints);
+      return intent;
+    }   
+  }
   @Override
-  public int getTypeIcon(int type) {
+  public BookmarkType getBookmarkType(int type) {
     switch(type) {
     case STOP:
-      return R.drawable.stops;
+      return new StopType();
     case PLAN:
-      return R.drawable.search;
+      return new PlanType();
     default:
-      return R.drawable.bookmark;
-    }
-  }
-  void gotoStop(Activity activity, Bookmark bookmark) {
-    RStop rstop = (RStop)bookmark.getObject(RStop.class);
-    if ( rstop != null ) {
-      BusActivities activities = new BusActivities(activity);
-      activities.showRoute(rstop, ScheduleActivity.class);
-    }
-  }
-  @Override
-  public void open(Activity activity, Bookmark bookmark) {
-    switch(bookmark.getType()) {
-    case STOP:
-      gotoStop(activity, bookmark);
-      break;
-    case PLAN:
-      break;
-    default:
-      break;
+      return null;
     }
   }
 }
