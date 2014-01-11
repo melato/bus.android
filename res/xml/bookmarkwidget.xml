@@ -3,7 +3,6 @@
     android:minWidth="40dp"
     android:minHeight="40dp"
     android:updatePeriodMillis="0"
-    android:previewImage="@drawable/stops"
     android:icon="@drawable/icon"
     android:initialLayout="@layout/bookmark_appwidget"
     android:configure="org.melato.bus.android.bookmark.BookmarkAppWidgetConfigure" 
