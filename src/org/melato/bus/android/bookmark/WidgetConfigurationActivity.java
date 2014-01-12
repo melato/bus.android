@@ -32,7 +32,8 @@ public class WidgetConfigurationActivity extends BusBookmarksActivity {
     widgetManager.updateWidget(widgetId, bookmark);      
   
     Intent result = new Intent();
-    // The following is needed by Android 4.0.3.
+    // The result is needed by Android 4.0.3 (api 15), and maybe others.
+    // It is not needed with api 18.
     result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, widgetId);
     setResult(RESULT_OK, result);
     finish();
