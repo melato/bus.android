@@ -36,14 +36,19 @@ import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.WalkModel;
 import org.melato.gps.Point2D;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -52,10 +57,11 @@ import android.widget.ListView;
  * Launches the sequence schedule activity.
  * @author Alex Athanasopoulos
  */
-public class SequenceActivity extends ListActivity {
+public class SequenceActivity extends FragmentActivity implements OnItemClickListener {
   private Sequence sequence;
   private List<SequenceItem> items;
   private ArrayAdapter<SequenceItem> adapter;
+  private ListView listView;
 
   public static interface SequenceItem {    
   }
@@ -128,7 +134,12 @@ public class SequenceActivity extends ListActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.sequence);
+    listView = (ListView) findViewById(R.id.listView);
+    listView.setOnItemClickListener(this);
+    registerForContextMenu(listView);
     sequence = Info.getSequence(this);
+    registerForContextMenu(listView);
     resetList();
   }
 
@@ -138,14 +149,17 @@ public class SequenceActivity extends ListActivity {
     Info.saveSequence(this);
   }
 
-  @Override
-  protected void onListItemClick(ListView l, View v, int position, long id) {
+  private void open(int position) {
     SequenceItem item = items.get(position);
     if ( item instanceof LegItem ) {
       RouteLeg leg = ((LegItem) item).leg.getLeg();
       BusActivities activities = new BusActivities(this);
       activities.showRoute(leg.getRStop1());
     }
+  }
+  @Override
+  public void onItemClick(AdapterView<?> l, View view, int position, long id) {
+    open(position);
   }
   
   @Override
@@ -157,10 +171,18 @@ public class SequenceActivity extends ListActivity {
      return true;
   }
 
+  @Override
+  public void onCreateContextMenu(ContextMenu menu, View v,
+      ContextMenuInfo menuInfo) {
+    super.onCreateContextMenu(menu, v, menuInfo);
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.sequence_context, menu);
+  }
+  
   private void resetList() {
     items = getSequenceItems(sequence, Info.routeManager(this));
     adapter = new ArrayAdapter<SequenceItem>(this, R.layout.list_item, items);
-    setListAdapter(adapter);
+    listView.setAdapter(adapter);
     if ( sequence.getLegs().isEmpty()) {
       setTitle(R.string.empty_sequence);
     } else {
@@ -185,6 +207,25 @@ public class SequenceActivity extends ListActivity {
     if ( ! legs.isEmpty()) {
       legs.remove(0);
       resetList();
+    }
+  }
+  
+  private int legIndex(int position) {
+    int n = -1;
+    for( int i = 0; i <= position; i++ ) {
+      if ( items.get(i) instanceof LegItem) {
+        n++;
+      }
+    }
+    return n;
+  }
+  private void removeLeg(int position) {
+    if ( items.get(position) instanceof LegItem) {
+      int index = legIndex(position);
+      if ( index >= 0 ) {
+        sequence.getLegs().remove(index);
+        resetList();
+      }
     }
   }
   @Override
@@ -214,5 +255,24 @@ public class SequenceActivity extends ListActivity {
         break;
     }
     return handled ? true : false;
-  }    
+  }
+   
+  @Override
+  public boolean onContextItemSelected(MenuItem item) {
+    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+    boolean handled = false;
+    switch(item.getItemId()) {
+      case R.id.open:
+        open(info.position);
+        handled = true;
+        break;
+      case R.id.remove:
+        removeLeg(info.position);
+        handled = true;
+        break;
+      default:
+        break;
+    }
+    return handled;
+  }
 }
