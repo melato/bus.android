@@ -11,7 +11,7 @@ import org.melato.bus.model.RStop;
 import org.melato.bus.plan.PlanEndpoints;
 import org.melato.client.Bookmark;
 
-import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 public class BookmarkTypes implements BookmarkHandler {
@@ -25,9 +25,9 @@ public class BookmarkTypes implements BookmarkHandler {
     }
 
     @Override
-    public Intent createIntent(Activity activity, Bookmark bookmark) {
+    public Intent createIntent(Context context, Bookmark bookmark) {
       RStop rstop = bookmark.getObject(RStop.class);
-      Intent intent = new Intent(activity, ScheduleActivity.class);
+      Intent intent = new Intent(context, ScheduleActivity.class);
       new IntentHelper(intent).putRStop(rstop);
       return intent;
     }   
@@ -39,9 +39,9 @@ public class BookmarkTypes implements BookmarkHandler {
     }
 
     @Override
-    public Intent createIntent(Activity activity, Bookmark bookmark) {
+    public Intent createIntent(Context context, Bookmark bookmark) {
       PlanEndpoints endpoints = bookmark.getObject(PlanEndpoints.class);
-      Intent intent = new Intent(activity, PlanTabsActivity.class);
+      Intent intent = new Intent(context, PlanTabsActivity.class);
       intent.putExtra(Keys.ENDPOINTS, endpoints);
       return intent;
     }   

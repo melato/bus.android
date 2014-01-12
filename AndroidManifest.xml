@@ -156,14 +156,14 @@
             android:label="@string/bookmarks" >
         </activity>
         <activity
-            android:name=".bookmark.BookmarkAppWidgetConfigure"
+            android:name=".bookmark.WidgetConfigurationActivity"
             android:label="@string/bookmarks" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
             </intent-filter>
         </activity>
-        <receiver android:name=".bookmark.BookmarkAppWidgetProvider"
+        <receiver android:name=".bookmark.WidgetProvider"
             android:label="@string/bookmarks" >
             >
             <intent-filter>

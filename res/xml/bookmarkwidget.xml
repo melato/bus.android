@@ -5,7 +5,7 @@
     android:updatePeriodMillis="0"
     android:icon="@drawable/icon"
     android:initialLayout="@layout/bookmark_appwidget"
-    android:configure="org.melato.bus.android.bookmark.BookmarkAppWidgetConfigure" 
+    android:configure="org.melato.bus.android.bookmark.WidgetConfigurationActivity" 
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:initialKeyguardLayout="@layout/bookmark_appwidget"        

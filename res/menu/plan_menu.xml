@@ -6,6 +6,9 @@
     <item android:id="@+id/swap"
           android:icon="@drawable/reload"                  
           android:title="@string/swap" />
+    <item android:id="@+id/bookmark"
+          android:icon="@drawable/bookmark"                  
+          android:title="@string/bookmark" />
     <item android:id="@+id/pref"
           android:icon="@drawable/preferences"                  
           android:title="@string/pref_menu" />
