@@ -152,7 +152,7 @@ public class StopActivity extends ListActivity implements OnItemClickListener
   private void addBookmark() {
     BookmarkDatabase db = BookmarkDatabase.getInstance(this);
     String label = Info.routeManager(this).getRoute(rstop.getRouteId()).getLabel();
-    String name = rstop.getStop().getName() + " (" + label + ")"; 
+    String name = label + " " + rstop.getStop().getName(); 
     Bookmark bookmark = new Bookmark(BookmarkTypes.STOP, name, rstop);
     db.addBookmark(bookmark);
   }
