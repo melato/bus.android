@@ -35,7 +35,7 @@ public class BookmarkTypes implements BookmarkHandler {
   static class PlanType implements BookmarkType {
     @Override
     public int getIcon() {
-      return R.drawable.search;
+      return R.drawable.plan;
     }
 
     @Override

@@ -24,7 +24,7 @@ import java.net.ConnectException;
 import java.net.UnknownHostException;
 
 import org.melato.android.app.HelpActivity;
-import org.melato.android.bookmark.BookmarkDatabase;
+import org.melato.android.bookmark.BookmarksActivity;
 import org.melato.android.location.Locations;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
@@ -207,13 +207,13 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
       new PlanTask().execute(request);      
     }
   }
-
+  
   void bookmark() {
     FragmentManager fm = getSupportFragmentManager();
     PlanFragment planFragment = (PlanFragment) fm.findFragmentByTag(TAB_SEARCH);
     PlanEndpoints endpoints = planFragment.getEndpoints();
     Bookmark bookmark = new Bookmark(BookmarkTypes.PLAN, endpoints.getName(), endpoints);
-    BookmarkDatabase.getInstance(this).addBookmark(bookmark);
+    BookmarksActivity.addBookmarkDialog(this, bookmark);
   }
 
   void setEndpoints(PlanEndpoints endpoints) {

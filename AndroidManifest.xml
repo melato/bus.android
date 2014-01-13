@@ -157,7 +157,7 @@
         </activity>
         <activity
             android:name=".bookmark.WidgetConfigurationActivity"
-            android:label="@string/bookmarks" >
+            android:label="@string/select_bookmark" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
