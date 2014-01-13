@@ -46,7 +46,7 @@ public class OTPItinerariesFragment extends Fragment implements OnItemClickListe
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
           Bundle savedInstanceState) {
-      View view = inflater.inflate(R.layout.planresults, container, false);
+      View view = inflater.inflate(R.layout.list_activity, container, false);
       listView = (ListView) view.findViewById(R.id.listView);
       listView.setOnItemClickListener(this);
       return view;

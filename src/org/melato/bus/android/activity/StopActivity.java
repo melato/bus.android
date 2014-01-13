@@ -21,7 +21,7 @@
 package org.melato.bus.android.activity;
 
 import org.melato.android.app.HelpActivity;
-import org.melato.android.bookmark.BookmarkDatabase;
+import org.melato.android.bookmark.BookmarksActivity;
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.android.util.Invokable;
 import org.melato.bus.android.Info;
@@ -34,9 +34,9 @@ import org.melato.bus.model.Stop;
 import org.melato.bus.plan.Sequence;
 import org.melato.client.Bookmark;
 
-import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,8 +50,9 @@ import android.widget.ListView;
  * @author Alex Athanasopoulos
  *
  */
-public class StopActivity extends ListActivity implements OnItemClickListener
+public class StopActivity extends FragmentActivity implements OnItemClickListener
  {
+  private ListView listView; 
   private StopContext stop;
   private PropertiesDisplay properties;
   private BusActivities activities;
@@ -64,6 +65,7 @@ public class StopActivity extends ListActivity implements OnItemClickListener
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.list_activity);
     stop = new StopContext(this);
     properties = stop.getProperties();
     activities = new BusActivities(this);
@@ -83,9 +85,9 @@ public class StopActivity extends ListActivity implements OnItemClickListener
     stop.setMarkerIndex(index);
     stop.addProperties();
     setTitle(route.getLabel() + " " + stop.getMarker().getName());
-   
-    setListAdapter(stop.createAdapter(R.layout.stop_item));
-    getListView().setOnItemClickListener(this);
+    listView = (ListView) findViewById(R.id.listView);
+    listView.setAdapter(stop.createAdapter(R.layout.stop_item));
+    listView.setOnItemClickListener(this);
   }
   
   @Override
@@ -113,16 +115,8 @@ public class StopActivity extends ListActivity implements OnItemClickListener
     }
     return -1;
   }
+
   
-  @Override
-  protected void onListItemClick(ListView l, View v, int position, long id) {
-    super.onListItemClick(l, v, position, id);
-    Object obj = properties.getItem(position);
-    if ( obj instanceof Route ) {
-      activities.showRoute((Route) obj);
-    }
-  }
- 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
@@ -150,11 +144,10 @@ public class StopActivity extends ListActivity implements OnItemClickListener
   }
   
   private void addBookmark() {
-    BookmarkDatabase db = BookmarkDatabase.getInstance(this);
     String label = Info.routeManager(this).getRoute(rstop.getRouteId()).getLabel();
     String name = label + " " + rstop.getStop().getName(); 
     Bookmark bookmark = new Bookmark(BookmarkTypes.STOP, name, rstop);
-    db.addBookmark(bookmark);
+    BookmarksActivity.addBookmarkDialog(this, bookmark);
   }
   
   @Override

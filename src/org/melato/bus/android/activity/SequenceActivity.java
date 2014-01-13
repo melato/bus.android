@@ -134,7 +134,7 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.sequence);
+    setContentView(R.layout.list_activity);
     listView = (ListView) findViewById(R.id.listView);
     listView.setOnItemClickListener(this);
     registerForContextMenu(listView);
