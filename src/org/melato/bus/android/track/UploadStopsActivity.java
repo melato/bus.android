@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class UploadStopsActivity extends Activity {
   private PropertiesDisplay properties;
