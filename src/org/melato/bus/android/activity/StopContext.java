@@ -29,8 +29,6 @@ import org.melato.android.util.LabeledPoint;
 import org.melato.android.util.LocationField;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.track.EditStopActivity;
-import org.melato.bus.android.track.StopsDatabase;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.client.TrackContext;
 import org.melato.bus.model.Municipality;
@@ -38,7 +36,6 @@ import org.melato.bus.model.Route;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.model.Stop;
 import org.melato.bus.model.StopCount;
-import org.melato.bus.model.StopFlags;
 import org.melato.bus.plan.WalkModel;
 import org.melato.geometry.gpx.PathTracker;
 import org.melato.geometry.gpx.SpeedTracker;
@@ -203,6 +200,7 @@ public class StopContext extends LocationContext {
     }
   }
 
+  /** This is not ready yet
   class Amenities implements Invokable {
     private void append(StringBuilder buf, int labelId) {
       if ( buf.length() > 0 ) {
@@ -243,6 +241,7 @@ public class StopContext extends LocationContext {
       }
     }    
   }
+  */
 
   class RouteDistance {
     public String toString() {
@@ -382,7 +381,7 @@ public class StopContext extends LocationContext {
     }
     properties.add(new StraightDistance());
     properties.add(new Bearing());
-    properties.add(new Amenities());
+    // properties.add(new Amenities());
     //properties.add(new GpsMode());
     properties.add(new RouteDistance());
     properties.add(new DistanceFromStart());

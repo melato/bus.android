@@ -37,11 +37,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>algo</name>
-			<type>2</type>
-			<location>/main/dev/bus.algo/src/main/java</location>
-		</link>
-		<link>
 			<name>android.gpx</name>
 			<type>2</type>
 			<location>/main/dev/android.gpx/src/main/java</location>
@@ -60,16 +55,6 @@
 			<name>gpx</name>
 			<type>2</type>
 			<location>/main/dev/gpx/src/main/java</location>
-		</link>
-		<link>
-			<name>mobile</name>
-			<type>2</type>
-			<location>/main/dev/mobile_user/lib/src/main/java</location>
-		</link>
-		<link>
-			<name>transit</name>
-			<type>2</type>
-			<location>/main/dev/bus.transit/src/main/java</location>
 		</link>
 	</linkedResources>
 </projectDescription>

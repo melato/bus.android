@@ -42,7 +42,6 @@ import org.melato.bus.android.app.UpdateManager;
 import org.melato.bus.android.bookmark.BusBookmarksActivity;
 import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.android.map.RouteMapActivity;
-import org.melato.bus.android.track.UploadStopsActivity;
 import org.melato.client.HelpStorage;
 import org.melato.client.MenuStorage;
 import org.melato.update.PortableUpdateManager;
@@ -133,16 +132,16 @@ public class BusApplication extends Application implements FrameworkApplication 
   
   private InternalLaunchItem[] internalItems = {
       new ActivityLaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
+      new ActivityLaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
       new ActivityLaunchItem(BusBookmarksActivity.class, R.drawable.bookmark, R.string.bookmarks),
       new ActivityLaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
-      new ActivityLaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
-      new ActivityLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
       new ActivityLaunchItem(PlanTabsActivity.class, R.drawable.plan, R.string.search),
+      new ActivityLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
       new ActivityLaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
       new ActivityLaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
       new ActivityLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
       new ActivityLaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
-      new ActivityLaunchItem(UploadStopsActivity.class, R.drawable.upload, R.string.upload),
+      //new ActivityLaunchItem(UploadStopsActivity.class, R.drawable.upload, R.string.upload),
       new HelpLaunchItem(R.drawable.about, R.string.about, "about"),
   };
 

@@ -21,13 +21,11 @@
 package org.melato.bus.android.activity;
 
 import org.melato.bus.android.R;
-import org.melato.bus.android.track.StopsDatabase;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.client.TrackContext;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Stop;
-import org.melato.bus.model.StopFlags;
 import org.melato.gps.Earth;
 import org.melato.gps.PointTime;
 
@@ -44,7 +42,7 @@ public class StopsContext extends LocationContext {
   private boolean isSelected;
   private StopsAdapter adapter;
   private int markedIndex = -1;
-  private StopsDatabase stopsDB;
+  // private StopsDatabase stopsDB;
 
   private ListActivity list;
 
@@ -64,7 +62,7 @@ public class StopsContext extends LocationContext {
   public StopsContext(ListActivity activity) {
     super(activity);
     this.list = activity;
-    stopsDB = StopsDatabase.getInstance(activity);
+    //stopsDB = StopsDatabase.getInstance(activity);
   }
 
   @Override
@@ -100,17 +98,18 @@ public class StopsContext extends LocationContext {
         view.setImageDrawable(null);
       }
     }
-    
+        
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+      Stop stop = track.getStops()[position];
       View view = super.getView(position, convertView, parent);
       TextView textView = (TextView) view.findViewById(R.id.text);
+      /*
       ImageView seatView = (ImageView) view.findViewById(R.id.seat_icon);
       ImageView coverView = (ImageView) view.findViewById(R.id.cover_icon);
-      Stop stop = track.getStops()[position];
       Boolean hasSeat = Boolean.TRUE;
       Boolean hasCover = Boolean.TRUE;
-      if ( ! stop.isStation()) {
+      if ( ! stop.isStation() ) {
         int flags = stop.getFlags();
         Integer localFlags = stopsDB.getFlags(stop.getSymbol());
         if ( localFlags != null ) {
@@ -121,6 +120,7 @@ public class StopsContext extends LocationContext {
       }
       setIcon(seatView, hasSeat, R.drawable.seat);
       setIcon(coverView, hasCover, R.drawable.cover);
+      */
       String text = stop.getName();
       PointTime here = getLocation();
       if ( here != null && closestStop == position ) {
