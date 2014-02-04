@@ -24,12 +24,17 @@ public class Help {
     public static final String ABOUT = "about";
     public static final String AGENCIES = "agencies";
     public static final String ALL = "all";
+    public static final String BOOKMARKS = "bookmarks";
+    public static final String CONTRIBUTE = "contribute";
+    public static final String ERRORS = "errors";
     public static final String EULA = "eula";
     public static final String MAP = "map";
     public static final String MUNICIPALITY = "municipality";
     public static final String NEARBY = "nearby";
+    public static final String NOTES = "notes";
     public static final String OUT_OF_DATE = "out-of-date";
     public static final String PEZH = "pezh";
+    public static final String PEZHACT = "pezhact";
     public static final String PLAN = "plan";
     public static final String RECENT = "recent";
     public static final String SCHEDULE = "schedule";
@@ -38,5 +43,5 @@ public class Help {
     public static final String STOP = "stop";
     public static final String STOPS = "stops";
     public static final String SUN = "sun";
-    public static final String BOOKMARKS = "bookmarks";
+    public static final String UPLOAD = "upload";
 }
