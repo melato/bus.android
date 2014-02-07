@@ -3,13 +3,16 @@
     <item android:id="@+id/plan"
           android:icon="@drawable/compute"                  
           android:title="@string/compute" />
+    <item android:id="@+id/map"
+          android:icon="@drawable/map"                  
+          android:title="@string/map" />
     <item android:id="@+id/swap"
           android:icon="@drawable/reload"                  
           android:title="@string/swap" />
-    <item android:id="@+id/bookmark"
-          android:icon="@drawable/bookmark"                  
-          android:title="@string/bookmark" />
     <item android:id="@+id/pref"
           android:icon="@drawable/preferences"                  
           android:title="@string/pref_menu" />
+    <item android:id="@+id/bookmark"
+          android:icon="@drawable/bookmark"                  
+          android:title="@string/bookmark" />
 </menu>
