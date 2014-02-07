@@ -58,6 +58,7 @@ public class SelectionMapActivity extends MapActivity {
   protected void onCreate(Bundle icicle) {
     super.onCreate(icicle);
     Point2D center = Info.routeManager(this).getCenter();
+    int zoom = Info.routeManager(this).getZoomLevel();
     setContentView(R.layout.map);
     map = (MapView) findViewById(R.id.mapview);
     registerForContextMenu(map);
@@ -65,7 +66,7 @@ public class SelectionMapActivity extends MapActivity {
     selectionOverlay = new SelectionOverlay(this);
     map.getOverlays().add(selectionOverlay); 
     map.getController().setCenter(GMap.geoPoint(center));
-    map.getController().setZoom(14);
+    map.getController().setZoom(zoom);
     endpoints = (LocationEndpoints) getIntent().getSerializableExtra(Keys.LOCATION_ENDPOINTS);
     if ( endpoints != null ) {
       setPoint(GMap.geoPoint(endpoints.origin), 0);
