@@ -23,7 +23,6 @@ package org.melato.bus.android.activity;
 import java.net.ConnectException;
 import java.net.UnknownHostException;
 
-import org.melato.android.app.HelpActivity;
 import org.melato.android.bookmark.BookmarksActivity;
 import org.melato.android.location.Locations;
 import org.melato.bus.android.Info;
@@ -48,7 +47,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTabHost;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -139,25 +137,9 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
   }
   
   @Override
-  public boolean onCreateOptionsMenu(Menu menu)
-  {
-     MenuInflater inflater = getMenuInflater();
-     inflater.inflate(R.menu.plan_menu, menu);
-     HelpActivity.addItem(menu, this, Help.PLAN);
-     return true;
-  }
-  
-  @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
     boolean enabled = TAB_SEARCH.equals(tabHost.getCurrentTabTag());
     return enabled;
-    /*
-    for( int id: new int[] { R.id.swap, R.id.plan }) {
-      MenuItem item = menu.findItem(id);
-      item.setEnabled(enabled);
-    }
-    return super.onPrepareOptionsMenu(menu);
-    */
   }
 
   public boolean onOption(int itemId) {

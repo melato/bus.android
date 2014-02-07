@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.melato.android.app.HelpActivity;
 import org.melato.android.bookmark.BookmarksActivity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.PlanOptions;
@@ -57,6 +58,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -180,7 +182,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   
   @Override
   public void onAttach(Activity activity) {
-    super.onAttach(activity);
+    super.onAttach(activity);    
     PlanEndpoints endpoints = Serialization.cast(activity.getIntent().getSerializableExtra(Keys.ENDPOINTS), PlanEndpoints.class);
     if ( endpoints != null) {
       setEndpoints(endpoints);
@@ -215,6 +217,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
         modeView.addView(modes[i].createCheckBox(context));
       }
       showParameters();
+      setHasOptionsMenu(true);
       return view;
   }
 
@@ -269,6 +272,12 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       default:
         break;
     }
+  }
+  
+  @Override
+  public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    inflater.inflate(R.menu.plan_menu, menu);
+    HelpActivity.addItem(menu, getActivity(), Help.PLAN);
   }
 
 
