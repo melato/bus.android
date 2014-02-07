@@ -64,7 +64,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -193,7 +192,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
           Bundle savedInstanceState) {
       view = inflater.inflate(R.layout.plan, container, false);
-      LinearLayout modeView = (LinearLayout)view.findViewById(R.id.modeView);
+      ViewGroup modeView = (ViewGroup)view.findViewById(R.id.modeView);
       timeView = (TextView)view.findViewById(R.id.time);
       ((TextView)view.findViewById(R.id.from)).setOnClickListener(this);
       ((TextView)view.findViewById(R.id.to)).setOnClickListener(this);
