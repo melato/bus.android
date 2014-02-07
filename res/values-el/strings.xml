@@ -108,7 +108,7 @@
     <string name="selectDestination">Επιλογή Προορισμού</string>
     <string name="timeLabel">Ώρα:</string>
     <string name="timeNow">Τώρα</string>
-    <string name="timeDepartNow">Αναχώρηση</string>
+    <string name="timeDepartNow">Αναχώρηση Τώρα</string>
     <string name="timeDepart">Αναχώρηση</string>
     <string name="timeArrive">Άφιξη</string>
     <string name="selectFromBookmark">Επιλογή Αγαπημένου</string>
@@ -124,5 +124,6 @@
     <string name="error_convert_route">Άγνωστη γραμμή</string>
     <string name="error_connect">Δεν είναι δυνατή η σύνδεση.</string>
     <string name="routes_database">Βάση Δρομολογίων</string>
+    <string name="stop_code">Κωδικός Στάσης</string>
     
 </resources>
