@@ -5,12 +5,13 @@
     android:orientation="vertical" >
 
     <TableLayout
+        android:stretchColumns="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
         <TableRow
             android:id="@+id/fromRow"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
 			    <TextView
 			        android:id="@+id/textView1"
@@ -25,12 +26,13 @@
 			        android:layout_height="wrap_content"
 			        android:layout_marginLeft="10dp"
 					android:layout_weight='1.0'
+					android:layout_span="2"
                     android:hint="@string/useCurrentLocation"
 			        android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
         <TableRow
             android:id="@+id/toRow"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
         
 			    <TextView
@@ -46,6 +48,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1.0"
+                    android:layout_span="2"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:hint="@string/selectDestination"
@@ -55,7 +58,7 @@
 	    </TableRow>
 	    <TableRow
             android:id="@+id/timeRow"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" >
         
                 <TextView
@@ -67,34 +70,22 @@
                     android:textAppearance="?android:attr/textAppearanceMedium" />
             
     
-		    <RelativeLayout
-	            android:layout_marginLeft="10dp"
-	            android:layout_weight="1.0"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:orientation="vertical" >
-		
 		         <Button
 		             android:id="@+id/timeType"
 		             android:text="@string/timeDepart"
-		             android:layout_width="0dp"
+                     android:layout_marginLeft="10dp"
+		             android:layout_width="wrap_content"
 		             android:layout_height="wrap_content"
-                     android:layout_alignParentLeft="true"
-		             android:layout_toLeftOf="@+id/time"
 		             />
 		
 		        <Button
 		            android:id="@+id/time"
-		            android:layout_width="96dp"
-		            android:layout_height="wrap_content"
-		            android:layout_alignBottom="@+id/timeType"
-		            android:layout_alignParentRight="true"
-		            android:layout_alignTop="@+id/timeType"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
 		            android:gravity="center_vertical"
 		            android:text="@string/timeNow"
 		            android:textAppearance="?android:attr/textAppearanceMedium" />
 		
-		    </RelativeLayout>
 		    </TableRow>
 		    </TableLayout>
     
@@ -121,7 +112,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:orientation="horizontal"
-        android:layout_padding="0dip"
         android:padding="3dip" >
 
         <ImageButton
