@@ -103,9 +103,19 @@
     <string name="itinerary">Διαδρομή</string>
     <string name="last_plan">Αποτελέσματα</string>
     <string name="swap">Αλλαγή Κατεύθυνσης</string>
-    <string name="from">Από:</string>
-    <string name="to">Έως:</string>
-    <string name="plan_time">Ώρα:</string>
+    <string name="fromLabel">Από:</string>
+    <string name="toLabel">Έως:</string>
+    <string name="selectDestination">Επιλογή Προορισμού</string>
+    <string name="timeLabel">Ώρα:</string>
+    <string name="timeNow">Τώρα</string>
+    <string name="timeDepartNow">Αναχώρηση</string>
+    <string name="timeDepart">Αναχώρηση</string>
+    <string name="timeArrive">Άφιξη</string>
+    <string name="selectFromBookmark">Επιλογή Αγαπημένου</string>
+    <string name="selectFromMap">Επιλογή από Χάρτη</string>
+    <string name="useCurrentLocation">Τρέχουσα Θέση</string>
+    
+    
     <string name="arrive">Άφιξη</string>
     <string name="walk">Περπάτημα</string>
     <string name="mode_bus">Λεωφορείο</string>

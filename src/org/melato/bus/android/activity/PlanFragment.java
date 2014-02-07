@@ -284,6 +284,9 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       break;
     case R.id.leaveAt:
       arriveAt = false;
+      if ( timeInMinutes == null) {
+        timeInMinutes = Schedule.getTime(new Date()); 
+      }      
       ((TextView)view.findViewById(R.id.timeType)).setText(R.string.timeDepart);
       break;
     case R.id.arriveAt:
@@ -297,6 +300,8 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       showMap();
       break;
     case R.id.here:
+      origin = null;
+      showParameters();
       break;
     }
     return super.onContextItemSelected(item);
