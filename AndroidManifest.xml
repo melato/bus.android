@@ -101,6 +101,10 @@
             android:label="@string/map" >
         </activity>
         <activity
+            android:name=".map.SelectionMapActivity"
+            android:label="@string/map" >
+        </activity>
+        <activity
             android:name=".activity.StopActivity"
             android:label="@string/stop" >
         </activity>
@@ -156,6 +160,10 @@
         <activity
             android:name=".bookmark.BusBookmarksActivity"
             android:label="@string/bookmarks" >
+        </activity>
+        <activity
+            android:name=".bookmark.LocationBookmarkActivity"
+            android:label="@string/select_bookmark" >
         </activity>
         <activity
             android:name=".bookmark.WidgetConfigurationActivity"

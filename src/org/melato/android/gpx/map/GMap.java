@@ -31,6 +31,9 @@ public class GMap {
     return new GeoPoint( (int) (lat * 1E6f), (int)(lon * 1E6f));
   }
   public static GeoPoint geoPoint(Point2D p) {   
+    if ( p == null) {
+      return null;
+    }
     return geoPoint(p.getLat(), p.getLon());    
   }
   public static GeoPoint geoPoint(Location loc) {
@@ -39,7 +42,22 @@ public class GMap {
     return geoPoint((float) loc.getLatitude(), (float) loc.getLongitude());
   }
 
-  public static Point2D point(GeoPoint p) {   
+  public static Point2D point(GeoPoint p) {
+    if ( p == null) {
+      return null;
+    }
     return new Point2D( p.getLatitudeE6() / 1E6f,  p.getLongitudeE6() / 1E6f);    
   }
+  
+  public static int computeZoom(float diameter) {
+    int baseZoom = 14;
+    float baseDistance = 5000f;
+    if ( diameter < baseDistance ) {
+      return baseZoom;
+    }
+    int z = baseZoom - Math.round((float) (Math.log(diameter/baseDistance ) / Math.log(2)));
+    if ( z < 1 )
+      z = 1;
+    return z;
+  }  
 }

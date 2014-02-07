@@ -50,6 +50,7 @@ import android.support.v4.app.FragmentTabHost;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.Toast;
@@ -157,11 +158,10 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
     */
   }
 
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  public boolean onOption(int itemId) {
     boolean handled = false;
     FragmentManager fm = getSupportFragmentManager();
-    switch(item.getItemId()) {
+    switch(itemId) {
       case R.id.swap:
         {
           PlanFragment planFragment = (PlanFragment)fm.findFragmentByTag(TAB_SEARCH);
@@ -182,6 +182,15 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
         break;
     }
     return handled ? true : false;
+  }
+  
+  public void onClick(View v) {
+    onOption(v.getId());
+  }
+  
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    return onOption(item.getItemId());
   }
 
   Point2D getCurrentLocation() {

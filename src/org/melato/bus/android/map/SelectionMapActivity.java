@@ -25,8 +25,10 @@ import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.Keys;
 import org.melato.bus.android.activity.LocationEndpoints;
+import org.melato.bus.plan.NamedPoint;
 import org.melato.gps.Point2D;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -43,8 +45,9 @@ import com.google.android.maps.MapView;
 public class SelectionMapActivity extends MapActivity {
   private MapView map;
   private SelectionOverlay selectionOverlay;
-  private PointOverlay originOverlay;
-  private PointOverlay destinationOverlay;
+  private LocationEndpoints endpoints;
+  private PointOverlay[] pointOverlays = new PointOverlay[2];
+  private int[] pointIcons = new int[] {R.drawable.start, R.drawable.finish};
   
   @Override
   protected boolean isRouteDisplayed() {
@@ -63,8 +66,35 @@ public class SelectionMapActivity extends MapActivity {
     map.getOverlays().add(selectionOverlay); 
     map.getController().setCenter(GMap.geoPoint(center));
     map.getController().setZoom(14);
+    endpoints = (LocationEndpoints) getIntent().getSerializableExtra(Keys.LOCATION_ENDPOINTS);
+    if ( endpoints != null ) {
+      setPoint(GMap.geoPoint(endpoints.origin), 0);
+      setPoint(GMap.geoPoint(endpoints.destination), 1);
+    } else {
+      endpoints = new LocationEndpoints();
+    }
   }
   
+  void setResult() {
+    if ( endpoints.origin == null) {
+      endpoints.origin = getNamedPoint(0);
+    }
+    if ( endpoints.destination == null) {
+      endpoints.destination = getNamedPoint(1);
+    }
+    Intent intent = new Intent();
+    intent.putExtra(Keys.LOCATION_ENDPOINTS, endpoints);
+    setResult(RESULT_OK, intent);
+  }
+    
+  private NamedPoint getNamedPoint(int i) {
+    PointOverlay overlay = pointOverlays[i];
+    if ( overlay != null) {
+      return new NamedPoint(GMap.point(overlay.getPoint()));
+    }
+    return null;
+  }
+
   @Override
   public void onCreateContextMenu(ContextMenu menu, View v,
       ContextMenuInfo menuInfo) {
@@ -73,30 +103,29 @@ public class SelectionMapActivity extends MapActivity {
     inflater.inflate(R.menu.map_selection_menu, menu);
   }  
 
-  private void setOrigin(GeoPoint point) {
-    if ( originOverlay != null) {
-      map.getOverlays().remove(originOverlay); 
+  private void setPoint(GeoPoint point, int i) {
+    if ( pointOverlays[i] != null) {
+      map.getOverlays().remove(pointOverlays[i]);
+      pointOverlays[i] = null;
     }
-    originOverlay = new PointOverlay(this, point, R.drawable.start);    
-    map.getOverlays().add(originOverlay); 
-    map.invalidate();
-  }
-  private void setDestination(GeoPoint point) {
-    if ( destinationOverlay != null) {
-      map.getOverlays().remove(destinationOverlay); 
+    if ( point != null) {
+      pointOverlays[i] = new PointOverlay(this, point, pointIcons[i]);    
+      map.getOverlays().add(pointOverlays[i]);
     }
-    destinationOverlay = new PointOverlay(this, point, R.drawable.finish);    
-    map.getOverlays().add(destinationOverlay); 
     map.invalidate();
   }
   @Override
   public boolean onContextItemSelected(MenuItem item) {
     switch(item.getItemId()) {
     case R.id.origin:
-      setOrigin(selectionOverlay.getSelectedPoint());
+      setPoint(selectionOverlay.getSelectedPoint(), 0);
+      endpoints.origin = null;
+      setResult();
       break;
     case R.id.destination:
-      setDestination(selectionOverlay.getSelectedPoint());
+      setPoint(selectionOverlay.getSelectedPoint(), 1);
+      endpoints.destination = null;
+      setResult();
       break;
     default:
       return false;

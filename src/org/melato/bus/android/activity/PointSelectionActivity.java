@@ -24,8 +24,6 @@ import org.melato.android.location.Locations;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.model.RStop;
-import org.melato.bus.model.Route;
-import org.melato.bus.model.Stop;
 import org.melato.bus.plan.NamedPoint;
 import org.melato.bus.plan.Sequence;
 import org.melato.gps.Point2D;
@@ -120,11 +118,7 @@ public class PointSelectionActivity extends Activity implements OnClickListener 
   
   NamedPoint getNamedPoint() {
     if ( rstop != null) {
-      Stop stop = rstop.getStop();
-      NamedPoint point = new NamedPoint(stop);
-      Route route = Info.routeManager(this).getRoute(rstop.getRouteId());
-      point.setName(stop.getName() + " " + route.getLabel());
-      return point;
+      return Info.namedPoint(this,  rstop);
     } else {
       return point;
     }

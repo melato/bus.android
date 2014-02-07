@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/now"
+          android:title="@string/timeNow" />
+    <item android:id="@+id/leaveAt"
+          android:title="@string/timeDepart" />
+    <item android:id="@+id/arriveAt"
+          android:title="@string/timeArrive" />
+</menu>

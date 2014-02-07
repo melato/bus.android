@@ -32,9 +32,13 @@ import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.android.map.RoutePointManager;
 import org.melato.bus.client.NearbyManager;
 import org.melato.bus.model.Agency;
+import org.melato.bus.model.RStop;
+import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.RouteManager;
 import org.melato.bus.model.ScheduleId;
+import org.melato.bus.model.Stop;
+import org.melato.bus.plan.NamedPoint;
 import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.WalkModel;
 import org.melato.client.Serialization;
@@ -203,4 +207,14 @@ public class Info {
     return walkModel;
   }
   
+  public static NamedPoint namedPoint(Context context, RStop rstop) {
+    if ( rstop == null) {
+      return null;
+    }
+    Stop stop = rstop.getStop();
+    NamedPoint point = new NamedPoint(stop);
+    Route route = Info.routeManager(context).getRoute(rstop.getRouteId());
+    point.setName(stop.getName() + " " + route.getLabel());
+    return point;
+  }
 }

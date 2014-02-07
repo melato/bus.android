@@ -24,14 +24,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.melato.android.bookmark.BookmarksActivity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.PlanOptions;
 import org.melato.bus.android.R;
+import org.melato.bus.android.app.BusPreferencesActivity;
+import org.melato.bus.android.bookmark.BookmarkTypes;
+import org.melato.bus.android.bookmark.LocationBookmarkActivity;
+import org.melato.bus.android.map.SelectionMapActivity;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPRequest;
 import org.melato.bus.plan.NamedPoint;
 import org.melato.bus.plan.PlanEndpoints;
+import org.melato.client.Bookmark;
 import org.melato.client.Serialization;
 import org.melato.gps.Point2D;
 
@@ -40,6 +46,7 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -47,13 +54,16 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -61,16 +71,18 @@ import android.widget.TimePicker;
 
 /** Computes and displays a list of plans for going to a destination.
  **/
-public class PlanFragment extends Fragment implements OnClickListener, OnTimeSetListener, OnCheckedChangeListener {
+public class PlanFragment extends Fragment implements OnClickListener, OnTimeSetListener {
   public static NamedPoint origin;
   public static NamedPoint destination;
   public static OTP.Plan plan;
   private Mode[] modes;
   private View view;
   private TextView timeView;
-  private CheckBox arriveView;
   private static Integer timeInMinutes;
   private static boolean arriveAt;
+  private int contextViewId;
+  private int REQUEST_MAP = 1;
+  private int REQUEST_BOOKMARK = 2;
   
   /** A mode of transport. */
   static class Mode {
@@ -129,27 +141,24 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   }
   
   
-  @Override
-  public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-    switch( buttonView.getId()) {
-    case R.id.arrive:
-      arriveAt = isChecked;
-      break;
-    default:
-      break;
-    }
-  }
-
-
   void showParameters() {
     TextView v = (TextView) view.findViewById(R.id.from);
-    v.setText(origin != null ? origin.toString() : "");
+    if ( origin != null ) {
+      v.setText(origin.toString());
+    } else {
+      v.setText(R.string.useCurrentLocation);
+    }
     v = (TextView) view.findViewById(R.id.to);
-    v.setText(destination != null ? destination.toString() : "");
+    if ( destination != null ) {
+      v.setText(destination.toString());
+    } else {
+      v.setText(R.string.selectDestination);
+    }
     if ( timeInMinutes != null) {
       timeView.setText(Schedule.formatTime(timeInMinutes));      
+    } else {
+      timeView.setText(R.id.now);
     }
-    arriveView.setChecked(arriveAt);
   }
   
   public void swap() {
@@ -164,33 +173,13 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   }
   
   
-  @Override
-  public void onClick(View v) {
-    switch( v.getId() ) {
-    case R.id.time:
-    case R.id.timeLabel:
-    {
-      TimeFragment timeFragment = new TimeFragment();
-      FragmentActivity activity = (FragmentActivity) getActivity();
-      timeFragment.show(activity.getSupportFragmentManager(), "timePicker");      
-    }
-    break;
-    case R.id.delete_time:
-      timeInMinutes = null;
-      timeView.setText(null);
-      arriveView.setChecked(arriveAt = false);
-     break;
-    case R.id.delete_from:
-      origin = null;
-      showParameters();
-      break;
-    case R.id.delete_to:
-      destination = null;
-      showParameters();
-      break;
-    }
+  void bookmark() {
+    PlanEndpoints endpoints = getEndpoints();
+    Bookmark bookmark = new Bookmark(BookmarkTypes.PLAN, endpoints.getName(), endpoints);
+    BookmarksActivity.addBookmarkDialog(getActivity(), bookmark);
   }
-
+  
+  
   @Override
   public void onAttach(Activity activity) {
     super.onAttach(activity);
@@ -206,13 +195,18 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
           Bundle savedInstanceState) {
       view = inflater.inflate(R.layout.plan, container, false);
       LinearLayout modeView = (LinearLayout)view.findViewById(R.id.modeView);
-      ((ImageButton)view.findViewById(R.id.delete_from)).setOnClickListener(this);
-      ((ImageButton)view.findViewById(R.id.delete_to)).setOnClickListener(this);
-      ((ImageButton)view.findViewById(R.id.delete_time)).setOnClickListener(this);
-      ((TextView)view.findViewById(R.id.timeLabel)).setOnClickListener(this);
       timeView = (TextView)view.findViewById(R.id.time);
-      arriveView = (CheckBox)view.findViewById(R.id.arrive);
-      arriveView.setOnCheckedChangeListener(this);
+      ((TextView)view.findViewById(R.id.from)).setOnClickListener(this);
+      ((TextView)view.findViewById(R.id.to)).setOnClickListener(this);
+      ((TextView)view.findViewById(R.id.timeType)).setOnClickListener(this);
+      timeView.setOnClickListener(this);
+      registerForContextMenu(view.findViewById(R.id.timeType));
+      registerForContextMenu(view.findViewById(R.id.from));
+      registerForContextMenu(view.findViewById(R.id.to));
+      ((ImageButton)view.findViewById(R.id.map)).setOnClickListener(this);
+      ((ImageButton)view.findViewById(R.id.bookmark)).setOnClickListener(this);
+      ((ImageButton)view.findViewById(R.id.swap)).setOnClickListener(this);
+      ((ImageButton)view.findViewById(R.id.pref)).setOnClickListener(this);
       Context context = getActivity();
       modes = new Mode[] {
           new Mode(context, OTPRequest.BUS, R.string.mode_bus),
@@ -221,10 +215,95 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       };
       for( int i = 0; i < modes.length; i++ ) {
         modeView.addView(modes[i].createCheckBox(context));
-      } 
+      }
       showParameters();
       return view;
   }
+
+  @Override
+  public void onClick(View v) {
+    switch( v.getId() ) {
+    case R.id.time:
+      {
+        TimeFragment timeFragment = new TimeFragment();
+        FragmentActivity activity = (FragmentActivity) getActivity();
+        timeFragment.show(activity.getSupportFragmentManager(), "timePicker");      
+      }
+      break;
+    case R.id.from:
+    case R.id.to:
+    case R.id.timeType:
+    case R.id.timeLabel:
+      contextViewId = v.getId();
+      getActivity().openContextMenu(v);
+      break;
+    case R.id.map:
+      showMap();
+      break;
+    case R.id.swap:
+      swap();
+      break;
+    case R.id.bookmark:
+      bookmark();
+      break;
+    case R.id.pref:
+      startActivity(new Intent(getActivity(), BusPreferencesActivity.class));      
+      break;
+    }
+  }
+  
+  @Override
+  public void onCreateContextMenu(ContextMenu menu, View v,
+      ContextMenuInfo menuInfo) {
+    super.onCreateContextMenu(menu, v, menuInfo);
+    MenuInflater inflater = getActivity().getMenuInflater();
+    switch(v.getId()) {
+      case R.id.timeType:
+        inflater.inflate(R.menu.plan_time_menu, menu);
+        break;
+      case R.id.from:
+        inflater.inflate(R.menu.plan_location_menu, menu);
+        inflater.inflate(R.menu.plan_here_menu, menu);
+        break;
+      case R.id.to:
+        inflater.inflate(R.menu.plan_location_menu, menu);
+        break;
+      default:
+        break;
+    }
+  }
+
+
+  @Override
+  public boolean onContextItemSelected(MenuItem item) {
+    Log.i("aa", "onContextItemSelected itemId=" + item.getItemId() + " viewId=" + contextViewId);
+    switch(item.getItemId()) {
+    case R.id.now:
+      timeInMinutes = null;
+      arriveAt = false;
+      ((TextView)view.findViewById(R.id.timeType)).setText(R.string.timeDepart);
+      timeView.setText(R.string.timeNow);
+      break;
+    case R.id.leaveAt:
+      arriveAt = false;
+      ((TextView)view.findViewById(R.id.timeType)).setText(R.string.timeDepart);
+      break;
+    case R.id.arriveAt:
+      arriveAt = true;
+      ((TextView)view.findViewById(R.id.timeType)).setText(R.string.timeArrive);
+      break;
+    case R.id.bookmark:
+      selectBookmark();
+      break;
+    case R.id.map:
+      showMap();
+      break;
+    case R.id.here:
+      break;
+    }
+    return super.onContextItemSelected(item);
+  }
+
 
   @Override
   public void onResume() {
@@ -297,7 +376,48 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     request.setMinTransferTime(options.getMinTransferTime());
     return request;
   }
+  
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if ( resultCode != Activity.RESULT_OK ) {
+      return;
+    }
+    if ( requestCode == REQUEST_MAP) {
+      LocationEndpoints endpoints = (LocationEndpoints) data.getSerializableExtra(Keys.LOCATION_ENDPOINTS);
+      if ( endpoints != null) {
+        PlanFragment.origin = endpoints.origin;
+        PlanFragment.destination = endpoints.destination;
+        showParameters();
+      }
+    } else if ( requestCode == REQUEST_BOOKMARK) {
+      NamedPoint point = (NamedPoint) data.getSerializableExtra(LocationBookmarkActivity.KEY_LOCATION);
+      if ( point != null ) {
+        switch( contextViewId ) {
+        case R.id.from:
+          PlanFragment.origin = point;
+          showParameters();
+          break;
+        case R.id.to:
+          PlanFragment.destination = point;
+          showParameters();
+          break;
+        default:
+          break;
+        }
+      }
+    }
+  }
 
+  void showMap() {
+    Intent intent = new Intent(getActivity(), SelectionMapActivity.class);
+    intent.putExtra(Keys.LOCATION_ENDPOINTS, new LocationEndpoints(PlanFragment.origin, PlanFragment.destination));
+    startActivityForResult(intent, REQUEST_MAP);    
+  }
+  void selectBookmark() {
+    Intent intent = new Intent(getActivity(), LocationBookmarkActivity.class);
+    startActivityForResult(intent, REQUEST_BOOKMARK);    
+  }
+  
   void savePreferences() {
     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
     Editor editor = settings.edit();

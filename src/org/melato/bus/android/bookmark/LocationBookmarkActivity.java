@@ -18,26 +18,34 @@
  * along with Athens Next Bus.  If not, see <http://www.gnu.org/licenses/>.
  *-------------------------------------------------------------------------
  */
-package org.melato.bus.android.activity;
+package org.melato.bus.android.bookmark;
 
-public class Keys {
-  /** OTP.Itinerary */
-  public static final String ITINERARY = "org.melato.bus.android.itinerary";
-  /** Sequence */
-  public static final String SEQUENCE = "org.melato.bus.android.sequence";
-  /** Stop */
-  public static final String STOP = "org.melato.bus.android.stop";
-  /** Is selector */
-  public static final String SELECTOR = "org.melato.bus.android.selector";
-  /** Route */
-  public static final String ROUTE = "org.melato.bus.android.route";
-  /** Agency name */
-  public static final String AGENCY = "org.melato.bus.android.agency";
-  
-  public static final String BOOKMARK = "org.melato.bus.android.bookmark";
+import org.melato.android.bookmark.BookmarksActivity;
+import org.melato.bus.android.Info;
+import org.melato.bus.model.RStop;
+import org.melato.bus.plan.NamedPoint;
+import org.melato.client.Bookmark;
 
-  public static final String ENDPOINTS = "org.melato.bus.android.endpoints";
-  public static final String LOCATION_ENDPOINTS = "org.melato.bus.android.locationEndpoints";
-  public static final String START_POINT = "org.melato.bus.android.start";
-  public static final String END_POINT = "org.melato.bus.android.end";
+import android.content.Intent;
+
+public class LocationBookmarkActivity extends BookmarksActivity {
+  public static final String KEY_LOCATION = "location";
+
+  public LocationBookmarkActivity() {
+    super(new BookmarkTypes());
+    setHasContextMenu(false);
+    setVisibleTypes(new int[] {BookmarkTypes.STOP});
+  }
+
+  @Override
+  protected void open(Bookmark bookmark) {
+    Object object = bookmark.getObject();
+    if ( object instanceof RStop) {
+      NamedPoint point = Info.namedPoint(this, (RStop) object);
+      Intent data = new Intent();
+      data.putExtra(KEY_LOCATION, point);
+      setResult(RESULT_OK, data);
+      finish();
+    }
+  }
 }

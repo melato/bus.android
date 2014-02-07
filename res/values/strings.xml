@@ -103,9 +103,18 @@
     <string name="itinerary">Itinerary</string>
     <string name="last_plan">Last Results</string>
     <string name="swap">Swap</string>
-    <string name="from">From:</string>
-    <string name="to">To:</string>
-    <string name="plan_time">Time:</string>
+    
+    <string name="fromLabel">From:</string>
+    <string name="toLabel">To:</string>
+    <string name="selectDestination">Select Destination</string>
+    <string name="timeLabel">Time:</string>
+    <string name="timeNow">Now</string>
+    <string name="timeDepart">Depart At</string>
+    <string name="timeArrive">Arrive At</string>
+    <string name="selectFromBookmark">Select from Bookmark</string>
+    <string name="selectFromMap">Select from Map</string>
+    <string name="useCurrentLocation">Current Location</string>
+    
     <string name="arrive">Arrive</string>
     <string name="walk">Walk</string>
     <string name="mode_bus">Bus</string>
