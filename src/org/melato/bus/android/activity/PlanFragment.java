@@ -276,7 +276,6 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
 
   @Override
   public boolean onContextItemSelected(MenuItem item) {
-    Log.i("aa", "onContextItemSelected itemId=" + item.getItemId() + " viewId=" + contextViewId);
     switch(item.getItemId()) {
     case R.id.now:
       timeInMinutes = null;
