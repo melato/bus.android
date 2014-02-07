@@ -98,33 +98,44 @@
 		    </TableRow>
 		    </TableLayout>
     
-    <LinearLayout
-        android:id="@+id/modeView"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </LinearLayout>
+    <!-- 
+     -->
 
-    <RelativeLayout
+    <org.melato.android.layout.FlowLayout
+        xmlns:f="http://schemas.android.com/apk/res/org.melato.bus.android"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/modeView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:paddingLeft="6dip"
+        android:paddingRight="6dip"
+        android:paddingTop="6dip"
+        f:horizontalSpacing="6dip"
+        f:verticalSpacing="12dip" >
+
+    </org.melato.android.layout.FlowLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:orientation="horizontal"
+        android:layout_padding="0dip"
+        android:padding="3dip" >
 
         <ImageButton
             android:id="@+id/plan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/map"
             android:contentDescription="@string/compute"
             android:onClick="onClick"
             android:src="@drawable/compute" />
-        
+
         <ImageButton
             android:id="@+id/map"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/swap"
             android:contentDescription="@string/map"
             android:src="@drawable/map" />
 
@@ -132,8 +143,6 @@
             android:id="@+id/swap"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/pref"
             android:contentDescription="@string/swap"
             android:src="@drawable/reload" />
 
@@ -141,8 +150,6 @@
             android:id="@+id/pref"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@+id/bookmark"
             android:contentDescription="@string/pref_menu"
             android:src="@drawable/preferences" />
 
@@ -150,10 +157,8 @@
             android:id="@+id/bookmark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
             android:contentDescription="@string/bookmark"
             android:src="@drawable/bookmark" />
-        </RelativeLayout>
+    </LinearLayout>
 
 </LinearLayout>
