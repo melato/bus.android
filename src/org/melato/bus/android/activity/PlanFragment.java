@@ -54,7 +54,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -157,7 +156,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     if ( timeInMinutes != null) {
       timeView.setText(Schedule.formatTime(timeInMinutes));      
     } else {
-      timeView.setText(R.id.now);
+      timeView.setText(R.string.timeNow);
     }
   }
   
@@ -424,6 +423,18 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       mode.setPreference(editor);
     }
     editor.commit();
+  }
+
+  private static void updateEndpoint(NamedPoint original, NamedPoint result) {
+    if ( original != null && original.getName() == null && result != null) {
+      original.setName(result.getName());
+    }
+  }
+  public void setPlan(OTP.Plan plan, OTPRequest request) {
+    PlanFragment.plan = plan;
+    updateEndpoint(PlanFragment.origin, plan.from);
+    updateEndpoint(PlanFragment.destination, plan.to);
+    showParameters();
   }
   
 }

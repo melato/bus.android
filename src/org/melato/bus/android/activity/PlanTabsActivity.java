@@ -67,6 +67,7 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
   
   class PlanTask extends AsyncTask<OTPRequest,Void,OTP.Plan> {    
     private Exception exception;
+    private OTPRequest request;
     @Override
     protected void onPreExecute() {
       setProgressBarIndeterminate(true);
@@ -75,10 +76,11 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
 
     @Override
     protected OTP.Plan doInBackground(OTPRequest... params) {
+      request = params[0];
       String url = Info.routeManager(PlanTabsActivity.this).getPlannerUrl();
       OTP.Planner planner = new OTPClient(url);
       try {
-        return planner.plan(params[0]);
+        return planner.plan(request);
       } catch(Exception e) {
         exception = e;
         return null;
@@ -93,7 +95,7 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
           showError(exceptionToString(exception));
         }        
       } else {
-        PlanFragment.plan = plan;
+        getPlanFragment().setPlan(plan, request);
         //setTitle(R.string.suggested_routes);
         tabHost.setCurrentTabByTag(TAB_RESULTS);
         justSearched = true;
@@ -199,10 +201,13 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
     return Locations.location2Point(location);    
   }
   
+  PlanFragment getPlanFragment() {
+    FragmentManager fm = getSupportFragmentManager();
+    return (PlanFragment) fm.findFragmentByTag(TAB_SEARCH);
+  }
   void plan() {
     tabHost.setCurrentTabByTag(TAB_SEARCH);
-    FragmentManager fm = getSupportFragmentManager();
-    PlanFragment planFragment = (PlanFragment) fm.findFragmentByTag(TAB_SEARCH);
+    PlanFragment planFragment = getPlanFragment();
     Point2D from = PlanFragment.origin;
     if ( from == null) {
       from = getCurrentLocation();
