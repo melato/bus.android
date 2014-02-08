@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.melato.android.app.HelpActivity;
+import org.melato.android.menu.MenuCapture;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.ExceptionActivity.ExceptionSpecifier;
@@ -46,10 +47,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -58,7 +61,7 @@ import android.widget.TextView;
  * @author Alex Athanasopoulos
  *
  */
-public class ScheduleActivity extends Activity implements OnItemClickListener {
+public class ScheduleActivity extends Activity implements OnItemClickListener, OnClickListener {
   public static final String KEY_SCHEDULE_ID = "scheduleId";
   protected BusActivities activities;
   private Schedule schedule;
@@ -145,8 +148,9 @@ public class ScheduleActivity extends Activity implements OnItemClickListener {
           listView.setSelection(pos);
         }
       }
+      MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.schedule_menu, this);
   }
-
+  
   static class TextColor {
     int text;
     int background;
@@ -211,8 +215,14 @@ public class ScheduleActivity extends Activity implements OnItemClickListener {
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    return activities.onOptionsItemSelected(item);
+    return activities.onItemSelected(item.getItemId());
   }
+  
+  @Override
+  public void onClick(View v) {
+    activities.onItemSelected(v.getId());
+  }
+
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position,
       long id) {

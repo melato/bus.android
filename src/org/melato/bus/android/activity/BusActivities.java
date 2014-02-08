@@ -118,10 +118,14 @@ public class BusActivities  {
   }
   
   public boolean onOptionsItemSelected(MenuItem item) {
+    return onItemSelected(item.getItemId());
+  }
+    
+  public boolean onItemSelected(int itemId) {    
     boolean handled = false;
     Route route = getRoute();
 
-    switch (item.getItemId()) {
+    switch (itemId) {
       case R.id.recent_routes:
         RoutesActivity.showRecent(context);
         break;
@@ -133,21 +137,21 @@ public class BusActivities  {
         break;
       case R.id.schedule:
         if ( route != null ) {
-          defaultView = ScheduleActivity.class;
+          //defaultView = ScheduleActivity.class;
           showRoute(route, ScheduleActivity.class);
           handled = true;
         }
         break;
       case R.id.stops:
         if ( route != null ) {
-          defaultView = StopsActivity.class;
+          //defaultView = StopsActivity.class;
           showRoute(route, StopsActivity.class);
           handled = true;
         }
         break;
       case R.id.map:
         if ( route != null ) {
-          defaultView = RouteMapActivity.class;
+          //defaultView = RouteMapActivity.class;
           showRoute(route, RouteMapActivity.class);
         } else {
           context.startActivity(new Intent(context, RouteMapActivity.class));    

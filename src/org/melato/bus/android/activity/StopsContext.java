@@ -29,10 +29,11 @@ import org.melato.bus.model.Stop;
 import org.melato.gps.Earth;
 import org.melato.gps.PointTime;
 
-import android.app.ListActivity;
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class StopsContext extends LocationContext {
@@ -42,12 +43,12 @@ public class StopsContext extends LocationContext {
   private StopsAdapter adapter;
   private int markedIndex = -1;
 
-  private ListActivity list;
+  private ListView list;
 
   public void setRoute(Route route) {
     history.setRoute(route.getRouteId());
     track = history.getTrackContext();
-    list.setListAdapter(adapter = new StopsAdapter());
+    list.setAdapter(adapter = new StopsAdapter());
     start();
   }
   
@@ -57,9 +58,9 @@ public class StopsContext extends LocationContext {
     }
   }
   
-  public StopsContext(ListActivity activity) {
+  public StopsContext(Activity activity, ListView list) {
     super(activity);
-    this.list = activity;
+    this.list = list;
   }
 
   @Override

@@ -198,7 +198,6 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
           Bundle savedInstanceState) {
       view = (LinearLayout) inflater.inflate(R.layout.plan, container, false);
-      Log.i("aa", "view=" + view.getClass().getName());
       ViewGroup modeView = (ViewGroup)view.findViewById(R.id.modeView);
       timeView = (TextView)view.findViewById(R.id.time);
       ((TextView)view.findViewById(R.id.from)).setOnClickListener(this);
@@ -219,32 +218,10 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       }
       showParameters();
       setHasOptionsMenu(true);
-      LinearLayout icons = addIconsLayout(getActivity(), view);
-      addIcons(getActivity(), icons, this);      
+      MenuCapture.addIconView(getActivity(), view, R.menu.plan_menu, this);      
       return view;
   }
   
-  static LinearLayout addIconsLayout(Activity activity, LinearLayout view) {
-    ViewGroup iconsContainer = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.icons_layout, null, false);
-    LinearLayout icons = (LinearLayout) iconsContainer.findViewById(R.id.icons);
-    iconsContainer.removeView(icons);
-    view.addView(icons);
-    return icons;
-  }
-  
-  static void addIcons(Activity activity, LinearLayout layout, OnClickListener onClickListener) {
-    MenuCapture.Item[] items = MenuCapture.capture(activity.getMenuInflater(), R.menu.plan_menu);
-    for( MenuCapture.Item item: items ) {
-      ImageButton button = new ImageButton(activity);
-      button.setId(item.id);
-      button.setImageResource(item.icon);
-      button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-      //button.setText(item.title);
-      button.setOnClickListener(onClickListener);
-      layout.addView(button);
-    }
-  }
-
   @Override
   public void onClick(View v) {
     switch( v.getId() ) {
