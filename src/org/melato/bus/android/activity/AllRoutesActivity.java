@@ -38,7 +38,10 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 
 /**
@@ -46,7 +49,7 @@ import android.widget.ListView;
  * @author Alex Athanasopoulos
  *
  */
-public class AllRoutesActivity extends RoutesActivity {
+public class AllRoutesActivity extends RoutesActivity implements OnClickListener {
   private RouteGroup[] all_groups;
   private EditText editView;
   private Agency agency;
@@ -95,7 +98,12 @@ public class AllRoutesActivity extends RoutesActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.all_routes);
     editView = (EditText) findViewById(R.id.routeFilter);
-    editView.addTextChangedListener(new TextListener());    
+    editView.addTextChangedListener(new TextListener());
+    ImageButton agencies = (ImageButton) findViewById(R.id.agencies);
+    if ( agencies != null) {
+      agencies.setOnClickListener(this);
+    }
+    //MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.all_routes_menu, this);    
   }
   
   @Override
@@ -148,12 +156,8 @@ public class AllRoutesActivity extends RoutesActivity {
 
   private void showAgencies() {
     Intent intent = new Intent(this, AgenciesActivity.class);
-    if ( isSelector ) {
-      intent.putExtra(Keys.SELECTOR, true);
-      startActivityForResult(intent, REQUEST_AGENCY);      
-    } else {
-      startActivity(intent);
-    }
+    intent.putExtra(Keys.SELECTOR, true);
+    startActivityForResult(intent, REQUEST_AGENCY);      
   }
   
   private void selectAgency(String agencyName) {    
@@ -171,15 +175,28 @@ public class AllRoutesActivity extends RoutesActivity {
     }
   }
     
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
+  public boolean onItemSelected(int itemId) {
+    switch (itemId) {
       case R.id.agencies:
         showAgencies();
         return true;
       default:
-        return super.onOptionsItemSelected(item);
+        return false;
     }
   }
 
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    if ( onItemSelected(item.getItemId()) ) {
+      return true;
+    } else {
+      return super.onOptionsItemSelected(item);
+    }
+  }
+
+  @Override
+  public void onClick(View v) {
+    onItemSelected(v.getId());
+  }
+  
 }
