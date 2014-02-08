@@ -39,10 +39,12 @@ import org.melato.bus.model.Schedule;
 import org.melato.bus.model.ScheduleId;
 import org.melato.bus.model.Stop;
 
-import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -52,6 +54,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -61,7 +64,7 @@ import android.widget.TextView;
  * @author Alex Athanasopoulos
  *
  */
-public class ScheduleActivity extends Activity implements OnItemClickListener, OnClickListener {
+public class ScheduleActivity extends FragmentActivity implements OnItemClickListener, OnClickListener {
   public static final String KEY_SCHEDULE_ID = "scheduleId";
   protected BusActivities activities;
   private Schedule schedule;
@@ -70,6 +73,7 @@ public class ScheduleActivity extends Activity implements OnItemClickListener, O
   private String  stopName;
   private int     timeOffset;
   private ScheduleAdapter scheduleAdapter;
+  private RStop rstop;
   
   protected String getScheduleName() {
     if ( daySchedule == null )
@@ -97,7 +101,7 @@ public class ScheduleActivity extends Activity implements OnItemClickListener, O
       super.onCreate(savedInstanceState);
       activities = new BusActivities(this);
       IntentHelper helper = new IntentHelper(this);
-      RStop rstop = helper.getRStop();
+      rstop = helper.getRStop();
       if ( rstop == null )
         return;
       setStopInfo(rstop);
@@ -149,6 +153,8 @@ public class ScheduleActivity extends Activity implements OnItemClickListener, O
         }
       }
       MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.schedule_menu, this);
+      // skip updating the icon because it may not get the same size as the other icons.
+      // updateAgency((ImageButton) findViewById(R.id.browse));
   }
   
   static class TextColor {
@@ -195,32 +201,69 @@ public class ScheduleActivity extends Activity implements OnItemClickListener, O
     }
   }
   
+  private void updateAgency(MenuItem browse) {
+    if ( browse != null) {
+      Agency agency = Info.routeManager(this).getAgency(activities.getRouteId());     
+      Drawable drawable = Info.getAgencyIcon(this, agency);
+      if (drawable != null) {
+        browse.setIcon(drawable);
+      }
+      if ( agency.getLabel() != null) {
+        browse.setTitle(agency.getLabel());
+      }
+    }
+  }
+
+  private void updateAgency(ImageButton browse) {
+    if ( browse != null) {
+      Agency agency = Info.routeManager(this).getAgency(activities.getRouteId());     
+      Drawable drawable = Info.getAgencyIcon(this, agency);
+      if (drawable != null) {
+        browse.setImageDrawable(drawable);
+        Log.i("aa", "drawable width=" + drawable.getIntrinsicWidth()
+            + " height=" + drawable.getIntrinsicHeight()
+            + " bounds=" + drawable.getBounds());      
+      }
+    }    
+  }
+  
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
      MenuInflater inflater = getMenuInflater();
      inflater.inflate(R.menu.schedule_menu, menu);
-     Agency agency = Info.routeManager(this).getAgency(activities.getRouteId());     
-     Drawable drawable = Info.getAgencyIcon(this, agency);
-     MenuItem browse = menu.findItem(R.id.browse);
-     if (drawable != null) {
-       browse.setIcon(drawable);
-     }
-     if ( agency.getLabel() != null) {
-       browse.setTitle(agency.getLabel());
-     }
+     updateAgency(menu.findItem(R.id.browse));
      HelpActivity.addItem(menu, this, Help.SCHEDULE);
      return true;
   }
 
+  private void showStop(RStop rstop) {
+    Intent intent = new Intent(this, StopActivity.class);
+    new IntentHelper(intent).putRStop(rstop);
+    startActivity(intent);       
+  }
+  
+  private boolean onItemSelected(int itemId) {
+    switch(itemId) {
+    case R.id.stop:
+      showStop(rstop);
+      break;
+    case R.id.bookmark:
+      StopActivity.addBookmark(this, rstop);
+      break;
+    default:
+      return activities.onItemSelected(itemId);
+    }
+    return true;    
+  }
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    return activities.onItemSelected(item.getItemId());
+    return onItemSelected(item.getItemId());
   }
   
   @Override
   public void onClick(View v) {
-    activities.onItemSelected(v.getId());
+    onItemSelected(v.getId());
   }
 
   @Override

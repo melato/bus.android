@@ -59,7 +59,7 @@ public class StopsActivity extends Activity implements OnItemClickListener, OnCl
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.stops);
+    setContentView(R.layout.list_activity);
     ListView listView = (ListView) findViewById(R.id.listView);
     listView.setOnItemClickListener(this);
     registerForContextMenu(listView);

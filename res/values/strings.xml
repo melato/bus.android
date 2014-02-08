@@ -114,7 +114,7 @@
     <string name="timeArrive">Arrive At</string>
     <string name="selectFromBookmark">Select from Bookmark</string>
     <string name="selectFromMap">Select from Map</string>
-    <string name="useCurrentLocation">Current Location</string>
+    <string name="useCurrentLocation">Here</string>
     
     <string name="arrive">Arrive</string>
     <string name="walk">Walk</string>

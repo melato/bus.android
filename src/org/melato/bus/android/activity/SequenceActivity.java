@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.melato.android.app.HelpActivity;
+import org.melato.android.menu.MenuCapture;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.client.Formatting;
@@ -46,10 +47,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 /**
@@ -57,7 +60,7 @@ import android.widget.ListView;
  * Launches the sequence schedule activity.
  * @author Alex Athanasopoulos
  */
-public class SequenceActivity extends FragmentActivity implements OnItemClickListener {
+public class SequenceActivity extends FragmentActivity implements OnItemClickListener, OnClickListener {
   private Sequence sequence;
   private List<SequenceItem> items;
   private ArrayAdapter<SequenceItem> adapter;
@@ -141,6 +144,7 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
     sequence = Info.getSequence(this);
     registerForContextMenu(listView);
     resetList();
+    MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.sequence_menu, this);    
   }
 
   @Override
@@ -228,10 +232,11 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
       }
     }
   }
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  
+
+  public boolean onItemSelected(int itemId) {
     boolean handled = false;
-    switch(item.getItemId()) {
+    switch(itemId) {
       case R.id.clear:
         sequence.getLegs().clear();
         resetList();
@@ -255,6 +260,18 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
         break;
     }
     return handled ? true : false;
+  }
+   
+  
+  @Override
+  public void onClick(View v) {
+    onItemSelected(v.getId());
+  }
+
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    return onItemSelected(item.getItemId());
   }
    
   @Override

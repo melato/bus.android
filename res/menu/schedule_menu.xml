@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/stops"
+    <item android:id="@+id/stop"
           android:icon="@drawable/stops"                  
-          android:title="@string/stops" />
+          android:title="@string/stop" />
     <item android:id="@+id/map"
           android:icon="@drawable/map"                  
           android:title="@string/map" />
@@ -15,4 +15,7 @@
     <item android:id="@+id/browse"
           android:icon="@drawable/browser"                  
           android:title="@string/browse" />
+    <item android:id="@+id/bookmark"
+          android:icon="@drawable/bookmark"                  
+          android:title="@string/bookmark" />
 </menu>

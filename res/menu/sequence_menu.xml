@@ -6,13 +6,13 @@
     <item android:id="@+id/map"
           android:icon="@drawable/map"                  
           android:title="@string/map" />
-    <item android:id="@+id/clear"
-          android:icon="@drawable/clear"                  
-          android:title="@string/clear" />
     <item android:id="@+id/remove_first"
           android:icon="@drawable/remove_first"                  
           android:title="@string/remove_first" />
     <item android:id="@+id/remove_last"
           android:icon="@drawable/back"                  
           android:title="@string/remove_last" />
+    <item android:id="@+id/clear"
+          android:icon="@drawable/clear"                  
+          android:title="@string/clear" />
 </menu>

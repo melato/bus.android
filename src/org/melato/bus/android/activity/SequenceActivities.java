@@ -39,14 +39,14 @@ public class SequenceActivities {
   }
   
   public static void showList(Context context, OTP.Itinerary itinerary) {
-    useMap = false;
+    //useMap = false;
     Intent intent = new Intent(context, OTPItineraryActivity.class);
     intent.putExtra(Keys.ITINERARY, itinerary);
     context.startActivity(intent);
   }
   
   public static void showMap(Context context, OTP.Itinerary itinerary) {
-    useMap = true;
+    //useMap = true;
     Intent intent = new Intent(context, SequenceMapActivity.class);
     intent.putExtra(Keys.ITINERARY, itinerary);
     context.startActivity(intent);

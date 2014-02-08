@@ -178,6 +178,7 @@ public class SequenceMapActivity extends MapActivity {
     new LoadTask().execute(sequence);
   }
   
+  /*
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     if ( itinerary != null ) {
@@ -187,6 +188,7 @@ public class SequenceMapActivity extends MapActivity {
     }
     return true;
   }
+  */
   
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {

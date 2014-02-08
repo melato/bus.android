@@ -9,6 +9,6 @@
 	    android:layout_height="wrap_content"
 	    android:layout_gravity="bottom|right"
 	    android:orientation="horizontal"
-	    android:padding="3dip" >
+	    android:padding="1dip" >
 	</LinearLayout>
 </LinearLayout>

@@ -65,7 +65,7 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.list_activity);
+    setContentView(R.layout.list_fragment);
     stop = new StopContext(this);
     properties = stop.getProperties();
     activities = new BusActivities(this);
@@ -143,11 +143,11 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
     startActivity(new Intent(this, SequenceActivity.class));    
   }
   
-  private void addBookmark() {
-    String label = Info.routeManager(this).getRoute(rstop.getRouteId()).getLabel();
+  public static void addBookmark(FragmentActivity activity, RStop rstop) {
+    String label = Info.routeManager(activity).getRoute(rstop.getRouteId()).getLabel();
     String name = label + " " + rstop.getStop().getName(); 
     Bookmark bookmark = new Bookmark(BookmarkTypes.STOP, name, rstop);
-    BookmarksActivity.addBookmarkDialog(this, bookmark);
+    BookmarksActivity.addBookmarkDialog(activity, bookmark);
   }
   
   @Override
@@ -167,7 +167,7 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
         handled = true;
         break;
       case R.id.bookmark:
-        addBookmark();
+        addBookmark(this, rstop);
         handled = true;
         break;
       default:
