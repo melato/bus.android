@@ -125,5 +125,6 @@
     <string name="error_connect">Cannot connect to server.</string>
     <string name="routes_database">Routes Database</string>
     <string name="stop_code">Stop Code</string>
+    <string name="share">Share</string>
     
 </resources>

@@ -125,5 +125,6 @@
     <string name="error_connect">Δεν είναι δυνατή η σύνδεση.</string>
     <string name="routes_database">Βάση Δρομολογίων</string>
     <string name="stop_code">Κωδικός Στάσης</string>
+    <string name="share">Εκπομπή</string>
     
 </resources>

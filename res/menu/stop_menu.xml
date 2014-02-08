@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/map"
-          android:icon="@drawable/map"                  
-          android:title="@string/map" />
-    <item android:id="@+id/schedule"
-          android:icon="@drawable/schedule"                  
-          android:title="@string/schedule" />
     <item android:id="@+id/search"
           android:icon="@drawable/search"                          
           android:title="@string/search" />
     <item android:id="@+id/add"
           android:icon="@drawable/add_stop"                  
           android:title="@string/add_stop_after" />
-    <item android:id="@+id/bookmark"
-          android:icon="@drawable/bookmark"                  
-          android:title="@string/bookmark" />
+    <item android:id="@+id/share"
+          android:icon="@drawable/share"                  
+          android:title="@string/share" />
     <item android:id="@+id/fast_gps"
           android:icon="@drawable/fast_gps"                  
           android:title="@string/fast_gps" />

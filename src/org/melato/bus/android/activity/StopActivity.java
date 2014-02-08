@@ -22,8 +22,10 @@ package org.melato.bus.android.activity;
 
 import org.melato.android.app.HelpActivity;
 import org.melato.android.bookmark.BookmarksActivity;
+import org.melato.android.menu.MenuCapture;
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.android.util.Invokable;
+import org.melato.android.util.LocationField;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.bookmark.BookmarkTypes;
@@ -41,8 +43,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 /**
@@ -50,7 +54,7 @@ import android.widget.ListView;
  * @author Alex Athanasopoulos
  *
  */
-public class StopActivity extends FragmentActivity implements OnItemClickListener
+public class StopActivity extends FragmentActivity implements OnItemClickListener, OnClickListener
  {
   private ListView listView; 
   private StopContext stop;
@@ -65,7 +69,7 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.list_fragment);
+    setContentView(R.layout.list_activity);
     stop = new StopContext(this);
     properties = stop.getProperties();
     activities = new BusActivities(this);
@@ -88,6 +92,7 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
     listView = (ListView) findViewById(R.id.listView);
     listView.setAdapter(stop.createAdapter(R.layout.stop_item));
     listView.setOnItemClickListener(this);
+    MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.stop_menu, this);    
   }
   
   @Override
@@ -150,10 +155,14 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
     BookmarksActivity.addBookmarkDialog(activity, bookmark);
   }
   
-  @Override
-  public boolean onOptionsItemSelected(MenuItem item) {
+  void shareLocation() {
+    Stop stop = rstop.getStop();
+    new LocationField(stop.getName(), stop).invoke(this);
+  }
+  
+  public boolean onItemSelected(int itemId) {
     boolean handled = false;
-    switch (item.getItemId()) {
+    switch (itemId) {
       case R.id.search:
         PointSelectionActivity.selectPoint(this,rstop);
         handled = true;
@@ -166,6 +175,10 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
         addToSequence(true);
         handled = true;
         break;
+      case R.id.share:
+        shareLocation();
+        handled = true;
+        break;
       case R.id.bookmark:
         addBookmark(this, rstop);
         handled = true;
@@ -175,7 +188,18 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
     }
     if ( handled )
       return true;
-    return activities.onOptionsItemSelected(item);
+    return activities.onItemSelected(itemId);
+  }
+  
+  
+  @Override
+  public void onClick(View v) {
+    onItemSelected(v.getId());
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    return onItemSelected(item.getItemId());    
   }
   
   @Override
