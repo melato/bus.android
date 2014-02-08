@@ -45,7 +45,6 @@ public class MenuCapture {
   public static void addIcons(Activity activity, LinearLayout icons, int menuId, OnClickListener onClickListener) {
     MenuCapture.Item[] items = MenuCapture.capture(activity.getMenuInflater(), menuId);
     for( MenuCapture.Item item: items ) {
-      Log.i("aa", item.toString());
       ImageButton button = new ImageButton(activity);
       button.setId(item.id);
       button.setImageResource(item.icon);
