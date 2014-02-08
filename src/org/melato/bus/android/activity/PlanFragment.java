@@ -26,6 +26,7 @@ import java.util.List;
 
 import org.melato.android.app.HelpActivity;
 import org.melato.android.bookmark.BookmarksActivity;
+import org.melato.android.menu.MenuCapture;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.PlanOptions;
 import org.melato.bus.android.R;
@@ -55,6 +56,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -64,8 +66,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -76,7 +80,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   public static NamedPoint destination;
   public static OTP.Plan plan;
   private Mode[] modes;
-  private View view;
+  private ViewGroup view;
   private TextView timeView;
   private static Integer timeInMinutes;
   private static boolean arriveAt;
@@ -193,7 +197,8 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
           Bundle savedInstanceState) {
-      view = inflater.inflate(R.layout.plan, container, false);
+      view = (ViewGroup) inflater.inflate(R.layout.plan, container, false);
+      Log.i("aa", "view=" + view.getClass().getName());
       ViewGroup modeView = (ViewGroup)view.findViewById(R.id.modeView);
       timeView = (TextView)view.findViewById(R.id.time);
       ((TextView)view.findViewById(R.id.from)).setOnClickListener(this);
@@ -203,10 +208,12 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       registerForContextMenu(view.findViewById(R.id.timeType));
       registerForContextMenu(view.findViewById(R.id.from));
       registerForContextMenu(view.findViewById(R.id.to));
+      /*
       ((ImageButton)view.findViewById(R.id.map)).setOnClickListener(this);
       ((ImageButton)view.findViewById(R.id.bookmark)).setOnClickListener(this);
       ((ImageButton)view.findViewById(R.id.swap)).setOnClickListener(this);
       ((ImageButton)view.findViewById(R.id.pref)).setOnClickListener(this);
+      */
       Context context = getActivity();
       modes = new Mode[] {
           new Mode(context, OTPRequest.BUS, R.string.mode_bus),
@@ -218,7 +225,25 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       }
       showParameters();
       setHasOptionsMenu(true);
+      ViewGroup iconsContainer = (ViewGroup) inflater.inflate(R.layout.icons_layout, container, false);
+      LinearLayout icons = (LinearLayout) iconsContainer.findViewById(R.id.icons);
+      iconsContainer.removeView(icons);
+      view.addView(icons);
+      addIcons(getActivity(), icons);      
       return view;
+  }
+  
+  void addIcons(Activity activity, LinearLayout layout) {
+    MenuCapture.Item[] items = MenuCapture.capture(activity.getMenuInflater(), R.menu.plan_menu);
+    for( MenuCapture.Item item: items ) {
+      ImageButton button = new ImageButton(activity);
+      button.setId(item.id);
+      button.setImageResource(item.icon);
+      button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+      //button.setText(item.title);
+      button.setOnClickListener(this);
+      layout.addView(button);
+    }
   }
 
   @Override
@@ -237,6 +262,9 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     case R.id.timeLabel:
       contextViewId = v.getId();
       getActivity().openContextMenu(v);
+      break;
+    case R.id.plan:
+      ((PlanTabsActivity) getActivity()).plan();
       break;
     case R.id.map:
       showMap();

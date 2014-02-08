@@ -107,7 +107,9 @@
 
     </org.melato.android.layout.FlowLayout>
 
+    <!-- 
     <LinearLayout
+        android:id="@+id/buttons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
@@ -150,5 +152,6 @@
             android:contentDescription="@string/bookmark"
             android:src="@drawable/bookmark" />
     </LinearLayout>
+         -->
 
 </LinearLayout>
