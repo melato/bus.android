@@ -69,13 +69,16 @@ public class AllRoutesActivity extends RoutesActivity implements OnClickListener
 
     @Override
     public void afterTextChanged(Editable s) {
-      String text = s.toString();
-      Object[] items = filter(text);
-      if ( items == null) {
-        items = all_groups;
-      }
-      setRoutes(items);
+      applyFilter(s.toString());
     }    
+  }
+  
+  private void applyFilter(String text) {
+    Object[] items = filter(text);
+    if ( items == null) {
+      items = all_groups;
+    }
+    setRoutes(items);    
   }
 
   public void setAgency(String agencyName) {
@@ -86,7 +89,11 @@ public class AllRoutesActivity extends RoutesActivity implements OnClickListener
     }
     List<RouteGroup> groups = RouteGroup.group(routeManager.getRoutesForAgency(agencyName));
     all_groups = groups.toArray(new RouteGroup[0]);
-    setRoutes(all_groups);
+    if ( editView != null) {
+      applyFilter(editView.getText().toString());
+    } else {
+      setRoutes(all_groups);          
+    }
   }
   
   protected void initializeRoutes() {    
