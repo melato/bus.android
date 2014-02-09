@@ -12,9 +12,6 @@
     <item android:id="@+id/all_schedules"
           android:icon="@drawable/schedules"                  
           android:title="@string/menu_all_schedules" />
-    <item android:id="@+id/browse"
-          android:icon="@drawable/browser"                  
-          android:title="@string/browse" />
     <item android:id="@+id/bookmark"
           android:icon="@drawable/bookmark"                  
           android:title="@string/bookmark" />

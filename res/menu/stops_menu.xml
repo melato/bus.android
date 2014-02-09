@@ -6,4 +6,7 @@
     <item android:id="@+id/map"
           android:icon="@drawable/map"                  
           android:title="@string/map" />
+    <item android:id="@+id/browse"
+          android:icon="@drawable/browser"                  
+          android:title="@string/browse" />
 </menu>
