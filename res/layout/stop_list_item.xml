@@ -6,22 +6,24 @@
 
     <ImageView
         android:id="@+id/seat_icon"
-        android:layout_width="16sp"
+        android:layout_width="@dimen/stop_icon_width"
         android:layout_height="match_parent"
         android:icon="@drawable/seat"
+        android:contentDescription="@string/seat"
     />
     <ImageView
         android:id="@+id/cover_icon"
-        android:layout_width="16sp"
+        android:layout_width="@dimen/stop_icon_width"
         android:layout_height="match_parent"
         android:icon="@drawable/cover"
+        android:contentDescription="@string/cover"
     />
     <TextView
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:padding="5sp"
-        android:textSize="20sp" />
+        android:padding="@dimen/list_padding"
+        android:textSize="@dimen/list_text" />
 
     
 </LinearLayout>

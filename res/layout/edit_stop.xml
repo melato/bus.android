@@ -27,19 +27,19 @@
 			        android:orientation="horizontal" >
 			        
 					<RadioButton
-				        android:id="@+id/seat_yes"
-				        android:layout_width="match_parent"
-				        android:layout_height="wrap_content"
-				        android:layout_marginLeft="10dp"
-						android:layout_weight='1.0'
-	    			    android:text="@string/yes"
-				        android:textAppearance="?android:attr/textAppearanceMedium" />
+					    android:id="@+id/seat_yes"
+					    android:layout_width="match_parent"
+					    android:layout_height="wrap_content"
+					    android:layout_marginLeft="@dimen/label_margin"
+					    android:layout_weight="1.0"
+					    android:text="@string/yes"
+					    android:textAppearance="?android:attr/textAppearanceMedium" />
 	
 				    <RadioButton
 				        android:id="@+id/seat_no"
 				        android:layout_width="match_parent"
 				        android:layout_height="wrap_content"
-				        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/label_margin"
 						android:layout_weight='1.0'
 	    			    android:text="@string/no"
 				        android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -68,7 +68,7 @@
 				        android:id="@+id/cover_yes"
 				        android:layout_width="match_parent"
 				        android:layout_height="wrap_content"
-				        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/label_margin"
 						android:layout_weight='1.0'
 	    			    android:text="@string/yes"
 				        android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -77,7 +77,7 @@
 				        android:id="@+id/cover_no"
 				        android:layout_width="match_parent"
 				        android:layout_height="wrap_content"
-				        android:layout_marginLeft="10dp"
+                        android:layout_marginLeft="@dimen/label_margin"
 						android:layout_weight='1.0'
 	    			    android:text="@string/no"
 				        android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -89,7 +89,7 @@
 	        android:id="@+id/save"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
-	        android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/label_margin"
 	        android:onClick="save"
 	        android:text="@string/save"
 	        android:textAppearance="?android:attr/textAppearanceMedium" />

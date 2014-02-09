@@ -14,7 +14,7 @@
         android:id="@+id/text"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"
+        android:padding="@dimen/label_margin"
         android:textSize="20dp" />    
 
 </LinearLayout>

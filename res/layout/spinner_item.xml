@@ -3,7 +3,7 @@
     android:textColor="@color/black"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="5sp"
-    android:textSize="20sp" >
+    android:padding="@dimen/list_padding"
+    android:textSize="@dimen/spinner_text" >
 
 </TextView>

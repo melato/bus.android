@@ -24,11 +24,12 @@
 			        android:id="@+id/from"
 			        android:layout_width="match_parent"
 			        android:layout_height="wrap_content"
-			        android:layout_marginLeft="10dp"
-					android:layout_weight='1.0'
-					android:layout_span="2"
-                    android:hint="@string/useCurrentLocation"
+			        android:layout_marginLeft="@dimen/label_margin"
+			        android:layout_span="2"
+			        android:layout_weight="1.0"
+			        android:hint="@string/useCurrentLocation"
 			        android:textAppearance="?android:attr/textAppearanceMedium" />
+
         </TableRow>
         <TableRow
             android:id="@+id/toRow"
@@ -46,7 +47,7 @@
                     android:id="@+id/to"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="@dimen/label_margin"
                     android:layout_weight="1.0"
                     android:layout_span="2"
                     android:focusable="false"
@@ -73,7 +74,7 @@
 		         <Button
 		             android:id="@+id/timeType"
 		             android:text="@string/timeDepart"
-                     android:layout_marginLeft="10dp"
+                     android:layout_marginLeft="@dimen/label_margin"
 		             android:layout_width="wrap_content"
 		             android:layout_height="wrap_content"
 		             />
@@ -99,11 +100,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:paddingLeft="6dip"
-        android:paddingRight="6dip"
-        android:paddingTop="6dip"
-        f:horizontalSpacing="6dip"
-        f:verticalSpacing="12dip" >
+        android:paddingLeft="@dimen/checkbox_padding"
+        android:paddingRight="@dimen/checkbox_padding"
+        android:paddingTop="@dimen/checkbox_padding"
+        f:horizontalSpacing="@dimen/checkbox_horizontal_spacing"
+        f:verticalSpacing="@dimen/checkbox_vertical_spacing" >
 
     </org.melato.android.layout.FlowLayout>
 
