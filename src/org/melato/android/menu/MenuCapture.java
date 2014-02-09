@@ -7,7 +7,6 @@ import java.util.List;
 import org.melato.bus.android.R;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View.OnClickListener;
