@@ -20,6 +20,7 @@
  */
 package org.melato.bus.android.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.melato.android.app.HelpActivity;
@@ -29,6 +30,7 @@ import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.RouteGroup;
 import org.melato.bus.model.RouteManager;
+import org.melato.util.Strings;
 import org.melato.util.Transliteration;
 
 import android.content.Intent;
@@ -42,7 +44,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
 /**
  * Displays the list of all routes
@@ -69,11 +70,11 @@ public class AllRoutesActivity extends RoutesActivity implements OnClickListener
     @Override
     public void afterTextChanged(Editable s) {
       String text = s.toString();
-      int position = findPosition(text);
-      if ( position >= 0 ) {
-        ListView listView = getListView();
-        listView.setSelectionFromTop(position, 0);
+      Object[] items = filter(text);
+      if ( items == null) {
+        items = all_groups;
       }
+      setRoutes(items);
     }    
   }
 
@@ -126,23 +127,24 @@ public class AllRoutesActivity extends RoutesActivity implements OnClickListener
     }
     return transliteration.map(text);
   }
-  private int findPosition( String text ) {
+  private Object[] filter(String text) {
     if ( text != null ) {
       text = text.trim();
     }
     if ( text.length() == 0 )
       text = null;
     if ( text == null ) {
-      return -1;
+      return null;
     }
-    text = text.toUpperCase();
+    text = Strings.toUpperCaseNoAccents(text);
     text = transliterateString(text);
-    for( int i = 0; i < all_groups.length; i++ ) {
-      if ( all_groups[i].getTitle().startsWith(text)) {
-        return i;
+    List<Object> result = new ArrayList<Object>();
+    for( RouteGroup route: all_groups ) {
+      if ( route.getTitle().contains(text)) {
+        result.add(route);
       }      
     }
-    return -1;
+    return (Object[]) result.toArray(new Object[0]);
   }
   
   @Override
