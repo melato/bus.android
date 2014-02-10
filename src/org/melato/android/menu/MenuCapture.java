@@ -7,13 +7,9 @@ import java.util.List;
 import org.melato.bus.android.R;
 
 import android.app.Activity;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageButton;
@@ -35,40 +31,11 @@ public class MenuCapture {
       return "Item [id=" + id + ", icon=" + icon + ", title=" + title + "]";
     }  
   }
-  
-  static class ContextListener implements View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
-    private String label;
-    private ImageButton view;
-    private View.OnClickListener onClickListener;    
-    
 
-    public ContextListener(String label, ImageButton view,
-        OnClickListener onClickListener) {
-      super();
-      this.label = label;
-      this.view = view;
-      this.onClickListener = onClickListener;
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v,
-        ContextMenuInfo menuInfo) {
-      MenuItem item = menu.add(0, 1, 100, label);
-      item.setEnabled(false);
-      item.setOnMenuItemClickListener(this);
-    }
-
-    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-      onClickListener.onClick(view);
-      return true;
-    }        
-  }
-  
+  /** Displays a tooltip, using a short Toast. */
   static class ToolTipListener implements View.OnLongClickListener {
     private String label;
     
-
     public ToolTipListener(String label) {
       super();
       this.label = label;
@@ -104,10 +71,8 @@ public class MenuCapture {
       button.setId(item.id);
       button.setImageResource(item.icon);
       button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-      //button.setText(item.title);
       if ( onClickListener != null) {
         button.setOnClickListener(onClickListener);
-        //button.setOnCreateContextMenuListener(new ContextListener(item.title, button, onClickListener));        
         button.setOnLongClickListener(new ToolTipListener(item.title));        
       }
       icons.addView(button);
