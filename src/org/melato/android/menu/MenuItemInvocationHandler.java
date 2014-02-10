@@ -23,8 +23,11 @@ class MenuItemInvocationHandler implements InvocationHandler {
       if ( "setIcon".equals(method.getName())) {
         item.icon = (Integer) args[0];
       }
+      // MenuItem has a series of setters that return itself.
+      // Therefore, we return the same MenuItem proxy
       return proxy;
     }
+    // We don't care for any other methods. 
     return null;
   }
 
