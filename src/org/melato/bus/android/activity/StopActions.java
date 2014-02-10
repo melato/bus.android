@@ -119,9 +119,11 @@ public class StopActions  {
     case R.id.schedule:
       showSchedule(rstop);
       break;
+    /*
     case R.id.search:
       showSearch(rstop);
       break;
+    */
     case R.id.stop:
       showStop(rstop);
       break;
