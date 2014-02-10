@@ -71,6 +71,8 @@
     <string name="add_to_sequence">Συνδυασμός</string>
     <string name="set_origin">Αρχή Αναζήτησης</string>
     <string name="set_destination">Προορισμός Αναζήτησης</string>
+    <string name="origin">Αρχή</string>
+    <string name="destination">Προορισμός</string>
     <string name="fewer_transfers">Λιγότερες Γραμμές</string>
     <string name="max_walk">Μέγιστη Απόσταση Περπατήματος (m)</string>
     <string name="walk_speed">Ταχύτητα Περπατήματος Speed (Km/h)</string>

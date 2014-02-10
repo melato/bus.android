@@ -21,12 +21,8 @@
     </ListView>
     
     <LinearLayout
-        android:id="@+id/icons"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:orientation="horizontal"
-        android:padding="@dimen/icon_padding"
+        android:id="@+id/icons"        
+        style="@style/IconBar"
         >
     </LinearLayout>
     

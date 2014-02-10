@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/search"
-          android:icon="@drawable/search"                          
-          android:title="@string/search" />
+    <item android:id="@+id/origin"
+          android:icon="@drawable/start"
+          android:titleCondensed="@string/origin"
+          android:title="@string/set_origin"/>
+    <item android:id="@+id/destination"
+          android:icon="@drawable/finish"
+          android:titleCondensed="@string/destination"
+          android:title="@string/set_destination"/>
     <item android:id="@+id/add"
           android:icon="@drawable/add_stop"                  
           android:title="@string/add_stop_after" />
