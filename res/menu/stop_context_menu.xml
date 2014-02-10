@@ -23,4 +23,7 @@
     <item android:id="@+id/share"
           android:icon="@drawable/share"                  
           android:title="@string/share" />
+    <item android:id="@+id/bookmark"
+          android:icon="@drawable/bookmark"                  
+          android:title="@string/bookmark" />
 </menu>
