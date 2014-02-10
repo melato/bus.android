@@ -69,8 +69,8 @@
     
     <string name="point_selection">Επιλογή Σημείου</string>    
     <string name="add_to_sequence">Συνδυασμός</string>
-    <string name="set_origin">Αρχή</string>
-    <string name="set_destination">Προορισμός</string>
+    <string name="set_origin">Αρχή Αναζήτησης</string>
+    <string name="set_destination">Προορισμός Αναζήτησης</string>
     <string name="fewer_transfers">Λιγότερες Γραμμές</string>
     <string name="max_walk">Μέγιστη Απόσταση Περπατήματος (m)</string>
     <string name="walk_speed">Ταχύτητα Περπατήματος Speed (Km/h)</string>
@@ -125,6 +125,6 @@
     <string name="error_connect">Δεν είναι δυνατή η σύνδεση.</string>
     <string name="routes_database">Βάση Δρομολογίων</string>
     <string name="stop_code">Κωδικός Στάσης</string>
-    <string name="share">Εκπομπή</string>
+    <string name="share">Εξαγωγή</string>
     
 </resources>
