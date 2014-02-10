@@ -7,6 +7,8 @@ import java.util.List;
 import org.melato.bus.android.R;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.os.Build;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
@@ -65,9 +67,15 @@ public class MenuCapture {
   }
   
   public static void addIcons(Activity activity, LinearLayout icons, int menuId, View.OnClickListener onClickListener) {
+    /*
+    if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB ) {
+      return;
+    }
+    */
     MenuCapture.Item[] items = MenuCapture.capture(activity.getMenuInflater(), menuId);
     for( MenuCapture.Item item: items ) {
       ImageButton button = new ImageButton(activity);
+      button.setBackgroundColor(Color.TRANSPARENT);
       button.setId(item.id);
       button.setImageResource(item.icon);
       button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
