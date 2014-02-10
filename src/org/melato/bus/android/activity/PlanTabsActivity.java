@@ -37,6 +37,7 @@ import org.melato.client.Bookmark;
 import org.melato.client.Serialization;
 import org.melato.gps.Point2D;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
@@ -217,6 +218,13 @@ public class PlanTabsActivity extends FragmentActivity implements OnTabChangeLis
     FragmentManager fm = getSupportFragmentManager();
     PlanFragment planFragment = (PlanFragment) fm.findFragmentByTag(TAB_SEARCH);
     planFragment.setEndpoints(endpoints);    
+  }
+
+  /** Start the activity, making sure that the SEARCH tab is displayed */
+  public static void showSearch(Context context) {    
+    Intent intent = new Intent(context, PlanTabsActivity.class);
+    intent.putExtra(PlanTabsActivity.KEY_TAB, PlanTabsActivity.TAB_SEARCH);
+    context.startActivity(intent);        
   }
   
   @Override

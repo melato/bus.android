@@ -88,9 +88,7 @@ public class PointSelectionActivity extends Activity implements OnClickListener 
   }  
   private void showPlan() {
     finish();
-    Intent intent = new Intent(this, PlanTabsActivity.class);
-    intent.putExtra(PlanTabsActivity.KEY_TAB, PlanTabsActivity.TAB_SEARCH);
-    startActivity(intent);    
+    PlanTabsActivity.showSearch(this);
   }
  
   private void addToSequence(boolean after) {
