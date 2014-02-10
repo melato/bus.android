@@ -21,20 +21,14 @@
 package org.melato.bus.android.activity;
 
 import org.melato.android.app.HelpActivity;
-import org.melato.android.bookmark.BookmarksActivity;
 import org.melato.android.menu.MenuCapture;
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.android.util.Invokable;
-import org.melato.android.util.LocationField;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
-import org.melato.bus.android.bookmark.BookmarkTypes;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
-import org.melato.bus.model.RouteId;
 import org.melato.bus.model.Stop;
-import org.melato.bus.plan.Sequence;
-import org.melato.client.Bookmark;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -130,67 +124,9 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
     return true;
   }
  
-  /**
-   * Start the Schedule activity for the given stop.
-   */
-  private void showStopSchedule() {
-    activities.showRoute(rstop, ScheduleActivity.class);
-  }
-  private void addToSequence(boolean after) {
-    Sequence sequence = Info.getSequence(this);
-    RouteId routeId = rstop.getRouteId();
-    Stop stop = this.stop.getMarker();
-    if ( after ) {
-      sequence.addStopAfter(Info.routeManager(this), new RStop(routeId, stop));
-    } else {
-      sequence.addStopBefore(Info.routeManager(this), new RStop(routeId, stop));
-    }
-    startActivity(new Intent(this, SequenceActivity.class));    
-  }
-  
-  public static void addBookmark(FragmentActivity activity, RStop rstop) {
-    String label = Info.routeManager(activity).getRoute(rstop.getRouteId()).getLabel();
-    String name = label + " " + rstop.getStop().getName(); 
-    Bookmark bookmark = new Bookmark(BookmarkTypes.STOP, name, rstop);
-    BookmarksActivity.addBookmarkDialog(activity, bookmark);
-  }
-  
-  void shareLocation() {
-    Stop stop = rstop.getStop();
-    new LocationField(stop.getName(), stop).invoke(this);
-  }
-  
   public boolean onItemSelected(int itemId) {
-    boolean handled = false;
-    switch (itemId) {
-      case R.id.search:
-        PointSelectionActivity.selectPoint(this,rstop);
-        handled = true;
-        break;
-      case R.id.schedule:
-        showStopSchedule();
-        handled = true;
-        break;
-      case R.id.add:
-        addToSequence(true);
-        handled = true;
-        break;
-      case R.id.share:
-        shareLocation();
-        handled = true;
-        break;
-      case R.id.bookmark:
-        addBookmark(this, rstop);
-        handled = true;
-        break;
-      default:
-        break;
-    }
-    if ( handled )
-      return true;
-    return activities.onItemSelected(itemId);
-  }
-  
+    return new StopActions(this).showRStop(rstop, itemId);
+  }  
   
   @Override
   public void onClick(View v) {

@@ -40,7 +40,6 @@ import org.melato.bus.model.ScheduleId;
 import org.melato.bus.model.Stop;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -153,8 +152,6 @@ public class ScheduleActivity extends FragmentActivity implements OnItemClickLis
         }
       }
       MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.schedule_menu, this);
-      // skip updating the icon because it may not get the same size as the other icons.
-      // updateAgency((ImageButton) findViewById(R.id.browse));
   }
   
   static class TextColor {
@@ -237,24 +234,14 @@ public class ScheduleActivity extends FragmentActivity implements OnItemClickLis
      return true;
   }
 
-  private void showStop(RStop rstop) {
-    Intent intent = new Intent(this, StopActivity.class);
-    new IntentHelper(intent).putRStop(rstop);
-    startActivity(intent);       
-  }
-  
   private boolean onItemSelected(int itemId) {
     switch(itemId) {
-    case R.id.stop:
-      showStop(rstop);
-      break;
-    case R.id.bookmark:
-      StopActivity.addBookmark(this, rstop);
-      break;
+    case R.id.all_schedules:
+      activities.onItemSelected(itemId);
+      return true;
     default:
-      return activities.onItemSelected(itemId);
+      return new StopActions(this).showRStop(rstop, itemId);
     }
-    return true;    
   }
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {

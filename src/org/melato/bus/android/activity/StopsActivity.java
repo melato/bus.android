@@ -23,7 +23,6 @@ package org.melato.bus.android.activity;
 import org.melato.android.app.HelpActivity;
 import org.melato.android.menu.MenuCapture;
 import org.melato.bus.android.R;
-import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Stop;
@@ -84,12 +83,6 @@ public class StopsActivity extends Activity implements OnItemClickListener, OnCl
     Stop p = stops.getStops()[position];
     return new RStop(activities.getRouteId(), p);
   }
-  private void showStop(RStop rstop) {
-    Intent intent = new Intent(this, StopActivity.class);
-    IntentHelper helper = new IntentHelper(intent);
-    helper.putRStop(rstop);
-    startActivityForResult(intent, 0);
-  }
   
   @Override
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -103,7 +96,7 @@ public class StopsActivity extends Activity implements OnItemClickListener, OnCl
   public void onItemClick(AdapterView<?> parent, View view, int position,
       long id) {
     RStop rstop = getRStop(position);
-    showSchedule(rstop);
+    new StopActions(this).showSchedule(rstop);
   }
   
   @Override
@@ -132,35 +125,11 @@ public class StopsActivity extends Activity implements OnItemClickListener, OnCl
     activities.onItemSelected(v.getId());
   }
   
-  void showSchedule(RStop rstop) {
-    Intent intent = new Intent(this, ScheduleActivity.class);
-    new IntentHelper(intent).putRStop(rstop);
-    startActivity(intent);       
-  }
-
-  void showMap(RStop rstop) {
-    Intent intent = new Intent(this, RouteMapActivity.class);
-    new IntentHelper(intent).putRStop(rstop);
-    startActivity(intent);       
-  }
-
   @Override
   public boolean onContextItemSelected(MenuItem item) {
     AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
     RStop rstop = getRStop(info.position);
-   switch(item.getItemId()) {
-   case R.id.schedule:
-     showSchedule(rstop);
-     return true;
-    case R.id.stop:
-      showStop(rstop);
-      return true;
-    case R.id.map:
-      showMap(rstop);
-      return true;
-    default:
-      return false;
-    }
+    return new StopActions(this).showRStop(rstop, item.getItemId());
   }
   
   
