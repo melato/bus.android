@@ -7,7 +7,7 @@
           android:icon="@drawable/map"                  
           android:title="@string/map" />
     <item android:id="@+id/swap"
-          android:icon="@drawable/reload"                  
+          android:icon="@drawable/reverse"                  
           android:title="@string/swap" />
     <item android:id="@+id/pref"
           android:icon="@drawable/preferences"                  
