@@ -53,6 +53,9 @@ public class SequenceActivities {
   }
   
   public static void showMap(Context context, Sequence sequence) {
+    if ( sequence.getLegs().isEmpty()) {
+      return;
+    }
     Intent intent = new Intent(context, SequenceMapActivity.class);
     intent.putExtra(Keys.SEQUENCE, sequence);
     context.startActivity(intent);    
