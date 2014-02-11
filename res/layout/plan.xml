@@ -13,12 +13,12 @@
             android:id="@+id/fromRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-			    <TextView
+			    <ImageView
 			        android:id="@+id/textView1"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
-			        android:text="@string/fromLabel"
-			        android:textAppearance="?android:attr/textAppearanceMedium" />
+			        android:src="@drawable/start"
+			        android:contentDescription="@string/fromLabel"/>
 			
 			    <Button
 			        android:id="@+id/from"
@@ -36,12 +36,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
         
-			    <TextView
+			    <ImageView
 			        android:id="@+id/toLabel"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
-                    android:text="@string/toLabel"
-			        android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:src="@drawable/finish"
+                    android:contentDescription="@string/toLabel"/>
 			
                 <Button
                     android:id="@+id/to"
@@ -62,15 +62,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
         
-                <TextView
+                 <ImageView
                     android:id="@+id/timeLabel"
-                    android:gravity="center_vertical"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/empty"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:src="@drawable/schedule"
+                    android:contentDescription="@string/timeLabel"/>
             
-    
 		         <Button
 		             android:id="@+id/timeType"
 		             android:text="@string/timeDepart"
