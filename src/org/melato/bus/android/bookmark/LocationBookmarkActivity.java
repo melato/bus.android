@@ -21,8 +21,8 @@
 package org.melato.bus.android.bookmark;
 
 import org.melato.android.bookmark.BookmarksActivity;
-import org.melato.bus.android.Info;
 import org.melato.bus.model.RStop;
+import org.melato.bus.model.Stop;
 import org.melato.bus.plan.NamedPoint;
 import org.melato.client.Bookmark;
 
@@ -41,7 +41,10 @@ public class LocationBookmarkActivity extends BookmarksActivity {
   protected void open(Bookmark bookmark) {
     Object object = bookmark.getObject();
     if ( object instanceof RStop) {
-      NamedPoint point = Info.namedPoint(this, (RStop) object);
+      RStop rstop = (RStop) object;
+      Stop stop = rstop.getStop();
+      NamedPoint point = new NamedPoint(stop);
+      point.setName(bookmark.getName());
       Intent data = new Intent();
       data.putExtra(KEY_LOCATION, point);
       setResult(RESULT_OK, data);
