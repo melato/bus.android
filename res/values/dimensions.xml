@@ -11,7 +11,7 @@
 <dimen name="icon_padding">3dip</dimen>
 <dimen name="checkbox_padding">6dip</dimen>
 <dimen name="checkbox_horizontal_spacing">6dip</dimen>
-<dimen name="checkbox_vertical_spacing">12dip</dimen>
+<dimen name="checkbox_vertical_spacing">6dip</dimen>
 <dimen name="grid_width">128dp</dimen>   
 <dimen name="grid_height">72dp</dimen>
 </resources>
