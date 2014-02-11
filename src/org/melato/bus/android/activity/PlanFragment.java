@@ -215,7 +215,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       }
       showParameters();
       setHasOptionsMenu(true);
-      MenuCapture.addIconView(getActivity(), view, R.menu.plan_menu, this);      
+      MenuCapture.addIcons(getActivity(), (LinearLayout) view.findViewById(R.id.icons), R.menu.plan_menu, this);      
       return view;
   }
   
