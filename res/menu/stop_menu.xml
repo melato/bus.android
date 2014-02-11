@@ -9,8 +9,8 @@
           android:titleCondensed="@string/destination"
           android:title="@string/set_destination"/>
     <item android:id="@+id/add"
-          android:icon="@drawable/add_stop"                  
-          android:title="@string/add_stop_after" />
+          android:icon="@drawable/sequence"                  
+          android:title="@string/sequence" />
     <item android:id="@+id/share"
           android:icon="@drawable/share"                  
           android:title="@string/share" />

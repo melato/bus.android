@@ -12,7 +12,7 @@
           android:icon="@drawable/finish"
           android:title="@string/set_destination"/>
     <item android:id="@+id/add"
-          android:icon="@drawable/add_stop"                  
+          android:icon="@drawable/sequence"                  
           android:title="@string/add_stop_after" />
     <item android:id="@+id/nearby"
           android:icon="@drawable/nearby"                          
