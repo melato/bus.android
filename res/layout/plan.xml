@@ -5,71 +5,69 @@
     android:orientation="vertical" >
 
     <TableLayout
-        android:stretchColumns="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:stretchColumns="1" >
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-			
-			    <Button
-			        android:id="@+id/from"
-			        android:layout_width="match_parent"
-			        android:layout_height="wrap_content"
-			        android:layout_marginLeft="@dimen/label_margin"
-			        android:layout_span="2"
-			        android:layout_weight="1.0"
-                    android:drawableLeft="@drawable/start"
-			        android:hint="@string/useCurrentLocation"
-			        android:textAppearance="?android:attr/textAppearanceMedium" />
 
+            <Button
+                android:id="@+id/from"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/label_margin"
+                android:layout_span="2"
+                android:layout_weight="1.0"
+                android:drawableLeft="@drawable/start"
+                android:hint="@string/useCurrentLocation"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
+
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-        
-                <Button
-                    android:id="@+id/to"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/label_margin"
-                    android:layout_weight="1.0"
-                    android:layout_span="2"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
-                    android:hint="@string/selectDestination"
-                    android:drawableLeft="@drawable/finish"
-                    android:text=""
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
-			      
-	    </TableRow>
-	    <TableRow
+
+            <Button
+                android:id="@+id/to"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/label_margin"
+                android:layout_span="2"
+                android:layout_weight="1.0"
+                android:drawableLeft="@drawable/finish"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:hint="@string/selectDestination"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </TableRow>
+
+        <TableRow
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-        
-		         <Button
-		             android:id="@+id/timeType"
-		             android:text="@string/timeDepart"
-                     android:layout_marginLeft="@dimen/label_margin"
-		             android:layout_width="wrap_content"
-		             android:layout_height="wrap_content"
-		             />
-		
-		        <Button
-		            android:id="@+id/time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/schedule"
-		            android:text="@string/timeNow"
-                    android:textAlignment="center"
-		            android:textAppearance="?android:attr/textAppearanceMedium" />
-		
-		    </TableRow>
-		    </TableLayout>
-    
-    <!-- 
-     -->
+
+            <Button
+                android:id="@+id/timeType"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/label_margin"
+                android:layout_weight="1.0"
+                android:drawableLeft="@drawable/schedule"
+                android:text="@string/timeDepart" />
+
+            <Button
+                android:id="@+id/time"
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:text="@string/timeNow"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </TableRow>
+    </TableLayout>
+
+<!--   -->
 
     <org.melato.android.layout.FlowLayout
         xmlns:f="http://schemas.android.com/apk/res/org.melato.bus.android"
@@ -83,13 +81,11 @@
         android:paddingTop="@dimen/checkbox_padding"
         f:horizontalSpacing="@dimen/checkbox_horizontal_spacing"
         f:verticalSpacing="@dimen/checkbox_vertical_spacing" >
-
     </org.melato.android.layout.FlowLayout>
 
     <LinearLayout
-        android:id="@+id/icons"        
-        style="@style/IconBar"
-        >
+        android:id="@+id/icons"
+        style="@style/IconBar" >
     </LinearLayout>
 
 </LinearLayout>
