@@ -232,7 +232,6 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     case R.id.from:
     case R.id.to:
     case R.id.timeType:
-    case R.id.timeLabel:
       contextViewId = v.getId();
       getActivity().openContextMenu(v);
       break;
