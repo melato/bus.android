@@ -108,51 +108,10 @@
 
     </org.melato.android.layout.FlowLayout>
 
-    <!-- 
     <LinearLayout
-        android:id="@+id/buttons"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:orientation="horizontal"
-        android:padding="3dip" >
-
-        <ImageButton
-            android:id="@+id/plan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/compute"
-            android:onClick="onClick"
-            android:src="@drawable/compute" />
-
-        <ImageButton
-            android:id="@+id/map"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/map"
-            android:src="@drawable/map" />
-
-        <ImageButton
-            android:id="@+id/swap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/swap"
-            android:src="@drawable/reload" />
-
-        <ImageButton
-            android:id="@+id/pref"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/pref_menu"
-            android:src="@drawable/preferences" />
-
-        <ImageButton
-            android:id="@+id/bookmark"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/bookmark"
-            android:src="@drawable/bookmark" />
+        android:id="@+id/icons"        
+        style="@style/IconBar"
+        >
     </LinearLayout>
-         -->
 
 </LinearLayout>
