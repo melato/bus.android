@@ -75,7 +75,7 @@ public class MenuCapture {
     MenuCapture.Item[] items = MenuCapture.capture(activity.getMenuInflater(), menuId);
     for( MenuCapture.Item item: items ) {
       ImageButton button = new ImageButton(activity);
-      button.setBackgroundColor(Color.TRANSPARENT);
+      //button.setBackgroundColor(Color.TRANSPARENT);
       button.setId(item.id);
       button.setImageResource(item.icon);
       button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
