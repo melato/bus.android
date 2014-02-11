@@ -10,15 +10,8 @@
         android:layout_height="wrap_content" >
 
         <TableRow
-            android:id="@+id/fromRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
-			    <ImageView
-			        android:id="@+id/textView1"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-			        android:src="@drawable/start"
-			        android:contentDescription="@string/fromLabel"/>
 			
 			    <Button
 			        android:id="@+id/from"
@@ -27,22 +20,15 @@
 			        android:layout_marginLeft="@dimen/label_margin"
 			        android:layout_span="2"
 			        android:layout_weight="1.0"
+                    android:drawableLeft="@drawable/start"
 			        android:hint="@string/useCurrentLocation"
 			        android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </TableRow>
         <TableRow
-            android:id="@+id/toRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
         
-			    <ImageView
-			        android:id="@+id/toLabel"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"
-                    android:src="@drawable/finish"
-                    android:contentDescription="@string/toLabel"/>
-			
                 <Button
                     android:id="@+id/to"
                     android:layout_width="wrap_content"
@@ -53,22 +39,15 @@
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:hint="@string/selectDestination"
+                    android:drawableLeft="@drawable/finish"
                     android:text=""
                     android:textAppearance="?android:attr/textAppearanceMedium" />
 			      
 	    </TableRow>
 	    <TableRow
-            android:id="@+id/timeRow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" >
         
-                 <ImageView
-                    android:id="@+id/timeLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/schedule"
-                    android:contentDescription="@string/timeLabel"/>
-            
 		         <Button
 		             android:id="@+id/timeType"
 		             android:text="@string/timeDepart"
@@ -79,10 +58,11 @@
 		
 		        <Button
 		            android:id="@+id/time"
-                    android:layout_width="96dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-		            android:gravity="center_vertical"
+                    android:drawableLeft="@drawable/schedule"
 		            android:text="@string/timeNow"
+                    android:textAlignment="center"
 		            android:textAppearance="?android:attr/textAppearanceMedium" />
 		
 		    </TableRow>
