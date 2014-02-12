@@ -40,10 +40,10 @@ import org.melato.bus.model.ScheduleId;
 import org.melato.bus.model.Stop;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -53,7 +53,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -65,6 +64,7 @@ import android.widget.TextView;
  */
 public class ScheduleActivity extends FragmentActivity implements OnItemClickListener, OnClickListener {
   public static final String KEY_SCHEDULE_ID = "scheduleId";
+  public static final int REQUEST_SCHEDULE = 0;
   protected BusActivities activities;
   private Schedule schedule;
   private Date  currentTime = new Date();
@@ -94,7 +94,55 @@ public class ScheduleActivity extends FragmentActivity implements OnItemClickLis
     }
   }
   
-/** Called when the activity is first created. */
+  private void setSchedule(ScheduleId scheduleId) {
+    if ( scheduleId == null) {
+      scheduleId = Info.getStickyScheduleId();
+    } else {
+      Info.setStickyScheduleId(scheduleId);
+    }
+    if ( scheduleId != null) {
+      daySchedule = schedule.getSchedule(scheduleId);
+    } else {
+      daySchedule = schedule.getSchedule(currentTime);   
+      if ( daySchedule != null) {
+        scheduleId = daySchedule.getScheduleId();
+      }
+    }
+    String scheduleText = getScheduleName();
+    IntentHelper helper = new IntentHelper(this);
+    String title = helper.getRoute().getFullTitle();
+    if ( stopName != null ) {
+      scheduleText += " - " + stopName;
+      if ( timeOffset > 0 ) {
+        scheduleText += " (+" + Schedule.formatDuration(timeOffset) + ")";
+      }
+    }
+    String comment = schedule.getComment();
+    if ( comment != null ) {
+      scheduleText += "\n" + comment; 
+    }
+    TextView textView = (TextView) findViewById(R.id.textView);
+    textView.setText(scheduleText);
+    setTitle(title);
+    ListView listView = (ListView) findViewById(R.id.listView);
+
+    if ( daySchedule != null ) {
+      TimeOfDayList times = new TimeOfDayList(daySchedule,currentTime);
+      times.setTimeOffset(timeOffset);
+      List<RouteException> exceptions = schedule.getExceptions(daySchedule.getScheduleId());
+      times.setExceptions(exceptions);
+      scheduleAdapter = new ScheduleAdapter(times);
+      listView.setAdapter(scheduleAdapter);
+      listView.setOnItemClickListener(this);
+      int pos = times.getDefaultPosition();
+      if ( pos >= 0 ) {
+        if ( pos > 0 )
+          pos--;
+        listView.setSelection(pos);
+      }
+    }
+  }
+  /** Called when the activity is first created. */
   @Override
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
@@ -103,54 +151,11 @@ public class ScheduleActivity extends FragmentActivity implements OnItemClickLis
       rstop = helper.getRStop();
       if ( rstop == null )
         return;
+      setContentView(R.layout.schedule);
       setStopInfo(rstop);
       schedule = activities.getRouteManager().getSchedule(rstop.getRouteId());
       ScheduleId scheduleId = (ScheduleId) getIntent().getSerializableExtra(KEY_SCHEDULE_ID);
-      if ( scheduleId == null) {
-        scheduleId = Info.getStickyScheduleId();
-      } else {
-        Info.setStickyScheduleId(scheduleId);
-      }
-      if ( scheduleId != null) {
-        daySchedule = schedule.getSchedule(scheduleId);
-      } else {
-        daySchedule = schedule.getSchedule(currentTime);   
-        if ( daySchedule != null) {
-          scheduleId = daySchedule.getScheduleId();
-        }
-      }
-      setContentView(R.layout.schedule);
-      ListView listView = (ListView) findViewById(R.id.listView);
-      TextView textView = (TextView) findViewById(R.id.textView);
-      String scheduleText = getScheduleName();
-      String title = helper.getRoute().getFullTitle();
-      if ( stopName != null ) {
-        scheduleText += " - " + stopName;
-        if ( timeOffset > 0 ) {
-          scheduleText += " (+" + Schedule.formatDuration(timeOffset) + ")";
-        }
-      }
-      String comment = schedule.getComment();
-      if ( comment != null ) {
-        scheduleText += "\n" + comment; 
-      }
-      textView.setText(scheduleText);
-      setTitle(title);
-      if ( daySchedule != null ) {
-        TimeOfDayList times = new TimeOfDayList(daySchedule,currentTime);
-        times.setTimeOffset(timeOffset);
-        List<RouteException> exceptions = schedule.getExceptions(daySchedule.getScheduleId());
-        times.setExceptions(exceptions);
-        scheduleAdapter = new ScheduleAdapter(times);
-        listView.setAdapter(scheduleAdapter);
-        listView.setOnItemClickListener(this);
-        int pos = times.getDefaultPosition();
-        if ( pos >= 0 ) {
-          if ( pos > 0 )
-            pos--;
-          listView.setSelection(pos);
-        }
-      }
+      setSchedule(scheduleId);
       MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.schedule_menu, this);
   }
   
@@ -211,19 +216,6 @@ public class ScheduleActivity extends FragmentActivity implements OnItemClickLis
     }
   }
 
-  private void updateAgency(ImageButton browse) {
-    if ( browse != null) {
-      Agency agency = Info.routeManager(this).getAgency(activities.getRouteId());     
-      Drawable drawable = Info.getAgencyIcon(this, agency);
-      if (drawable != null) {
-        browse.setImageDrawable(drawable);
-        Log.i("aa", "drawable width=" + drawable.getIntrinsicWidth()
-            + " height=" + drawable.getIntrinsicHeight()
-            + " bounds=" + drawable.getBounds());      
-      }
-    }    
-  }
-  
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
@@ -234,10 +226,24 @@ public class ScheduleActivity extends FragmentActivity implements OnItemClickLis
      return true;
   }
 
+  private void selectSchedule() {
+    Intent intent = new Intent(this, SchedulesActivity.class);
+    new IntentHelper(intent).putRStop(rstop);
+    startActivityForResult(intent, REQUEST_SCHEDULE);
+  }
+  
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if ( requestCode == REQUEST_SCHEDULE && resultCode == RESULT_OK) {
+      ScheduleId scheduleId = (ScheduleId) data.getSerializableExtra(KEY_SCHEDULE_ID);
+      setSchedule(scheduleId);
+    }
+  }      
+  
   private boolean onItemSelected(int itemId) {
     switch(itemId) {
     case R.id.all_schedules:
-      activities.onItemSelected(itemId);
+      selectSchedule();
       return true;
     default:
       return new StopActions(this).showRStop(rstop, itemId);
