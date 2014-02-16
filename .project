@@ -37,11 +37,6 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>android.gpx</name>
-			<type>2</type>
-			<location>/main/dev/android.gpx/src/main/java</location>
-		</link>
-		<link>
 			<name>bus</name>
 			<type>2</type>
 			<location>/main/dev/bus/src/main/java</location>
@@ -50,11 +45,6 @@
 			<name>geometry</name>
 			<type>2</type>
 			<location>/main/dev/geometry/src/main/java</location>
-		</link>
-		<link>
-			<name>gpx</name>
-			<type>2</type>
-			<location>/main/dev/gpx/src/main/java</location>
 		</link>
 	</linkedResources>
 </projectDescription>
