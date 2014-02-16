@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.melato.android.app.HelpActivity;
-import org.melato.android.menu.MenuCapture;
+import org.melato.android.menu.Menus;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.ExceptionActivity.ExceptionSpecifier;
@@ -156,7 +156,7 @@ public class ScheduleActivity extends FragmentActivity implements OnItemClickLis
       schedule = activities.getRouteManager().getSchedule(rstop.getRouteId());
       ScheduleId scheduleId = (ScheduleId) getIntent().getSerializableExtra(KEY_SCHEDULE_ID);
       setSchedule(scheduleId);
-      MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.schedule_menu, this);
+      Menus.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.schedule_menu, this);
   }
   
   static class TextColor {
@@ -220,7 +220,7 @@ public class ScheduleActivity extends FragmentActivity implements OnItemClickLis
   public boolean onCreateOptionsMenu(Menu menu)
   {
      MenuInflater inflater = getMenuInflater();
-     inflater.inflate(R.menu.schedule_menu, menu);
+     Menus.inflate(inflater, R.menu.schedule_menu, menu);
      updateAgency(menu.findItem(R.id.browse));
      HelpActivity.addItem(menu, this, Help.SCHEDULE);
      return true;

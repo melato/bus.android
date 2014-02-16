@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.melato.android.app.HelpActivity;
 import org.melato.android.bookmark.BookmarksActivity;
-import org.melato.android.menu.MenuCapture;
+import org.melato.android.menu.Menus;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.PlanOptions;
 import org.melato.bus.android.R;
@@ -215,7 +215,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       }
       showParameters();
       setHasOptionsMenu(true);
-      MenuCapture.addIcons(getActivity(), (LinearLayout) view.findViewById(R.id.icons), R.menu.plan_menu, this);      
+      Menus.addIcons(getActivity(), (LinearLayout) view.findViewById(R.id.icons), R.menu.plan_menu, this);      
       return view;
   }
   
@@ -276,7 +276,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    inflater.inflate(R.menu.plan_menu, menu);
+    Menus.inflate(inflater, R.menu.plan_menu, menu);
     HelpActivity.addItem(menu, getActivity(), Help.PLAN);
   }
 

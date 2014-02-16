@@ -21,7 +21,7 @@
 package org.melato.bus.android.activity;
 
 import org.melato.android.app.HelpActivity;
-import org.melato.android.menu.MenuCapture;
+import org.melato.android.menu.Menus;
 import org.melato.bus.android.R;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
@@ -70,7 +70,7 @@ public class StopsActivity extends Activity implements OnItemClickListener, OnCl
     IntentHelper helper = new IntentHelper(this);
     RStop rstop = helper.getRStop();
     stops.setStop(rstop);
-    MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.stops_menu, this);
+    Menus.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.stops_menu, this);
   }
   
   @Override
@@ -102,7 +102,7 @@ public class StopsActivity extends Activity implements OnItemClickListener, OnCl
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.stops_menu, menu);
+    Menus.inflate(inflater,R.menu.stops_menu, menu);
     HelpActivity.addItem(menu, this, Help.STOPS);
     return true;
   }

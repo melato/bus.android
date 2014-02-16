@@ -21,7 +21,7 @@
 package org.melato.bus.android.activity;
 
 import org.melato.android.app.HelpActivity;
-import org.melato.android.menu.MenuCapture;
+import org.melato.android.menu.Menus;
 import org.melato.android.ui.PropertiesDisplay;
 import org.melato.android.util.Invokable;
 import org.melato.bus.android.Info;
@@ -86,7 +86,7 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
     listView = (ListView) findViewById(R.id.listView);
     listView.setAdapter(stop.createAdapter(R.layout.stop_item));
     listView.setOnItemClickListener(this);
-    MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.stop_menu, this);    
+    Menus.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.stop_menu, this);    
   }
   
   @Override
@@ -119,9 +119,9 @@ public class StopActivity extends FragmentActivity implements OnItemClickListene
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.stop_menu, menu);
+    Menus.inflate(inflater, R.menu.stop_menu, menu);
     HelpActivity.addItem(menu,this, Help.STOP);
-    return true;
+    return super.onCreateOptionsMenu(menu);
   }
  
   public boolean onItemSelected(int itemId) {

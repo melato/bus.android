@@ -20,7 +20,7 @@
  */
 package org.melato.bus.android.activity;
 
-import org.melato.android.menu.MenuCapture;
+import org.melato.android.menu.Menus;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.otp.OTP;
@@ -61,7 +61,7 @@ public class OTPItineraryActivity extends Activity implements OnItemClickListene
     itinerary = (OTP.Itinerary) intent.getSerializableExtra(Keys.ITINERARY);
     ListView listView = (ListView)findViewById(R.id.listView);
     listView.setAdapter(new ItineraryAdapter());
-    MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.itinerary_menu, this);
+    Menus.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.itinerary_menu, this);
   }
 
   String legLabel(OTP.Leg leg) {
@@ -85,7 +85,7 @@ public class OTPItineraryActivity extends Activity implements OnItemClickListene
   public boolean onCreateOptionsMenu(Menu menu)
   {
      MenuInflater inflater = getMenuInflater();
-     inflater.inflate(R.menu.itinerary_menu, menu);
+     Menus.inflate(inflater, R.menu.itinerary_menu, menu);
      //HelpActivity.addItem(menu, this, Help.PLAN);
      return true;
   }

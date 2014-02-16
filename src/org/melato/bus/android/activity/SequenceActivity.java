@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.melato.android.app.HelpActivity;
-import org.melato.android.menu.MenuCapture;
+import org.melato.android.menu.Menus;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.client.Formatting;
@@ -144,7 +144,7 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
     sequence = Info.getSequence(this);
     registerForContextMenu(listView);
     resetList();
-    MenuCapture.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.sequence_menu, this);    
+    Menus.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.sequence_menu, this);    
   }
 
   @Override
@@ -170,7 +170,7 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
   public boolean onCreateOptionsMenu(Menu menu)
   {
      MenuInflater inflater = getMenuInflater();
-     inflater.inflate(R.menu.sequence_menu, menu);
+     Menus.inflate(inflater, R.menu.sequence_menu, menu);
      HelpActivity.addItem(menu, this, Help.SEQUENCE);
      return true;
   }
