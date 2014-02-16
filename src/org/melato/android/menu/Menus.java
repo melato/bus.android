@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 /** Instantiates ImageButtons from a menu resource.
  * */  
 public class Menus {
-  public static boolean includeMenu;
+  public static boolean includeMenu = true;
   static LinearLayout addIconsLayout(Activity activity, LinearLayout view) {
     ViewGroup iconsContainer = (ViewGroup) activity.getLayoutInflater().inflate(R.layout.icons_layout, null, false);
     LinearLayout icons = (LinearLayout) iconsContainer.findViewById(R.id.icons);
@@ -32,8 +32,8 @@ public class Menus {
     MenuCapture.Item[] items = MenuCapture.capture(activity.getMenuInflater(), menuId);
     for( MenuCapture.Item item: items ) {
       ImageButton button = new ImageButton(activity);
-      //button.setBackgroundColor(Color.TRANSPARENT);
-      //button.setBackgroundColor(Color.BLACK);
+      // If we make the color transparent, we lose the different button states (pressed, etc.)
+      // button.setBackgroundColor(Color.TRANSPARENT);
       button.setId(item.id);
       button.setImageResource(item.icon);
       button.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
