@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="horizontal" >
 
+    <!-- 
     <ImageView
         android:id="@+id/seat_icon"
         android:layout_width="@dimen/stop_icon_width"
@@ -18,6 +19,7 @@
         android:icon="@drawable/cover"
         android:contentDescription="@string/cover"
     />
+     -->
     <TextView
         android:id="@+id/text"
         android:layout_width="match_parent"
