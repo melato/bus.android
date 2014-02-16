@@ -6,10 +6,13 @@
     <string name="menu_all_routes">Όλες</string>
     <string name="menu_recent_routes">Πρόσφατες</string>
     <string name="menu_nearby_routes">Κοντινές</string>
+    <string name="nearby_routes_tooltip">Γραμμές εδώ κοντά</string>
     <string name="menu_agencies">Φορείς</string>
     <string name="agencies">Φορείς</string>
     <string name="all_routes">Γραμμές</string>
+    <string name="all_routes_tooltip">Όλες οι Γραμμές</string>
     <string name="recent_routes">Πρόσφατες</string>
+    <string name="recent_routes_tooltip">Γραμμές που εμφανίστηκαν πρόσφατα</string>
     <string name="schedule">Ωράριο</string>
     <string name="fast_gps">Γρήγορο GPS</string>
     <string name="gps_speed">Συχνότητα GPS</string>
@@ -61,8 +64,10 @@
     <string name="loading">Φορτώνει &#8230;</string>
     <string name="computing">Υπολογίζεται &#8230;</string>
     <string name="sequence">Συνδυασμός</string>
+    <string name="sequence_tooltip">Ωράριο επιλεγμένης διαδρομής</string>
     <string name="empty_sequence">Συνδυασμός γραμμών</string>
     <string name="search">Αναζήτηση</string>
+    <string name="search_tooltip">Εύρεση Διαδρομής</string>
     <string name="select">Επιλογή</string>
     <string name="add_stop_after">Συνδυασμός</string>
     <string name="add_stop_before">Πρίν</string>

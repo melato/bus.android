@@ -131,15 +131,15 @@ public class BusApplication extends Application implements FrameworkApplication 
   }
   
   private InternalLaunchItem[] internalItems = {
-      new ActivityLaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes),
-      new ActivityLaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes),
+      new ActivityLaunchItem(AllRoutesActivity.class, R.drawable.all, R.string.all_routes, R.string.all_routes_tooltip),
+      new ActivityLaunchItem(RecentRoutesActivity.class, R.drawable.recent, R.string.menu_recent_routes, R.string.recent_routes_tooltip),
       //new ActivityLaunchItem(AgenciesActivity.class, R.drawable.agencies, R.string.menu_agencies),
-      new ActivityLaunchItem(BusBookmarksActivity.class, R.drawable.bookmark, R.string.bookmarks),
-      new ActivityLaunchItem(PlanTabsActivity.class, R.drawable.plan, R.string.search),
-      new ActivityLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence),
-      new ActivityLaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes),
+      new ActivityLaunchItem(BusBookmarksActivity.class, R.drawable.bookmark, R.string.bookmarks, R.string.bookmarks_tooltip),
+      new ActivityLaunchItem(PlanTabsActivity.class, R.drawable.plan, R.string.search, R.string.search_tooltip),
+      new ActivityLaunchItem(SequenceActivity.class, R.drawable.sequence, R.string.sequence, R.string.sequence_tooltip),
+      new ActivityLaunchItem(NearbyActivity.class, R.drawable.nearby, R.string.menu_nearby_routes, R.string.nearby_routes_tooltip),
       new ActivityLaunchItem(RouteMapActivity.class, R.drawable.map, R.string.map),
-      new ActivityLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun),
+      new ActivityLaunchItem(SunActivity.class, R.drawable.sun, R.string.sun, R.string.sunrise_sunset),
       new ActivityLaunchItem(BusPreferencesActivity.class, R.drawable.preferences, R.string.pref_menu),
       //new ActivityLaunchItem(UploadStopsActivity.class, R.drawable.upload, R.string.upload),
       new HelpLaunchItem(R.drawable.about, R.string.about, "about"),

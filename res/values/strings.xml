@@ -6,11 +6,15 @@
     <string name="menu_all_routes">All</string>
     <string name="menu_recent_routes">Recent</string>
     <string name="menu_nearby_routes">Nearby</string>
+    <string name="nearby_routes_tooltip">Routes near here</string>
     <string name="menu_agencies">Agencies</string>
     <string name="agencies">Agencies</string>
     <string name="all_routes">All Routes</string>
+    <string name="all_routes_tooltip">List of all routes</string>
     <string name="recent_routes">Recent Routes</string>
+    <string name="recent_routes_tooltip">Recently Accessed Routes</string>
     <string name="nearby_routes">Nearby Routes</string>
+    <string name="nearby_routes_tooltip">Routes near here</string>
     <string name="suggested_routes">Suggested Itineraries</string>
     <string name="missing_origin">Please select origin</string>
     <string name="missing_destination">Please select destination</string>
@@ -61,8 +65,10 @@
     <string name="loading">Loading &#8230;</string>
     <string name="computing">Computing &#8230;</string>
     <string name="sequence">Sequence</string>
+    <string name="sequence_tooltip">Schedules of sequence of routes</string>
     <string name="empty_sequence">Route Sequence</string>
     <string name="search">Search</string>
+    <string name="search_tooltip">Find Directions</string>
     <string name="select">Select</string>
     <string name="add_stop_after">Add Stop</string>
     <string name="add_stop_before">Prepend Stop</string>
@@ -92,7 +98,7 @@
     <string name="website">Website</string>
     <string name="city_hall">City Hall</string>
     
-    <string name="sun">Sun</string>
+    <string name="sun">Sunset</string>
     <string name="sunrise_sunset">Sunrise/Sunset</string>
     <string name="date">Date</string>
     <string name="sunrise">Sunrise</string>
