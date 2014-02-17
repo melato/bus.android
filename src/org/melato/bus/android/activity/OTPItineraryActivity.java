@@ -134,8 +134,7 @@ public class OTPItineraryActivity extends Activity implements OnItemClickListene
       OTP.TransitLeg transit = (OTP.TransitLeg) leg;
       try {
         RouteLeg routeLeg = new PlanConverter(Info.routeManager(this)).convertLeg(transit);
-        BusActivities activities = new BusActivities(this);
-        activities.showRoute(routeLeg.getRStop1());    
+        new StopActions(this).showSchedule(routeLeg.getRStop1());
       } catch (MismatchException e) {
         Toast toast = Toast.makeText(OTPItineraryActivity.this, R.string.error_convert_route, Toast.LENGTH_SHORT);
         toast.show();              
