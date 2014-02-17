@@ -117,7 +117,7 @@
     <string name="selectDestination">Select Destination</string>
     <string name="timeLabel">Time:</string>
     <string name="timeNow">Now</string>
-    <string name="timeDepartNow">Depart</string>
+    <string name="timeDepartNow">Depart Now</string>
     <string name="timeDepart">Depart At</string>
     <string name="timeArrive">Arrive At</string>
     <string name="selectFromBookmark">Select from Bookmark</string>
