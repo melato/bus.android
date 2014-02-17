@@ -20,7 +20,6 @@
  */
 package org.melato.bus.android;
 
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
@@ -29,7 +28,6 @@ import org.melato.android.app.HomeActivity.ActivityLaunchItem;
 import org.melato.android.app.HomeActivity.HelpLaunchItem;
 import org.melato.android.app.HomeActivity.InternalLaunchItem;
 import org.melato.android.app.MetadataStorage;
-import org.melato.bus.android.activity.AgenciesActivity;
 import org.melato.bus.android.activity.AllRoutesActivity;
 import org.melato.bus.android.activity.NearbyActivity;
 import org.melato.bus.android.activity.PlanTabsActivity;
@@ -48,8 +46,6 @@ import org.melato.update.PortableUpdateManager;
 
 import android.app.Application;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
@@ -110,24 +106,7 @@ public class BusApplication extends Application implements FrameworkApplication 
   }
   @Override
   public Map<String, String> getApplicationVariables() {
-    Map<String, String> vars = new HashMap<String, String>();
-    String appVersion = "?";
-    PackageInfo packageInfo;
-    try {
-      packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-      appVersion = packageInfo.versionName;
-    } catch (NameNotFoundException e) {
-      throw new RuntimeException(e);
-    }
-    SqlRouteStorage routeDB = (SqlRouteStorage) Info.routeManager(this)
-        .getStorage();
-    String databaseDate = routeDB.getBuildDate();
-    if (databaseDate == null) {
-      databaseDate = "?";
-    }
-    vars.put("app.version", appVersion);
-    vars.put("db.version", databaseDate);
-    return vars;
+    return new ApplicationVariables(this);
   }
   
   private InternalLaunchItem[] internalItems = {
