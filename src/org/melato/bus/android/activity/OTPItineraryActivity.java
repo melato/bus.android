@@ -61,6 +61,7 @@ public class OTPItineraryActivity extends Activity implements OnItemClickListene
     itinerary = (OTP.Itinerary) intent.getSerializableExtra(Keys.ITINERARY);
     ListView listView = (ListView)findViewById(R.id.listView);
     listView.setAdapter(new ItineraryAdapter());
+    listView.setOnItemClickListener(this);
     Menus.addIcons(this, (LinearLayout) findViewById(R.id.icons), R.menu.itinerary_menu, this);
   }
 
