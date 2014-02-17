@@ -27,9 +27,9 @@ import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Stop;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -47,7 +47,7 @@ import android.widget.ListView;
  * Displays the list of stops of a route
  * @author Alex Athanasopoulos
  */
-public class StopsActivity extends Activity implements OnItemClickListener, OnClickListener {
+public class StopsActivity extends FragmentActivity implements OnItemClickListener, OnClickListener {
   private BusActivities activities;
   private StopsContext stops;
 
