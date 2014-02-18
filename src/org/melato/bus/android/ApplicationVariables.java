@@ -61,9 +61,9 @@ public class ApplicationVariables extends AbstractMap<String,String> {
     return databaseDate != null ? databaseDate : "?";
   }
   
-  String getArtists() {
+  String getRawString(int rawId) {
     try {
-      InputStream in = context.getResources().openRawResource(R.raw.artists);
+      InputStream in = context.getResources().openRawResource(rawId);
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       Streams.copy(in,  out, true);
       return out.toString();
@@ -80,7 +80,7 @@ public class ApplicationVariables extends AbstractMap<String,String> {
       return getDatabaseVersion();
     }
     if ( "app.artists".equals(key)) {
-      return getArtists();
+      return getRawString(R.raw.artists);
     }
     return null;
   }
