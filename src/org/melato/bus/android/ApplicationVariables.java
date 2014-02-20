@@ -31,6 +31,7 @@ import org.melato.update.Streams;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.util.Log;
 
 public class ApplicationVariables extends AbstractMap<String,String> {
   private Context context;
@@ -61,7 +62,13 @@ public class ApplicationVariables extends AbstractMap<String,String> {
     return databaseDate != null ? databaseDate : "?";
   }
   
-  String getRawString(int rawId) {
+  String getRecentChangesLink() {
+    String link = "<a href=\"org.melato.bus.help:" + BusHelp.RECENT_CHANGES + "\">" +
+        context.getResources().getString(R.string.recent_changes) + "</a>";
+    return link;
+  }
+  
+  public static String rawString(Context context, int rawId) {
     try {
       InputStream in = context.getResources().openRawResource(rawId);
       ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -71,6 +78,7 @@ public class ApplicationVariables extends AbstractMap<String,String> {
       return null;
     }
   }
+  
   @Override
   public String get(Object key) {
     if ( "app.version".equals(key)) {
@@ -79,8 +87,11 @@ public class ApplicationVariables extends AbstractMap<String,String> {
     if ( "db.version".equals(key)) {
       return getDatabaseVersion();
     }
+    if ( "app.recent_changes".equals(key)) {
+      return getRecentChangesLink();
+    }
     if ( "app.artists".equals(key)) {
-      return getRawString(R.raw.artists);
+      return rawString(context, R.raw.artists);
     }
     return null;
   }

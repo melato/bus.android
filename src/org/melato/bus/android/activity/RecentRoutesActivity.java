@@ -23,6 +23,7 @@ package org.melato.bus.android.activity;
 import org.melato.android.app.HelpActivity;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 
 import android.app.ListActivity;
@@ -75,7 +76,8 @@ public class RecentRoutesActivity extends ListActivity {
   protected void onListItemClick(ListView l, View v, int position, long id) {
     super.onListItemClick(l, v, position, id);
     RecentRoute item = items[position];
-    activities.showRoute(item.getRStop(Info.routeManager(this)));
+    RStop rstop = item.getRStop(Info.routeManager(this)); 
+    new StopActions(this).showSchedule(rstop);
   }
 
   class RecentRoutesAdapter extends ArrayAdapter<Object> {

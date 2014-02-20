@@ -58,7 +58,7 @@ public class BusApplication extends Application implements FrameworkApplication 
   }
   
   public HelpStorage getHelpStorage() {
-    return getMetadataStorage();
+    return new BusHelp(this);
   }
   
   @Override

@@ -134,5 +134,7 @@
     <string name="routes_database">Routes Database</string>
     <string name="stop_code">Stop Code</string>
     <string name="share">Share</string>
+
+    <string name="recent_changes">Recent Changes</string>
     
 </resources>

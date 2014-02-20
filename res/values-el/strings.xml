@@ -134,4 +134,6 @@
     <string name="stop_code">Κωδικός Στάσης</string>
     <string name="share">Εξαγωγή</string>
     
+    <string name="recent_changes">Πρόσφατες Αλλαγές</string>
+    
 </resources>
