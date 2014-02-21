@@ -33,7 +33,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -71,7 +70,6 @@ public class PointSelectionActivity extends Activity implements OnClickListener 
         point = new NamedPoint(p);
       } else {
         LabeledPoint labeledPoint = Locations.getGeoUri(intent);
-        Log.i("aa", "labeledPoint=" + labeledPoint);
         if ( labeledPoint != null) {
           point = new NamedPoint(labeledPoint.getPoint(), labeledPoint.getLabel());
         }
