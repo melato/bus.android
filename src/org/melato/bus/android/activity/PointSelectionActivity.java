@@ -21,6 +21,7 @@
 package org.melato.bus.android.activity;
 
 import org.melato.android.location.Locations;
+import org.melato.android.util.LabeledPoint;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.model.RStop;
@@ -32,6 +33,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -65,11 +67,14 @@ public class PointSelectionActivity extends Activity implements OnClickListener 
     
     if ( rstop == null && point == null) {
       Point2D p = IntentHelper.getLocation(intent);
-      if (p == null) {
-        p = Locations.getGeoUriPoint(intent);
-      }
-      if ( p != null) {
+      if (p != null) {
         point = new NamedPoint(p);
+      } else {
+        LabeledPoint labeledPoint = Locations.getGeoUri(intent);
+        Log.i("aa", "labeledPoint=" + labeledPoint);
+        if ( labeledPoint != null) {
+          point = new NamedPoint(labeledPoint.getPoint(), labeledPoint.getLabel());
+        }
       }
     }
     initButton(R.id.nearby);
