@@ -20,19 +20,22 @@
  */
 package org.melato.bus.android.activity;
 
+import org.melato.android.bookmark.BookmarksActivity;
 import org.melato.android.location.Locations;
 import org.melato.android.util.LabeledPoint;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.bookmark.BookmarkTypes;
 import org.melato.bus.model.RStop;
 import org.melato.bus.plan.NamedPoint;
 import org.melato.bus.plan.Sequence;
+import org.melato.client.Bookmark;
 import org.melato.gps.Point2D;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -45,7 +48,7 @@ import android.widget.Button;
  *  - use as plan destination
  *  - add to Sequence (requires RStop)
  **/
-public class PointSelectionActivity extends Activity implements OnClickListener {
+public class PointSelectionActivity extends FragmentActivity implements OnClickListener {
   public static final String POINT = "POINT";
   RStop rstop;
   NamedPoint point;
@@ -75,10 +78,14 @@ public class PointSelectionActivity extends Activity implements OnClickListener 
         }
       }
     }
+    if ( point != null && point.getName() != null) {
+      setTitle(point.getName());
+    }
     initButton(R.id.nearby);
     //initButton(R.id.add_stop_after);
     initButton(R.id.origin);
     initButton(R.id.destination);
+    initButton(R.id.bookmark);
   }
   
   private void initButton(int id) {
@@ -132,12 +139,20 @@ public class PointSelectionActivity extends Activity implements OnClickListener 
       return point;
     }
   }
-  
-  @Override
-  public void onClick(View v) {
-    Button button = (Button)v;
+ 
+  public void addBookmark() {
+    NamedPoint p = getNamedPoint();
+    if ( p != null) {
+      String name = p.getName(); 
+      Bookmark bookmark = new Bookmark(BookmarkTypes.LOCATION, name, new Point2D(p));
+      BookmarksActivity.addBookmarkDialog(this, bookmark);
+    }
+  }
+    
+    
+  private boolean onItemSelected(int itemId) {
     NamedPoint p = null;
-    switch(button.getId()) {
+    switch(itemId) {
       case R.id.nearby:
         showNearby();
         break;
@@ -160,7 +175,17 @@ public class PointSelectionActivity extends Activity implements OnClickListener 
           showPlan();          
         }
         break;
+      case R.id.bookmark:
+        addBookmark();
+        break;
+      default:
+        return false;
     }
+    return true;
+  }
+  @Override
+  public void onClick(View v) {
+    onItemSelected(v.getId());
   }
 
   

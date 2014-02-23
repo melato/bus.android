@@ -22,5 +22,11 @@
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/finish"
         android:text="@string/set_destination" />
+    <Button
+        android:id="@+id/bookmark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@drawable/bookmark"
+        android:text="@string/bookmark" />
     
 </LinearLayout>

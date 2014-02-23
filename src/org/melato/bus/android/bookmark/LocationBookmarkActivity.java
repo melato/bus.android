@@ -25,6 +25,7 @@ import org.melato.bus.model.RStop;
 import org.melato.bus.model.Stop;
 import org.melato.bus.plan.NamedPoint;
 import org.melato.client.Bookmark;
+import org.melato.gps.Point2D;
 
 import android.content.Intent;
 
@@ -34,21 +35,25 @@ public class LocationBookmarkActivity extends BookmarksActivity {
   public LocationBookmarkActivity() {
     super(new BookmarkTypes());
     setHasContextMenu(false);
-    setVisibleTypes(new int[] {BookmarkTypes.STOP});
+    setVisibleTypes(new int[] {BookmarkTypes.STOP, BookmarkTypes.LOCATION});
   }
 
+  void setResult(Point2D point, Bookmark bookmark) {
+    NamedPoint p = new NamedPoint(point, bookmark.getName());
+    Intent data = new Intent();
+    data.putExtra(KEY_LOCATION, p);
+    setResult(RESULT_OK, data);
+    finish();
+  }
   @Override
   protected void open(Bookmark bookmark) {
     Object object = bookmark.getObject();
     if ( object instanceof RStop) {
       RStop rstop = (RStop) object;
       Stop stop = rstop.getStop();
-      NamedPoint point = new NamedPoint(stop);
-      point.setName(bookmark.getName());
-      Intent data = new Intent();
-      data.putExtra(KEY_LOCATION, point);
-      setResult(RESULT_OK, data);
-      finish();
+      setResult(stop, bookmark);
+    } else if ( object instanceof Point2D) {
+      setResult((Point2D) object, bookmark);
     }
   }
 }

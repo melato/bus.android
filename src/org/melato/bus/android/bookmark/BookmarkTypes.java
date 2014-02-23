@@ -26,10 +26,13 @@ import org.melato.bus.android.R;
 import org.melato.bus.android.activity.IntentHelper;
 import org.melato.bus.android.activity.Keys;
 import org.melato.bus.android.activity.PlanTabsActivity;
+import org.melato.bus.android.activity.PointSelectionActivity;
 import org.melato.bus.android.activity.ScheduleActivity;
 import org.melato.bus.model.RStop;
+import org.melato.bus.plan.NamedPoint;
 import org.melato.bus.plan.PlanEndpoints;
 import org.melato.client.Bookmark;
+import org.melato.gps.Point2D;
 
 import android.content.Context;
 import android.content.Intent;
@@ -37,6 +40,7 @@ import android.content.Intent;
 public class BookmarkTypes implements BookmarkHandler {
   public static final int STOP = 1;
   public static final int PLAN = 2;
+  public static final int LOCATION = 3;
   
   static class StopType implements BookmarkType {
     @Override
@@ -66,9 +70,27 @@ public class BookmarkTypes implements BookmarkHandler {
       return intent;
     }   
   }
+  static class LocationType implements BookmarkType {
+    @Override
+    public int getIcon() {
+      return R.drawable.place;
+    }
+
+    @Override
+    public Intent createIntent(Context context, Bookmark bookmark) {
+      Point2D point = bookmark.getObject(Point2D.class);
+      NamedPoint namedPoint = new NamedPoint(point, bookmark.getName());
+      Intent intent = new Intent(context, PointSelectionActivity.class);
+      intent.putExtra(PointSelectionActivity.POINT, namedPoint);
+      return intent;
+    }   
+
+  }
   @Override
   public BookmarkType getBookmarkType(int type) {
     switch(type) {
+    case LOCATION:
+      return new LocationType();
     case STOP:
       return new StopType();
     case PLAN:
