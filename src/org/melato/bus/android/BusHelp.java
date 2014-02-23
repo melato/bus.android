@@ -29,7 +29,7 @@ public class BusHelp implements HelpStorage {
       HelpItem item = new HelpItem();
       item.setNode(name);
       item.setName(name);
-      item.setText(ApplicationVariables.rawString(context, R.raw.recent_changes));
+      item.setText(ApplicationVariables.rawString(context, R.raw.recent_changes, true));
       item.setTitle(context.getString(R.string.recent_changes));
       return item;
     }

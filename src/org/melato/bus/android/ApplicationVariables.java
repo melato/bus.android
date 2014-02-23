@@ -31,7 +31,6 @@ import org.melato.update.Streams;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.util.Log;
 
 public class ApplicationVariables extends AbstractMap<String,String> {
   private Context context;
@@ -68,12 +67,23 @@ public class ApplicationVariables extends AbstractMap<String,String> {
     return link;
   }
   
-  public static String rawString(Context context, int rawId) {
+  public static String replaceNewlines(String s, String replacement) {
+    s = s.replaceAll("\r\n", replacement); 
+    s = s.replaceAll("\n", replacement);
+    return s;
+  }
+  
+  
+  public static String rawString(Context context, int rawId, boolean addBreaks) {
     try {
       InputStream in = context.getResources().openRawResource(rawId);
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       Streams.copy(in,  out, true);
-      return out.toString();
+      String s = out.toString();
+      if ( addBreaks ) {
+        s = replaceNewlines(s, "<br/>");
+      }
+      return s;
     } catch(Exception e) {
       return null;
     }
@@ -91,7 +101,7 @@ public class ApplicationVariables extends AbstractMap<String,String> {
       return getRecentChangesLink();
     }
     if ( "app.artists".equals(key)) {
-      return rawString(context, R.raw.artists);
+      return rawString(context, R.raw.artists, true);
     }
     return null;
   }
