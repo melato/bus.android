@@ -21,7 +21,9 @@
 package org.melato.bus.android.activity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.melato.android.app.HelpActivity;
@@ -42,8 +44,11 @@ import org.melato.bus.plan.PlanEndpoints;
 import org.melato.client.Bookmark;
 import org.melato.client.Serialization;
 import org.melato.gps.Point2D;
+import org.melato.util.DateId;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.app.TimePickerDialog.OnTimeSetListener;
@@ -56,6 +61,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
@@ -66,20 +72,23 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 /** Computes and displays a list of plans for going to a destination.
  **/
-public class PlanFragment extends Fragment implements OnClickListener, OnTimeSetListener {
+public class PlanFragment extends Fragment implements OnClickListener, OnTimeSetListener, OnDateSetListener {
   public static NamedPoint origin;
   public static NamedPoint destination;
   public static OTP.Plan plan;
   private Mode[] modes;
   private LinearLayout view;
   private TextView timeView;
+  private TextView dateView;
   private static Integer timeInMinutes;
+  private static Integer dateId;
   private static boolean arriveAt;
   private int contextViewId;
   private int REQUEST_MAP = 1;
@@ -135,13 +144,41 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     }    
   }
 
+  /** Fragment for displaying the date picker dialog */
+  class DateFragment extends DialogFragment {
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+      int year = 0;
+      int month = 0;
+      int day = 0;
+      if ( dateId != null) {
+        year = DateId.getYear(dateId);
+        month = DateId.getMonth(dateId) - 1;
+        day = DateId.getDay(dateId);
+      } else {
+        Calendar cal = new GregorianCalendar();
+        year = cal.get(Calendar.YEAR);
+        month = cal.get(Calendar.MONTH);
+        day = cal.get(Calendar.DAY_OF_MONTH);
+      }
+      DatePickerDialog dialog = new DatePickerDialog(getActivity(), PlanFragment.this, year, month, day); 
+      return dialog;
+    }    
+  }
+
   @Override
   public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
     timeInMinutes = hourOfDay * 60 + minute;
     timeView.setText(Schedule.formatTime(timeInMinutes));
   }
-  
-  
+    
+  @Override
+  public void onDateSet(DatePicker view, int year, int monthOfYear,
+      int dayOfMonth) {
+    dateId = DateId.dateId(year, monthOfYear + 1, dayOfMonth);
+    dateView.setText(String.valueOf(dateId));
+  }
+
   void showParameters() {
     TextView v = (TextView) view.findViewById(R.id.from);
     if ( origin != null ) {
@@ -197,10 +234,12 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       view = (LinearLayout) inflater.inflate(R.layout.plan, container, false);
       ViewGroup modeView = (ViewGroup)view.findViewById(R.id.modeView);
       timeView = (TextView)view.findViewById(R.id.time);
+      dateView = (TextView)view.findViewById(R.id.date);
       ((TextView)view.findViewById(R.id.from)).setOnClickListener(this);
       ((TextView)view.findViewById(R.id.to)).setOnClickListener(this);
       ((TextView)view.findViewById(R.id.timeType)).setOnClickListener(this);
       timeView.setOnClickListener(this);
+      dateView.setOnClickListener(this);
       registerForContextMenu(view.findViewById(R.id.timeType));
       registerForContextMenu(view.findViewById(R.id.from));
       registerForContextMenu(view.findViewById(R.id.to));
@@ -229,6 +268,13 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
         timeFragment.show(activity.getSupportFragmentManager(), "timePicker");      
       }
       break;
+    case R.id.date:
+    {
+      DateFragment fragment = new DateFragment();
+      FragmentActivity activity = (FragmentActivity) getActivity();
+      fragment.show(activity.getSupportFragmentManager(), "datePicker");      
+    }
+    break;
     case R.id.from:
     case R.id.to:
     case R.id.timeType:
@@ -366,10 +412,18 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     Info.routeManager(getActivity()).setOtpDefaults(request);
     request.setFromPlace(from);
     request.setToPlace(destination);
-    Date date = new Date();
-    if ( timeInMinutes != null) {
-      date = OTPRequest.replaceTime(date, timeInMinutes * 60);
+    Calendar cal = new GregorianCalendar();
+    if ( dateId != null) {
+      DateId.setCalendar(dateId, cal);
     }
+    if ( timeInMinutes != null) {
+      cal.set(Calendar.HOUR_OF_DAY, timeInMinutes / 60);
+      cal.set(Calendar.MINUTE, timeInMinutes % 60);
+      cal.set(Calendar.SECOND, 0);
+      cal.set(Calendar.MILLISECOND, 0);
+    }
+    Date date = cal.getTime();
+    Log.i("aa", date.toString());
     request.setDate(date);
     request.setArriveBy(arriveAt);
     List<String> modeList = new ArrayList<String>();
