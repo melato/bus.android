@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.melato.android.AndroidLogger;
 import org.melato.bus.android.activity.Pref;
 import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.android.map.RoutePointManager;
@@ -42,7 +41,6 @@ import org.melato.bus.plan.NamedPoint;
 import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.WalkModel;
 import org.melato.client.Serialization;
-import org.melato.log.Log;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -68,7 +66,6 @@ public class Info {
       synchronized(Info.class) {
         if ( routeManager == null ) {
           context = context.getApplicationContext();
-          Log.setLogger(new AndroidLogger(context));
           routeManager = new RouteManager(new SqlRouteStorage(context));          
         }
       }

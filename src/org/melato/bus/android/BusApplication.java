@@ -92,6 +92,7 @@ public class BusApplication extends Application implements FrameworkApplication 
   @Override
   public void onCreate() {
     super.onCreate();
+    BusDebug.initLogging(this);
     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
 
     Resources resources = getBaseContext().getResources(); 
