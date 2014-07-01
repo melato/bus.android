@@ -83,13 +83,6 @@ public class BusApplication extends Application implements FrameworkApplication 
     resources.updateConfiguration(config, resources.getDisplayMetrics());
   }
   @Override
-  public void onConfigurationChanged(Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-    if ( locale != null ) {
-      updateLocale(newConfig);
-    }
-  }
-  @Override
   public void onCreate() {
     super.onCreate();
     BusDebug.initLogging(this);
