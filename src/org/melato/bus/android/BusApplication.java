@@ -42,16 +42,17 @@ import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.client.HelpStorage;
 import org.melato.client.MenuStorage;
+import org.melato.log.Log;
 import org.melato.update.PortableUpdateManager;
 
 import android.app.Application;
+import android.content.ContextWrapper;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
 public class BusApplication extends Application implements FrameworkApplication {
-  private Locale locale;
 
   private MetadataStorage getMetadataStorage() {
     return new MetadataStorage(SqlRouteStorage.databaseFile(this).toString());
@@ -76,27 +77,17 @@ public class BusApplication extends Application implements FrameworkApplication 
     return R.string.eula;
   }
 
-  private void updateLocale(Configuration config) {
-    config.locale = locale;
-    Locale.setDefault(locale);
-    Resources resources = getBaseContext().getResources(); 
-    resources.updateConfiguration(config, resources.getDisplayMetrics());
-  }
   @Override
   public void onCreate() {
     super.onCreate();
     BusDebug.initLogging(this);
-    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
-
-    Resources resources = getBaseContext().getResources(); 
-    Configuration config = resources.getConfiguration();
-
-    String lang = settings.getString(Pref.LANG, "");
-    if (! "".equals(lang) && ! config.locale.getLanguage().equals(lang))
-    {
-        locale = new Locale(lang);
-        updateLocale(config);
-    }
+    LanguageManager.getInstance(this).initLanguage();
+  }
+  
+  @Override
+  public void onConfigurationChanged(Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+    Log.info(getClass().getName() + " .onConfigurationChanged");
   }
   @Override
   public Map<String, String> getApplicationVariables() {
