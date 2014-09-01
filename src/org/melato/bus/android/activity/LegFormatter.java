@@ -28,6 +28,13 @@ import org.melato.bus.plan.LegAdapter;
 import android.content.Context;
 
 public class LegFormatter {
+  public static void addWaitTime(StringBuilder buf, int diffTime, Context context) {
+    buf.append(" (");
+    buf.append( context.getString(R.string.wait));
+    buf.append(" ");
+    buf.append(Schedule.formatDuration(diffTime));
+    buf.append(")");
+  }
   public static String label(LegAdapter leg, Context context) {
     StringBuilder buf = new StringBuilder();
     if ( leg.isTransit()) {
@@ -44,11 +51,7 @@ public class LegFormatter {
       }
       int diffTime = leg.getDiffTime();
       if ( diffTime >= 0 ) {
-        buf.append(" (");
-        buf.append( context.getString(R.string.wait));
-        buf.append(" ");
-        buf.append(Schedule.formatDuration(diffTime));
-        buf.append(")");
+        addWaitTime(buf, diffTime, context);
       }
     } else {
       buf.append(context.getString(R.string.walk));

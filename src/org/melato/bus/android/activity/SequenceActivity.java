@@ -24,9 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.melato.android.app.HelpActivity;
+import org.melato.android.bookmark.BookmarksActivity;
 import org.melato.android.menu.Menus;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
+import org.melato.bus.android.bookmark.BookmarkTypes;
 import org.melato.bus.client.Formatting;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteManager;
@@ -35,12 +37,15 @@ import org.melato.bus.plan.LegGroup;
 import org.melato.bus.plan.RouteLeg;
 import org.melato.bus.plan.Sequence;
 import org.melato.bus.plan.WalkModel;
+import org.melato.client.Bookmark;
+import org.melato.client.IntAccessor;
 import org.melato.gps.Point2D;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
@@ -48,12 +53,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 /**
  * Displays a sequence and allows simple editing.
@@ -72,6 +79,7 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
     private LegGroup leg;
     private Route route;
 
+    
     public LegItem(LegGroup leg, RouteManager routeManager) {
       super();
       this.leg = leg;
@@ -93,6 +101,13 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
       return buf.toString();
     }
     
+    public LegGroup getLeg() {
+      return leg;
+    }
+
+    public Route getRoute() {
+      return route;
+    }
     
   }
   
@@ -115,6 +130,38 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
       return label;
     }
   }
+
+  static class SequenceItemAdapter extends ArrayAdapter<SequenceItem> {
+    private Context context;
+    private List<SequenceItem> items;
+    
+    public SequenceItemAdapter(Context context, List<SequenceItem> items) {
+      super(context, R.layout.list_item, items);
+      this.context = context;
+      this.items = items;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+      TextView view = (TextView) super.getView(position, convertView, parent);
+      SequenceItem leg = items.get(position);
+      String text = leg.toString();
+      if ( leg instanceof LegItem) {
+        LegItem legItem = (LegItem) leg;
+        LegGroup legGroup = legItem.getLeg();
+        int waitTime = legGroup.wait;
+        if ( waitTime != 0 ) {
+          StringBuilder buf = new StringBuilder();
+          buf.append(text);
+          LegFormatter.addWaitTime(buf,  waitTime, context);
+          text = buf.toString();
+        }
+      }
+      view.setText( text );
+      return view;
+    }
+  }
+  
   
   public List<SequenceItem> getSequenceItems(Sequence sequence, RouteManager routeManager) {
     List<SequenceItem> items = new ArrayList<SequenceItem>();
@@ -161,6 +208,38 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
       activities.showRoute(leg.getRStop1());
     }
   }
+  
+  private static class WaitTimeAccessor implements IntAccessor {
+    private LegGroup leg;
+        
+    public WaitTimeAccessor(LegGroup leg) {
+      this.leg = leg;
+    }
+
+    public WaitTimeAccessor(LegItem item) {
+      this(item.leg);
+    }
+
+    @Override
+    public int getValue() {
+      return (leg.wait + 59) / 60;
+    }
+
+    @Override
+    public void setValue(int value) {
+      leg.wait = value * 60;
+    }
+    
+  }
+  private void editWaitTime(int position) {
+    SequenceItem item = items.get(position);
+    if ( item instanceof LegItem ) {
+      LegItem legItem = (LegItem) item;
+      FragmentManager f = getSupportFragmentManager();
+      IntAccessor accessor = new WaitTimeAccessor(legItem);
+      new TimeIntervalFragment(accessor).show(f, "dialog");
+    }
+  }
   @Override
   public void onItemClick(AdapterView<?> l, View view, int position, long id) {
     open(position);
@@ -185,7 +264,7 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
   
   private void resetList() {
     items = getSequenceItems(sequence, Info.routeManager(this));
-    adapter = new ArrayAdapter<SequenceItem>(this, R.layout.list_item, items);
+    adapter = new SequenceItemAdapter(this, items);
     listView.setAdapter(adapter);
     if ( sequence.getLegs().isEmpty()) {
       setTitle(R.string.empty_sequence);
@@ -258,10 +337,19 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
         SequenceActivities.showMap(this, sequence);
         handled = true;
         break;
+      case R.id.bookmark:
+        addBookmark(sequence);
+        handled = true;
+        break;
     }
     return handled ? true : false;
   }
    
+  void addBookmark(Sequence sequence) {
+    String label = sequence.getLabel(Info.routeManager(this));
+    Bookmark bookmark = new Bookmark(BookmarkTypes.SEQUENCE, label, sequence);
+    BookmarksActivity.addBookmarkDialog(this, bookmark);    
+  }
   
   @Override
   public void onClick(View v) {
@@ -285,6 +373,10 @@ public class SequenceActivity extends FragmentActivity implements OnItemClickLis
         break;
       case R.id.remove:
         removeLeg(info.position);
+        handled = true;
+        break;
+      case R.id.wait_time:
+        editWaitTime(info.position);
         handled = true;
         break;
       default:

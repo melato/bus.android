@@ -22,15 +22,18 @@ package org.melato.bus.android.bookmark;
 
 import org.melato.android.bookmark.BookmarkHandler;
 import org.melato.android.bookmark.BookmarkType;
+import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.IntentHelper;
 import org.melato.bus.android.activity.Keys;
 import org.melato.bus.android.activity.PlanTabsActivity;
 import org.melato.bus.android.activity.PointSelectionActivity;
 import org.melato.bus.android.activity.ScheduleActivity;
+import org.melato.bus.android.activity.SequenceActivity;
 import org.melato.bus.model.RStop;
 import org.melato.bus.plan.NamedPoint;
 import org.melato.bus.plan.PlanEndpoints;
+import org.melato.bus.plan.Sequence;
 import org.melato.client.Bookmark;
 import org.melato.gps.Point2D;
 
@@ -41,6 +44,7 @@ public class BookmarkTypes implements BookmarkHandler {
   public static final int STOP = 1;
   public static final int PLAN = 2;
   public static final int LOCATION = 3;
+  public static final int SEQUENCE = 4;
   
   static class StopType implements BookmarkType {
     @Override
@@ -70,6 +74,20 @@ public class BookmarkTypes implements BookmarkHandler {
       return intent;
     }   
   }
+  static class SequenceType implements BookmarkType {
+    @Override
+    public int getIcon() {
+      return R.drawable.sequence;
+    }
+
+    @Override
+    public Intent createIntent(Context context, Bookmark bookmark) {
+      Sequence sequence = bookmark.getObject(Sequence.class);
+      Info.setSequence(context, sequence);
+      Intent intent = new Intent(context, SequenceActivity.class);
+      return intent;
+    }   
+  }
   static class LocationType implements BookmarkType {
     @Override
     public int getIcon() {
@@ -95,6 +113,8 @@ public class BookmarkTypes implements BookmarkHandler {
       return new StopType();
     case PLAN:
       return new PlanType();
+    case SEQUENCE:
+      return new SequenceType();
     default:
       return null;
     }

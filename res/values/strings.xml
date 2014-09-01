@@ -14,7 +14,6 @@
     <string name="recent_routes">Recent Routes</string>
     <string name="recent_routes_tooltip">Recently Accessed Routes</string>
     <string name="nearby_routes">Nearby Routes</string>
-    <string name="nearby_routes_tooltip">Routes near here</string>
     <string name="suggested_routes">Suggested Itineraries</string>
     <string name="missing_origin">Please select origin</string>
     <string name="missing_destination">Please select destination</string>
@@ -134,7 +133,10 @@
     <string name="routes_database">Routes Database</string>
     <string name="stop_code">Stop Code</string>
     <string name="share">Share</string>
-
+    <string name="wait_time">Wait Time (minutes)</string>
+    <string name="set_wait_time">Set Wait Time</string>
+    <string name="illegal_value">Illegal Value</string>
+    
     <string name="recent_changes">Recent Changes</string>
     
 </resources>
