@@ -1,15 +1,15 @@
 package org.melato.bus.android;
 
-import org.melato.log.Log;
-
 import android.content.Context;
 
 public class BusDebug {
   public static void initLogging(Context context) {
+    //File crashFile = new File(Environment.getExternalStorageDirectory(), "buscrash");
+    //Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler(crashFile));
     //Log.setLogger(new AndroidLogger(context));
-    //File file = new File(Environment.getExternalStorageDirectory(), "mybus.log");
-    //Log.setLogger(new FileLogger(file));
-    Log.info("initLogging");
+    //File logFile = new File(Environment.getExternalStorageDirectory(), "bus.log");
+    //Log.setLogger(new FileLogger(logFile));
+    //Log.info("initLogging");
   }
 
 }
