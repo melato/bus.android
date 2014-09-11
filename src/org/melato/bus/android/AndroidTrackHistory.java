@@ -79,8 +79,6 @@ public class AndroidTrackHistory extends TrackHistory implements LocationListene
     if ( enabled ) {
       setGpsInterval(locationManager, normalInterval);
       Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-      if ( location == null )
-        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
       onLocationChanged(location);
     } else {
       locationManager.removeUpdates(this);      
