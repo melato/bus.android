@@ -96,16 +96,18 @@ public class GPXRoutesMap implements RoutesMap {
 
   @Override
   public void showSequence(Sequence sequence) {
-    GPXMaker gpx = new GPXMaker();
+    GPXMaker gpxMaker = new GPXMaker();
     for( LegGroup leg: sequence.getLegs()) {
       RouteLeg t = leg.leg;
       Stop[] stops = routeManager.getStops(t.getRouteId());
       Route route = routeManager.getRoute(t.getRouteId());
       Stop stop2 = t.getStop2();
       int end = stop2 != null ? stop2.getIndex() + 1 : stops.length;
-      gpx.addRoute(route, Arrays.asList(stops).subList(t.getStop1().getIndex(), end));
+      gpxMaker.addRoute(route, Arrays.asList(stops).subList(t.getStop1().getIndex(), end));
     }
-    viewGPX(context, gpx.getGpx());
+    GPX gpx = gpxMaker.getGpx();
+    gpx.setName(sequence.getLabel(routeManager));
+    viewGPX(context, gpx);
   }
 
   @Override

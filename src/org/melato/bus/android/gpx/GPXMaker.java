@@ -39,11 +39,11 @@ public class GPXMaker {
   public void addRoute(Route route, List<Stop> stops) {
     List<Waypoint> waypoints = new ArrayList<Waypoint>(stops.size());
     for(Stop stop: stops) {
-      waypoints.add(toWaypoint(stop, false));
+      waypoints.add(toWaypoint(stop, true));
     }
     org.melato.gpx.Route rte = new org.melato.gpx.Route();
     rte.path = new Sequence(waypoints);
-    rte.setExtensions(new KeyValue[] {
+    rte.getExtensions().setValues(new KeyValue[] {
         new KeyValue("color", String.valueOf(route.getColor())),
     });
     gpx.getRoutes().add(rte);
