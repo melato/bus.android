@@ -14,5 +14,11 @@
       <item>en</item>
       <item>el</item>
       </string-array>
+
+   <string-array
+      name="map_codes" translatable="false">
+      <item>google</item>
+      <item>gpx</item>
+      </string-array>
    
 </resources>

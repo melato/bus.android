@@ -47,6 +47,7 @@ public class BusPreferencesActivity extends PreferenceActivity {
       super.onCreate( savedInstanceState );
       addPreferencesFromResource( R.layout.settings_plan );
       addPreferencesFromResource( R.layout.settings );
+      addPreferencesFromResource( R.layout.settings_map );
       
       SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
       lang = settings.getString(Pref.LANG, "");
