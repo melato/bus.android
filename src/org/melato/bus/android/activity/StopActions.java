@@ -25,7 +25,6 @@ import org.melato.android.util.LocationField;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.bookmark.BookmarkTypes;
-import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.RouteId;
 import org.melato.bus.model.Stop;
@@ -56,9 +55,7 @@ public class StopActions  {
   }
 
   public void showMap(RStop rstop) {
-    Intent intent = new Intent(activity, RouteMapActivity.class);
-    new IntentHelper(intent).putRStop(rstop);
-    activity.startActivity(intent);       
+    Info.routesMap(activity).showRoute(rstop);
   }
   
   public void showSearch(RStop rstop) {

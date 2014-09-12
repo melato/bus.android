@@ -27,7 +27,6 @@ import java.util.List;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
-import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
@@ -35,6 +34,7 @@ import org.melato.bus.model.RouteManager;
 import org.melato.util.MRU;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.view.MenuItem;
@@ -50,7 +50,7 @@ public class BusActivities  {
   
   MRU<RecentRoute> mru;
   
-  private Activity context;
+  private Context context;
 
   private IntentHelper intentHelper;
   
@@ -58,6 +58,12 @@ public class BusActivities  {
     super();
     this.context = activity;    
     intentHelper = new IntentHelper(activity);
+  }
+  
+  public BusActivities(Context context) {
+    super();
+    this.context = context;    
+    intentHelper = new IntentHelper(new Intent());
   }
   
   private RouteManager routeManager;
@@ -128,7 +134,7 @@ public class BusActivities  {
       }
       Info.routesMap(context).showRoute(stop);
     } else {
-      context.startActivity(new Intent(context, RouteMapActivity.class));    
+      Info.routesMap(context).showMap();
     }
   }
   public boolean onItemSelected(int itemId) {    

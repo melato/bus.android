@@ -218,7 +218,7 @@ public class Info {
     point.setName(stop.getName() + " " + route.getLabel());
     return point;
   }
-  public static RoutesMap routesMap(Activity context) {
+  public static RoutesMap routesMap(Context context) {
     SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
     String mapPref = prefs.getString(Pref.MAP, "");
     Log.info("map pref: " + mapPref);

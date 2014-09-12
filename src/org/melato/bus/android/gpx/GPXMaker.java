@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.melato.bus.model.Route;
 import org.melato.bus.model.Stop;
+import org.melato.bus.plan.NamedPoint;
 import org.melato.gpx.GPX;
 import org.melato.gpx.KeyValue;
 import org.melato.gpx.Sequence;
@@ -21,6 +22,12 @@ public class GPXMaker {
       p.setSym( stop.getSymbol());
     }
     return p;
+  }
+  
+  public void addPoint(NamedPoint p ) {
+    Waypoint w = new Waypoint(p.getLat(), p.getLon());
+    w.setName(p.getName());
+    gpx.getWaypoints().add(w);
   }
   
   public void addRoute(Route route, List<Stop> stops) {

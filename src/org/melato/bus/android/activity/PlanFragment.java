@@ -33,7 +33,6 @@ import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
 import org.melato.bus.android.bookmark.BookmarkTypes;
 import org.melato.bus.android.bookmark.LocationBookmarkActivity;
-import org.melato.bus.android.map.SelectionMapActivity;
 import org.melato.bus.model.Schedule;
 import org.melato.bus.otp.OTP;
 import org.melato.bus.otp.OTPRequest;
@@ -394,7 +393,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       return;
     }
     if ( requestCode == REQUEST_MAP) {
-      LocationEndpoints endpoints = (LocationEndpoints) data.getSerializableExtra(Keys.LOCATION_ENDPOINTS);
+      LocationEndpoints endpoints = Info.routesMap(getActivity()).getEndpoints(data); 
       if ( endpoints != null) {
         PlanFragment.origin = endpoints.origin;
         PlanFragment.destination = endpoints.destination;
@@ -420,9 +419,8 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   }
 
   void showMap() {
-    Intent intent = new Intent(getActivity(), SelectionMapActivity.class);
-    intent.putExtra(Keys.LOCATION_ENDPOINTS, new LocationEndpoints(PlanFragment.origin, PlanFragment.destination));
-    startActivityForResult(intent, REQUEST_MAP);    
+    LocationEndpoints endpoints = new LocationEndpoints(PlanFragment.origin, PlanFragment.destination);
+    Info.routesMap(getActivity()).startActivityForEndpoints(endpoints, getActivity(), REQUEST_MAP);
   }
   void selectBookmark() {
     Intent intent = new Intent(getActivity(), LocationBookmarkActivity.class);
