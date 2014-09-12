@@ -41,6 +41,7 @@ import org.melato.bus.plan.PlanEndpoints;
 import org.melato.client.Bookmark;
 import org.melato.client.Serialization;
 import org.melato.gps.Point2D;
+import org.melato.log.Log;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -389,11 +390,13 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   
   @Override
   public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    Log.info("onActivityResult: request=" + requestCode + " result=" + resultCode);
     if ( resultCode != Activity.RESULT_OK ) {
       return;
     }
     if ( requestCode == REQUEST_MAP) {
       LocationEndpoints endpoints = Info.routesMap(getActivity()).getEndpoints(data); 
+      Log.info("endpoints: " + endpoints);
       if ( endpoints != null) {
         PlanFragment.origin = endpoints.origin;
         PlanFragment.destination = endpoints.destination;
@@ -420,7 +423,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
 
   void showMap() {
     LocationEndpoints endpoints = new LocationEndpoints(PlanFragment.origin, PlanFragment.destination);
-    Info.routesMap(getActivity()).startActivityForEndpoints(endpoints, getActivity(), REQUEST_MAP);
+    Info.routesMap(getActivity()).startActivityForEndpoints(endpoints, this, REQUEST_MAP);
   }
   void selectBookmark() {
     Intent intent = new Intent(getActivity(), LocationBookmarkActivity.class);

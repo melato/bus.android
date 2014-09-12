@@ -10,6 +10,7 @@ import org.melato.bus.plan.Sequence;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 
 public class GoogleRoutesMap implements RoutesMap {
   private Context context;
@@ -36,12 +37,14 @@ public class GoogleRoutesMap implements RoutesMap {
     context.startActivity(new Intent(context, RouteMapActivity.class));      
   }
 
-  public void startActivityForEndpoints(LocationEndpoints endpoints, Activity activity, int requestCode) {    
-    Intent intent = new Intent(activity, SelectionMapActivity.class);
+  @Override
+  public void startActivityForEndpoints(LocationEndpoints endpoints, Fragment fragment, int requestCode) {
+    Intent intent = new Intent(fragment.getActivity(), SelectionMapActivity.class);
     intent.putExtra(Keys.LOCATION_ENDPOINTS, endpoints);
-    activity.startActivityForResult(intent, requestCode);    
+    fragment.startActivityForResult(intent, requestCode);    
   }
   
+  @Override
   public LocationEndpoints getEndpoints(Intent intent) {
     return (LocationEndpoints) intent.getSerializableExtra(Keys.LOCATION_ENDPOINTS);    
   }

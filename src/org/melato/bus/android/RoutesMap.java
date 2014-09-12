@@ -4,8 +4,8 @@ import org.melato.bus.android.activity.LocationEndpoints;
 import org.melato.bus.model.RStop;
 import org.melato.bus.plan.Sequence;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.app.Fragment;
 
 public interface RoutesMap {
   void showRoute(RStop rstop);
@@ -16,7 +16,7 @@ public interface RoutesMap {
    * @param activity The activity that should receive the result.
    * @param requestCode The request code to use when calling activity.startActivityForResult.
    */
-  void startActivityForEndpoints(LocationEndpoints endpoints, Activity activity, int requestCode);
+  void startActivityForEndpoints(LocationEndpoints endpoints, Fragment fragment, int requestCode);
   /**
    * Extract LocationEndpoints from an Intent
    * @param intent The intent received in onActivityResult()

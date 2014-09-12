@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.melato.bus.android.R;
 import org.melato.bus.android.RoutesMap;
 import org.melato.bus.android.activity.LocationEndpoints;
 import org.melato.bus.model.RStop;
@@ -23,11 +24,11 @@ import org.melato.gpx.GPXWriter;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Log;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
+import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 public class GPXRoutesMap implements RoutesMap {
@@ -67,18 +68,18 @@ public class GPXRoutesMap implements RoutesMap {
     context.startActivity(intent);
   }
   
-  public static void editGPX(Activity activity, int requestCode, GPX gpx) {
+  public static void editGPX(Fragment fragment, int requestCode, GPX gpx) {
     File file = new File(Environment.getExternalStorageDirectory(), "routes.gpx");
     GPXWriter writer = new GPXWriter();
     try {
       writer.write(gpx, file);
     } catch (IOException e) {
-      Toast.makeText(activity, e.toString(), Toast.LENGTH_SHORT).show();
+      Toast.makeText(fragment.getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
     }
     Intent intent = new Intent(Intent.ACTION_EDIT);
     intent.addCategory(Intent.CATEGORY_DEFAULT);
     intent.setDataAndType(Uri.fromFile(file), "application/gpx");
-    activity.startActivityForResult(intent, requestCode);
+    fragment.startActivityForResult(intent, requestCode);
   }
   
   @Override
@@ -116,13 +117,14 @@ public class GPXRoutesMap implements RoutesMap {
     viewGPX(context, gpx);
   }
   
-  public void startActivityForEndpoints(LocationEndpoints endpoints, Activity activity, int requestCode) {    
+  @Override
+  public void startActivityForEndpoints(LocationEndpoints endpoints, Fragment fragment, int requestCode) {    
     GPXMaker gpx = new GPXMaker();
     if ( endpoints != null ) {
-      gpx.addPoint(endpoints.origin);      
-      gpx.addPoint(endpoints.destination);      
+      gpx.addPoint(endpoints.origin, context.getString(R.string.set_origin));      
+      gpx.addPoint(endpoints.destination, context.getString(R.string.set_destination));      
     }
-    editGPX(activity, requestCode, gpx.getGpx());
+    editGPX(fragment, requestCode, gpx.getGpx());
   }
   
   NamedPoint toNamedPoint(Waypoint w) {
@@ -130,13 +132,14 @@ public class GPXRoutesMap implements RoutesMap {
     p.setName(w.getName());
     return p;
   }
+  
+  @Override
   public LocationEndpoints getEndpoints(Intent intent) {
-    String data = intent.getStringExtra("gpx");
+    byte[] data = intent.getByteArrayExtra("gpx");
     if ( data != null ) {
       GPXParser parser = new GPXParser();
-      byte[] buf = data.getBytes();
       try {
-        GPX gpx = parser.parse(new ByteArrayInputStream(buf));
+        GPX gpx = parser.parse(new ByteArrayInputStream(data));
         List<Waypoint> waypoints = gpx.getWaypoints();
         switch(waypoints.size()) {
         case 2:

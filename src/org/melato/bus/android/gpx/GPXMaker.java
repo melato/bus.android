@@ -24,9 +24,10 @@ public class GPXMaker {
     return p;
   }
   
-  public void addPoint(NamedPoint p ) {
+  public void addPoint(NamedPoint p, String desc ) {
     Waypoint w = new Waypoint(p.getLat(), p.getLon());
     w.setName(p.getName());
+    w.setDesc(desc);
     gpx.getWaypoints().add(w);
   }
   
