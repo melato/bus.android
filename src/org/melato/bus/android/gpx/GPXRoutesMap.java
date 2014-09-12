@@ -87,6 +87,10 @@ public class GPXRoutesMap implements RoutesMap {
     GPXMaker gpx = new GPXMaker();
     Route route = routeManager.getRoute(rstop.getRouteId());
     gpx.addRoute(route, stops);
+    Stop stop = rstop.getStop();
+    if ( stop != null ) {
+      gpx.addPoint(stop);
+    }
     viewGPX(context, gpx.getGpx());
   }
 
@@ -106,7 +110,8 @@ public class GPXRoutesMap implements RoutesMap {
 
   @Override
   public void showMap() {
-    // TODO Auto-generated method stub   
+    GPX gpx = new GPX();
+    viewGPX(context, gpx);
   }
   
   public void startActivityForEndpoints(LocationEndpoints endpoints, Activity activity, int requestCode) {    

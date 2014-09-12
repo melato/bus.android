@@ -30,6 +30,12 @@ public class GPXMaker {
     gpx.getWaypoints().add(w);
   }
   
+  public void addPoint(Stop p ) {
+    Waypoint w = new Waypoint(p.getLat(), p.getLon());
+    w.setName(p.getName());
+    gpx.getWaypoints().add(w);
+  }
+  
   public void addRoute(Route route, List<Stop> stops) {
     List<Waypoint> waypoints = new ArrayList<Waypoint>(stops.size());
     for(Stop stop: stops) {
