@@ -1,6 +1,7 @@
 package org.melato.bus.android.gpx;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
@@ -32,6 +33,7 @@ import android.widget.Toast;
 public class GPXRoutesMap implements RoutesMap {
   private Context context;
   private RouteManager routeManager;
+  private boolean useFile = false;
 
 
   public GPXRoutesMap(Context context, RouteManager routeManager) {
@@ -40,17 +42,28 @@ public class GPXRoutesMap implements RoutesMap {
     this.routeManager = routeManager;
   }
 
-  public static void viewGPX(Context context, GPX gpx) {
-    File file = new File(Environment.getExternalStorageDirectory(), "routes.gpx");
+  void putGPX(Intent intent, GPX gpx) {
     GPXWriter writer = new GPXWriter();
     try {
-      writer.write(gpx, file);
+      if ( useFile ) {
+        File file = new File(Environment.getExternalStorageDirectory(), "routes.gpx");
+        writer.write(gpx, file);      
+        intent.setDataAndType(Uri.fromFile(file), "application/gpx");
+      } else {
+        ByteArrayOutputStream buf = new ByteArrayOutputStream();
+        writer.write(gpx, buf);
+        intent.putExtra("gpx", buf.toByteArray());
+        intent.setType("application/gpx");
+      }
     } catch (IOException e) {
       Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
     }
+  }
+  
+  public void viewGPX(Context context, GPX gpx) {
     Intent intent = new Intent(Intent.ACTION_VIEW);
     intent.addCategory(Intent.CATEGORY_DEFAULT);
-    intent.setDataAndType(Uri.fromFile(file), "application/gpx");
+    putGPX(intent, gpx);
     context.startActivity(intent);
   }
   
