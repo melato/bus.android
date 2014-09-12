@@ -25,8 +25,13 @@ public class GPXMaker {
   }
   
   public void addPoint(NamedPoint p, String desc ) {
-    Waypoint w = new Waypoint(p.getLat(), p.getLon());
-    w.setName(p.getName());
+    Waypoint w = null;
+    if ( p != null ) {
+      w = new Waypoint(p.getLat(), p.getLon());
+      w.setName(p.getName());
+    } else {
+      w = new Waypoint(Float.NaN, Float.NaN);
+    }
     w.setDesc(desc);
     gpx.getWaypoints().add(w);
   }
