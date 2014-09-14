@@ -51,5 +51,10 @@
 			<type>2</type>
 			<location>/var/opt/dev/geometry/src/main/java</location>
 		</link>
+		<link>
+			<name>gpx.android</name>
+			<type>2</type>
+			<location>/var/opt/dev/melato.mapsforge/api/src/main/java</location>
+		</link>
 	</linkedResources>
 </projectDescription>

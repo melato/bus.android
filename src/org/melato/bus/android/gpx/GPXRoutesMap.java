@@ -1,8 +1,6 @@
 package org.melato.bus.android.gpx;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -20,21 +18,18 @@ import org.melato.bus.plan.RouteLeg;
 import org.melato.bus.plan.Sequence;
 import org.melato.gpx.GPX;
 import org.melato.gpx.GPXParser;
-import org.melato.gpx.GPXWriter;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Log;
+import org.melato.map.api.GPXMapAPI;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 public class GPXRoutesMap implements RoutesMap {
   private Context context;
   private RouteManager routeManager;
-  private boolean useFile = false;
 
 
   public GPXRoutesMap(Context context, RouteManager routeManager) {
@@ -44,18 +39,8 @@ public class GPXRoutesMap implements RoutesMap {
   }
 
   void putGPX(Intent intent, GPX gpx) {
-    GPXWriter writer = new GPXWriter();
     try {
-      if ( useFile ) {
-        File file = new File(Environment.getExternalStorageDirectory(), "routes.gpx");
-        writer.write(gpx, file);      
-        intent.setDataAndType(Uri.fromFile(file), "application/gpx");
-      } else {
-        ByteArrayOutputStream buf = new ByteArrayOutputStream();
-        writer.write(gpx, buf);
-        intent.putExtra("gpx", buf.toByteArray());
-        intent.setType("application/gpx");
-      }
+      GPXMapAPI.putGPX(gpx, intent);
     } catch (IOException e) {
       Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
     }
@@ -68,18 +53,10 @@ public class GPXRoutesMap implements RoutesMap {
     context.startActivity(intent);
   }
   
-  public static void editGPX(Fragment fragment, int requestCode, GPX gpx) {
-    File file = new File(Environment.getExternalStorageDirectory(), "routes.gpx");
-    GPXWriter writer = new GPXWriter();
-    try {
-      writer.write(gpx, file);
-    } catch (IOException e) {
-      Toast.makeText(fragment.getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
-    }
+  public void editGPX(Fragment fragment, int requestCode, GPX gpx) {
     Intent intent = new Intent(Intent.ACTION_EDIT);
     intent.addCategory(Intent.CATEGORY_DEFAULT);
-    intent.setDataAndType(Uri.fromFile(file), "application/gpx");
-    fragment.startActivityForResult(intent, requestCode);
+    putGPX(intent, gpx);
   }
   
   @Override

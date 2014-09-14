@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="geometry"/>
+	<classpathentry kind="src" path="gpx.android"/>
 	<classpathentry kind="src" path="android.debug"/>
 	<classpathentry kind="src" path="bus"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
