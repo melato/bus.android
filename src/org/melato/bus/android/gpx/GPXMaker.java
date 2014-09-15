@@ -24,7 +24,7 @@ public class GPXMaker {
     return p;
   }
   
-  public void addPoint(NamedPoint p, String desc ) {
+  public void addPoint(NamedPoint p, String type, String desc ) {
     Waypoint w = null;
     if ( p != null ) {
       w = new Waypoint(p.getLat(), p.getLon());
@@ -32,6 +32,7 @@ public class GPXMaker {
     } else {
       w = new Waypoint(Float.NaN, Float.NaN);
     }
+    w.setType(type);
     w.setDesc(desc);
     gpx.getWaypoints().add(w);
   }
