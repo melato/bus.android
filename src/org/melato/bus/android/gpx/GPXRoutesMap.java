@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
+/** Implements the RoutesMap interface by creating a GPX file and calling an activity to handle it. */
 public class GPXRoutesMap implements RoutesMap {
   private Context context;
   private RouteManager routeManager;
@@ -56,7 +57,9 @@ public class GPXRoutesMap implements RoutesMap {
   public void editGPX(Fragment fragment, int requestCode, GPX gpx) {
     Intent intent = new Intent(Intent.ACTION_EDIT);
     intent.addCategory(Intent.CATEGORY_DEFAULT);
+    Log.info("editGPX");
     putGPX(intent, gpx);
+    fragment.startActivityForResult(intent, requestCode);
   }
   
   @Override
@@ -98,8 +101,8 @@ public class GPXRoutesMap implements RoutesMap {
   public void startActivityForEndpoints(LocationEndpoints endpoints, Fragment fragment, int requestCode) {    
     GPXMaker gpx = new GPXMaker();
     if ( endpoints != null ) {
-      gpx.addPoint(endpoints.origin, context.getString(R.string.set_origin));      
-      gpx.addPoint(endpoints.destination, context.getString(R.string.set_destination));      
+      gpx.addPoint(endpoints.origin, GPXMapAPI.TYPE_START, context.getString(R.string.set_origin));      
+      gpx.addPoint(endpoints.destination, GPXMapAPI.TYPE_END, context.getString(R.string.set_destination));      
     }
     editGPX(fragment, requestCode, gpx.getGpx());
   }
