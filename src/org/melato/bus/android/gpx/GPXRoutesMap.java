@@ -65,14 +65,16 @@ public class GPXRoutesMap implements RoutesMap {
   @Override
   public void showRoute(RStop rstop) {
     Stop[] stops = routeManager.getStops(rstop.getRouteId());
-    GPXMaker gpx = new GPXMaker();
+    GPXMaker gpxMaker = new GPXMaker();
     Route route = routeManager.getRoute(rstop.getRouteId());
-    gpx.addRoute(route, stops);
+    gpxMaker.addRoute(route, stops);
     Stop stop = rstop.getStop();
     if ( stop != null ) {
-      gpx.addPoint(stop);
+      gpxMaker.addPoint(stop);
     }
-    viewGPX(context, gpx.getGpx());
+    GPX gpx = gpxMaker.getGpx();
+    gpx.setName(route.getFullTitle());
+    viewGPX(context, gpx);
   }
 
   @Override
