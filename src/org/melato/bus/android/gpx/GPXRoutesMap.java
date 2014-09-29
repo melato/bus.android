@@ -117,23 +117,19 @@ public class GPXRoutesMap implements RoutesMap {
   
   @Override
   public LocationEndpoints getEndpoints(Intent intent) {
-    byte[] data = intent.getByteArrayExtra("gpx");
-    if ( data != null ) {
-      GPXParser parser = new GPXParser();
-      try {
-        GPX gpx = parser.parse(new ByteArrayInputStream(data));
-        List<Waypoint> waypoints = gpx.getWaypoints();
-        switch(waypoints.size()) {
-        case 2:
-          return new LocationEndpoints(toNamedPoint(waypoints.get(0)), toNamedPoint(waypoints.get(1)));
-        case 1:
-          return new LocationEndpoints(null, toNamedPoint(waypoints.get(0)));
-        default:
-          return null;
-        }
-      } catch (IOException e) {
-        Log.info(e.toString());
+    try {
+      GPX gpx = GPXMapAPI.getGPX(context, intent);
+      List<Waypoint> waypoints = gpx.getWaypoints();
+      switch(waypoints.size()) {
+      case 2:
+        return new LocationEndpoints(toNamedPoint(waypoints.get(0)), toNamedPoint(waypoints.get(1)));
+      case 1:
+        return new LocationEndpoints(null, toNamedPoint(waypoints.get(0)));
+      default:
+        return null;
       }
+    } catch (IOException e) {
+      Log.info(e.toString());
     }
     return null;    
   }
