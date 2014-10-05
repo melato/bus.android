@@ -7,7 +7,6 @@ import org.melato.bus.android.activity.LocationEndpoints;
 import org.melato.bus.model.RStop;
 import org.melato.bus.plan.Sequence;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
