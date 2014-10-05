@@ -23,7 +23,9 @@ package org.melato.bus.android;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.melato.bus.android.activity.Pref;
@@ -45,7 +47,6 @@ import org.melato.bus.plan.WalkModel;
 import org.melato.client.Serialization;
 import org.melato.log.Log;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -64,6 +65,7 @@ public class Info {
   private static Map<String,Drawable.ConstantState> agencyIcons = new HashMap<String,Drawable.ConstantState>();
   private static Sequence sequence;
   private static ScheduleId stickyScheduleId;
+  private static List<Runnable> reloadCallbacks = new ArrayList<Runnable>();
   
   public static RouteManager routeManager(Context context) {
     if ( routeManager == null ) {
@@ -103,10 +105,19 @@ public class Info {
     File cacheDir = context.getCacheDir();
     return new NearbyManager(routeManager(context), cacheDir); 
   }
+  
+  /** Add a callback to be called when the database is updated. */
+  public static void addReloadCallback(Runnable callback) {
+    reloadCallbacks.add(callback);    
+  }
+  
   /** Uncache any database data, in order to use a newly downloaded database. */
   public static void reload() {
     routeManager = null;
     trackHistory = null;
+    for(Runnable callback: reloadCallbacks ) {
+      callback.run();
+    }
     RoutePointManager.reload();
   }
   
