@@ -33,6 +33,7 @@ public class Pref {
   public static final String LANG = "pref_lang";
   public static final String MAYOR = "mayor";
   public static final String MAP = "map";
+  public static final String USE_GPS = "use_gps";
 
   public static final String WALK_SPEED = "walk_speed";
   public static final String MAX_WALK_DISTANCE = "max_walk_distance";
