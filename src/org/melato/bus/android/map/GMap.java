@@ -18,7 +18,7 @@
  * along with Athens Next Bus.  If not, see <http://www.gnu.org/licenses/>.
  *-------------------------------------------------------------------------
  */
-package org.melato.android.gpx.map;
+package org.melato.bus.android.map;
 
 import org.melato.gps.Point2D;
 

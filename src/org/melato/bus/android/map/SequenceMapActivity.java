@@ -23,7 +23,6 @@ package org.melato.bus.android.map;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.melato.android.gpx.map.GMap;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.Keys;
