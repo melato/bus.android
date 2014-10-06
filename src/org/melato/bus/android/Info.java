@@ -31,8 +31,6 @@ import java.util.Map;
 import org.melato.bus.android.activity.Pref;
 import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.android.gpx.GPXRoutesMap;
-import org.melato.bus.android.map.GoogleRoutesMap;
-import org.melato.bus.android.map.RoutePointManager;
 import org.melato.bus.client.NearbyManager;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.RStop;
@@ -118,7 +116,6 @@ public class Info {
     for(Runnable callback: reloadCallbacks ) {
       callback.run();
     }
-    RoutePointManager.reload();
   }
   
   public static synchronized Drawable getAgencyIcon(Context context, Agency agency) {
@@ -236,7 +233,8 @@ public class Info {
     if ( "gpx".equals(mapPref)) {
       return new GPXRoutesMap(context, routeManager(context));
     } else {
-      return new GoogleRoutesMap(context);
+      return null;      
+      //return new GoogleRoutesMap(context);
     }
   }
 }
