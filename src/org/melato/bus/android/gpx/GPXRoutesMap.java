@@ -1,6 +1,5 @@
 package org.melato.bus.android.gpx;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -17,10 +16,9 @@ import org.melato.bus.plan.NamedPoint;
 import org.melato.bus.plan.RouteLeg;
 import org.melato.bus.plan.Sequence;
 import org.melato.gpx.GPX;
-import org.melato.gpx.GPXParser;
 import org.melato.gpx.Waypoint;
 import org.melato.log.Log;
-import org.melato.map.api.GPXMapAPI;
+import org.melato.map.api.GPXIntentHelper;
 
 import android.content.Context;
 import android.content.Intent;
@@ -41,7 +39,7 @@ public class GPXRoutesMap implements RoutesMap {
 
   void putGPX(Intent intent, GPX gpx) {
     try {
-      GPXMapAPI.putGPX(gpx, intent);
+      new GPXIntentHelper(context).putGPX(gpx, intent);
     } catch (IOException e) {
       Toast.makeText(context, e.toString(), Toast.LENGTH_SHORT).show();
     }
@@ -103,8 +101,8 @@ public class GPXRoutesMap implements RoutesMap {
   public void startActivityForEndpoints(LocationEndpoints endpoints, Fragment fragment, int requestCode) {    
     GPXMaker gpx = new GPXMaker();
     if ( endpoints != null ) {
-      gpx.addPoint(endpoints.origin, GPXMapAPI.TYPE_START, context.getString(R.string.set_origin));      
-      gpx.addPoint(endpoints.destination, GPXMapAPI.TYPE_END, context.getString(R.string.set_destination));      
+      gpx.addPoint(endpoints.origin, GPXIntentHelper.TYPE_START, context.getString(R.string.set_origin));      
+      gpx.addPoint(endpoints.destination, GPXIntentHelper.TYPE_END, context.getString(R.string.set_destination));      
     }
     editGPX(fragment, requestCode, gpx.getGpx());
   }
@@ -118,7 +116,7 @@ public class GPXRoutesMap implements RoutesMap {
   @Override
   public LocationEndpoints getEndpoints(Intent intent) {
     try {
-      GPX gpx = GPXMapAPI.getGPX(context, intent);
+      GPX gpx = new GPXIntentHelper(context).getGPX(intent);
       List<Waypoint> waypoints = gpx.getWaypoints();
       switch(waypoints.size()) {
       case 2:
