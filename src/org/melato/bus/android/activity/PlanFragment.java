@@ -32,6 +32,7 @@ import org.melato.android.menu.Menus;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.PlanOptions;
 import org.melato.bus.android.R;
+import org.melato.bus.android.activity.TimeDialog.OnTimeSetListener;
 import org.melato.bus.android.app.BusPreferencesActivity;
 import org.melato.bus.android.bookmark.BookmarkTypes;
 import org.melato.bus.android.bookmark.LocationBookmarkActivity;
@@ -50,8 +51,6 @@ import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
-import android.app.TimePickerDialog;
-import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -139,7 +138,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       } else {
         time = Schedule.getTime(new Date());
       }
-      TimePickerDialog dialog = new TimePickerDialog(getActivity(), PlanFragment.this, time / 60, time % 60, true);
+      TimeDialog dialog = new TimeDialog(getActivity(), PlanFragment.this, time / 60, time % 60, true);
       return dialog;
     }    
   }
