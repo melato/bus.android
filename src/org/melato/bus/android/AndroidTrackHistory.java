@@ -20,14 +20,17 @@
  */
 package org.melato.bus.android;
 
+import org.melato.bus.android.activity.Pref;
 import org.melato.bus.client.TrackHistory;
 import org.melato.gps.PointTime;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 /**
  * Maintains track history.
@@ -56,13 +59,24 @@ public class AndroidTrackHistory extends TrackHistory implements LocationListene
     super(Info.routeManager(context));
     this.context = context.getApplicationContext();
   }
-  
+
+  public boolean useGPS() {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    boolean gps = prefs.getBoolean(Pref.USE_GPS, true);
+    return gps;
+  }
+
   void setGpsInterval(LocationManager locationManager, GpsInterval interval) {
-    locationManager.removeUpdates(this);      
-    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, interval.seconds * 1000L, interval.meters, this);
+    if ( useGPS()) {
+      locationManager.removeUpdates(this);      
+      locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, interval.seconds * 1000L, interval.meters, this);
+    }
   }
 
   public void setFast() {
+    if ( ! useGPS()) {
+      return;
+    }
     LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     setGpsInterval(locationManager, fastInterval);
     isFast = true;
@@ -74,13 +88,14 @@ public class AndroidTrackHistory extends TrackHistory implements LocationListene
   }
 
   protected void enableUpdates(boolean enabled) {
+    if ( ! useGPS()) {
+      return;
+    }
     LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     //PlaybackManager locationManager = PlaybackManager.getInstance(context);
     if ( enabled ) {
       setGpsInterval(locationManager, normalInterval);
       Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-      if ( location == null )
-        location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
       onLocationChanged(location);
     } else {
       locationManager.removeUpdates(this);      
@@ -89,7 +104,7 @@ public class AndroidTrackHistory extends TrackHistory implements LocationListene
   
   @Override
   public void onLocationChanged(Location loc) {
-    if ( isFast && System.currentTimeMillis() - fastStartTime > FAST_DURATION) {
+    if ( isFast && System.currentTimeMillis() - fastStartTime > FAST_DURATION && useGPS()) {
       LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
       setGpsInterval(locationManager, normalInterval);
       isFast = false;

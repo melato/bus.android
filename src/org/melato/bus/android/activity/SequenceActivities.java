@@ -20,17 +20,22 @@
  */
 package org.melato.bus.android.activity;
 
-import org.melato.bus.android.map.SequenceMapActivity;
+import org.melato.bus.android.Info;
+import org.melato.bus.android.R;
 import org.melato.bus.otp.OTP;
+import org.melato.bus.otp.PlanConverter;
+import org.melato.bus.otp.PlanConverter.MismatchException;
 import org.melato.bus.plan.Sequence;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.Toast;
 
 public class SequenceActivities {
   private static boolean useMap;
   
-  public static void showItinerary(Context context, OTP.Itinerary itinerary) {
+  public static void showItinerary(Activity context, OTP.Itinerary itinerary) {
     if ( useMap ) {
       showMap(context, itinerary);      
     } else {
@@ -45,19 +50,26 @@ public class SequenceActivities {
     context.startActivity(intent);
   }
   
-  public static void showMap(Context context, OTP.Itinerary itinerary) {
+  public static void showMap(Activity context, OTP.Itinerary itinerary) {
     //useMap = true;
+    try {
+      Sequence sequence = new PlanConverter(Info.routeManager(context)).convertToSequence(itinerary);
+      showMap(context, sequence);
+    } catch (MismatchException e) {
+      Toast.makeText(context, R.string.error_convert_route, Toast.LENGTH_SHORT).show();
+    }      
+    
+    /*
     Intent intent = new Intent(context, SequenceMapActivity.class);
     intent.putExtra(Keys.ITINERARY, itinerary);
     context.startActivity(intent);
+    */
   }
   
-  public static void showMap(Context context, Sequence sequence) {
+  public static void showMap(Activity context, Sequence sequence) {
     if ( sequence.getLegs().isEmpty()) {
       return;
     }
-    Intent intent = new Intent(context, SequenceMapActivity.class);
-    intent.putExtra(Keys.SEQUENCE, sequence);
-    context.startActivity(intent);    
+    Info.routesMap(context).showSequence(sequence);
   }
 }

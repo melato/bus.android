@@ -37,14 +37,24 @@
 	</natures>
 	<linkedResources>
 		<link>
+			<name>android.debug</name>
+			<type>2</type>
+			<location>/var/opt/dev/android.debug/src/main/java</location>
+		</link>
+		<link>
 			<name>bus</name>
 			<type>2</type>
-			<location>/main/dev/bus/src/main/java</location>
+			<location>/var/opt/dev/bus/src/main/java</location>
 		</link>
 		<link>
 			<name>geometry</name>
 			<type>2</type>
-			<location>/main/dev/geometry/src/main/java</location>
+			<location>/var/opt/dev/geometry/src/main/java</location>
+		</link>
+		<link>
+			<name>gpx.intent</name>
+			<type>2</type>
+			<location>/var/opt/dev/gpx.intent/src/main/java</location>
 		</link>
 	</linkedResources>
 </projectDescription>

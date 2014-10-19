@@ -37,6 +37,19 @@ public class RoutePointManager {
   private RouteManager routeManager;
   private RoutePointCache cache;
   private boolean isLoading;
+  
+  static class ReloadCallback implements Runnable {
+
+    @Override
+    public void run() {
+      instance = null;
+    }
+  }
+  
+  static {
+    Info.addReloadCallback(new ReloadCallback());
+  }
+  
   /**
    * A callback to notify the map when data loading by a background thread has completed.
    * Use to redraw the map with the loaded routes.

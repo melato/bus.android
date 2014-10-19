@@ -38,4 +38,10 @@ public class LocationEndpoints implements Serializable {
     this.origin = origin;
     this.destination = destination;
   }
+
+  @Override
+  public String toString() {
+    return origin + " -> " + destination;
+  }
+  
 }

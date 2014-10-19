@@ -27,7 +27,6 @@ import java.util.List;
 import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.app.BusPreferencesActivity;
-import org.melato.bus.android.map.RouteMapActivity;
 import org.melato.bus.model.RStop;
 import org.melato.bus.model.Route;
 import org.melato.bus.model.RouteId;
@@ -59,6 +58,12 @@ public class BusActivities  {
     super();
     this.context = activity;    
     intentHelper = new IntentHelper(activity);
+  }
+  
+  public BusActivities(Context context) {
+    super();
+    this.context = context;    
+    intentHelper = new IntentHelper(new Intent());
   }
   
   private RouteManager routeManager;
@@ -120,7 +125,18 @@ public class BusActivities  {
   public boolean onOptionsItemSelected(MenuItem item) {
     return onItemSelected(item.getItemId());
   }
-    
+
+  private void showMap(Route route) {
+    if ( route != null ) {
+      RStop stop = intentHelper.getRStop();
+      if ( stop != null && ! route.getRouteId().equals(stop.getRouteId())) {
+        stop = new RStop(route.getRouteId());
+      }
+      Info.routesMap(context).showRoute(stop);
+    } else {
+      Info.routesMap(context).showMap();
+    }
+  }
   public boolean onItemSelected(int itemId) {    
     boolean handled = false;
     Route route = getRoute();
@@ -150,12 +166,7 @@ public class BusActivities  {
         }
         break;
       case R.id.map:
-        if ( route != null ) {
-          //defaultView = RouteMapActivity.class;
-          showRoute(route, RouteMapActivity.class);
-        } else {
-          context.startActivity(new Intent(context, RouteMapActivity.class));    
-        }
+        showMap(route);
         handled = true;
         break;
       case R.id.pref:

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:title="@string/pref_title" >
+
+    <PreferenceCategory android:title="@string/map" >
+        <ListPreference
+            android:defaultValue=""
+            android:entries="@array/map_names"
+            android:entryValues="@array/map_codes"
+            android:key="map"
+            android:summary="@string/pref_map_summary"
+            android:title="@string/map" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

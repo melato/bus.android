@@ -20,15 +20,12 @@
  */
 package org.melato.bus.android.app;
 
-import java.util.Locale;
-
+import org.melato.bus.android.LanguageManager;
 import org.melato.bus.android.PlanOptions;
 import org.melato.bus.android.R;
 import org.melato.bus.android.activity.Pref;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
@@ -50,6 +47,8 @@ public class BusPreferencesActivity extends PreferenceActivity {
       super.onCreate( savedInstanceState );
       addPreferencesFromResource( R.layout.settings_plan );
       addPreferencesFromResource( R.layout.settings );
+      addPreferencesFromResource( R.layout.settings_map );
+      addPreferencesFromResource( R.layout.settings_gps );
       
       SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
       lang = settings.getString(Pref.LANG, "");
@@ -64,22 +63,18 @@ public class BusPreferencesActivity extends PreferenceActivity {
     setTextSummary(Pref.MIN_TRANSFER_TIME,
         getString(R.string.min_transfer_time_summary, Math.round(options.getMinTransferTime() / 60f)));
   }
-  void updateLocale(String lang) {
-    Locale locale = new Locale(lang);
-    Resources resources = getBaseContext().getResources(); 
-    Configuration config = resources.getConfiguration();
-    config.locale = locale;
-    resources.updateConfiguration(config, resources.getDisplayMetrics());
-    
-  }
-  @Override
-  protected void onDestroy() {
+  public void updateLocale() {
     SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
     String lang = settings.getString(Pref.LANG, "");
     if ( ! this.lang.equals(lang)) {
-      updateLocale(lang);      
+      LanguageManager.getInstance(this).updateLocale(lang);      
     }
+  }
+  
+  @Override
+  protected void onDestroy() {
     super.onDestroy();
+    updateLocale();
   }  
   
 }

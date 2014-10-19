@@ -23,13 +23,15 @@ package org.melato.bus.android;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import org.melato.android.AndroidLogger;
 import org.melato.bus.android.activity.Pref;
 import org.melato.bus.android.db.SqlRouteStorage;
-import org.melato.bus.android.map.RoutePointManager;
+import org.melato.bus.android.gpx.GPXRoutesMap;
+import org.melato.bus.android.map.GoogleRoutesMap;
 import org.melato.bus.client.NearbyManager;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.RStop;
@@ -47,9 +49,13 @@ import org.melato.log.Log;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 /** Provides access to global (static) objects. */
 public class Info {
@@ -62,13 +68,14 @@ public class Info {
   private static Map<String,Drawable.ConstantState> agencyIcons = new HashMap<String,Drawable.ConstantState>();
   private static Sequence sequence;
   private static ScheduleId stickyScheduleId;
+  private static List<Runnable> reloadCallbacks = new ArrayList<Runnable>();
+  private static Boolean hasMap = null;
   
   public static RouteManager routeManager(Context context) {
     if ( routeManager == null ) {
       synchronized(Info.class) {
         if ( routeManager == null ) {
           context = context.getApplicationContext();
-          Log.setLogger(new AndroidLogger(context));
           routeManager = new RouteManager(new SqlRouteStorage(context));          
         }
       }
@@ -102,11 +109,19 @@ public class Info {
     File cacheDir = context.getCacheDir();
     return new NearbyManager(routeManager(context), cacheDir); 
   }
+  
+  /** Add a callback to be called when the database is updated. */
+  public static void addReloadCallback(Runnable callback) {
+    reloadCallbacks.add(callback);    
+  }
+  
   /** Uncache any database data, in order to use a newly downloaded database. */
   public static void reload() {
     routeManager = null;
     trackHistory = null;
-    RoutePointManager.reload();
+    for(Runnable callback: reloadCallbacks ) {
+      callback.run();
+    }
   }
   
   public static synchronized Drawable getAgencyIcon(Context context, Agency agency) {
@@ -216,5 +231,30 @@ public class Info {
     Route route = Info.routeManager(context).getRoute(rstop.getRouteId());
     point.setName(stop.getName() + " " + route.getLabel());
     return point;
+  }
+  public static RoutesMap routesMap(Context context) {
+    SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+    String mapPref = prefs.getString(Pref.MAP, "");
+    Log.info("map pref: " + mapPref);
+    if ( "gpx".equals(mapPref)) {
+      return new GPXRoutesMap(context, routeManager(context));
+    } else if ( "mapsforge".equals(mapPref)) {
+      String packageName = "org.melato.mapsforge"; 
+      GPXRoutesMap map = new GPXRoutesMap(context, routeManager(context));
+      map.setPackage(packageName);
+      if ( hasMap == null ) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+          packageManager.getPackageInfo(packageName, 0);
+          hasMap = true;
+        } catch (NameNotFoundException e) {
+          hasMap = false;
+          Toast.makeText(context, R.string.mapsforge_not_available, Toast.LENGTH_SHORT).show();
+        }
+      }
+      return map;
+    } else {
+      return new GoogleRoutesMap(context);
+    }
   }
 }
