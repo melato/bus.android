@@ -29,12 +29,17 @@ import android.widget.Toast;
 public class GPXRoutesMap implements RoutesMap {
   private Context context;
   private RouteManager routeManager;
+  private String packageName;
 
 
   public GPXRoutesMap(Context context, RouteManager routeManager) {
     super();
     this.context = context;
     this.routeManager = routeManager;
+  }
+  
+  public void setPackage(String packageName) {
+    this.packageName = packageName;
   }
 
   void putGPX(Intent intent, GPX gpx) {
@@ -49,6 +54,9 @@ public class GPXRoutesMap implements RoutesMap {
     Intent intent = new Intent(Intent.ACTION_VIEW);
     intent.addCategory(Intent.CATEGORY_DEFAULT);
     putGPX(intent, gpx);
+    if ( packageName != null ) {
+      intent.setPackage(packageName);
+    }
     context.startActivity(intent);
   }
   
@@ -57,6 +65,9 @@ public class GPXRoutesMap implements RoutesMap {
     intent.addCategory(Intent.CATEGORY_DEFAULT);
     Log.info("editGPX");
     putGPX(intent, gpx);
+    if ( packageName != null ) {
+      intent.setPackage(packageName);
+    }
     fragment.startActivityForResult(intent, requestCode);
   }
   

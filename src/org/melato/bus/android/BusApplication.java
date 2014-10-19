@@ -22,7 +22,7 @@ package org.melato.bus.android;
 
 import java.util.Map;
 
-import org.melato.android.app.FrameworkApplication;
+import org.melato.android.app.AbstractFrameworkApplication;
 import org.melato.android.app.HomeActivity.ActivityLaunchItem;
 import org.melato.android.app.HomeActivity.HelpLaunchItem;
 import org.melato.android.app.HomeActivity.InternalLaunchItem;
@@ -42,11 +42,10 @@ import org.melato.client.MenuStorage;
 import org.melato.log.Log;
 import org.melato.update.PortableUpdateManager;
 
-import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 
-public class BusApplication extends Application implements FrameworkApplication {
+public class BusApplication extends AbstractFrameworkApplication {
 
   private MetadataStorage getMetadataStorage() {
     return new MetadataStorage(SqlRouteStorage.databaseFile(this).toString());

@@ -31,6 +31,7 @@ import java.util.Map;
 import org.melato.bus.android.activity.Pref;
 import org.melato.bus.android.db.SqlRouteStorage;
 import org.melato.bus.android.gpx.GPXRoutesMap;
+import org.melato.bus.android.map.GoogleRoutesMap;
 import org.melato.bus.client.NearbyManager;
 import org.melato.bus.model.Agency;
 import org.melato.bus.model.RStop;
@@ -48,9 +49,13 @@ import org.melato.log.Log;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 
 /** Provides access to global (static) objects. */
 public class Info {
@@ -64,6 +69,7 @@ public class Info {
   private static Sequence sequence;
   private static ScheduleId stickyScheduleId;
   private static List<Runnable> reloadCallbacks = new ArrayList<Runnable>();
+  private static Boolean hasMap = null;
   
   public static RouteManager routeManager(Context context) {
     if ( routeManager == null ) {
@@ -232,9 +238,23 @@ public class Info {
     Log.info("map pref: " + mapPref);
     if ( "gpx".equals(mapPref)) {
       return new GPXRoutesMap(context, routeManager(context));
+    } else if ( "mapsforge".equals(mapPref)) {
+      String packageName = "org.melato.mapsforge"; 
+      GPXRoutesMap map = new GPXRoutesMap(context, routeManager(context));
+      map.setPackage(packageName);
+      if ( hasMap == null ) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+          packageManager.getPackageInfo(packageName, 0);
+          hasMap = true;
+        } catch (NameNotFoundException e) {
+          hasMap = false;
+          Toast.makeText(context, R.string.mapsforge_not_available, Toast.LENGTH_SHORT).show();
+        }
+      }
+      return map;
     } else {
-      return null;      
-      //return new GoogleRoutesMap(context);
+      return new GoogleRoutesMap(context);
     }
   }
 }
