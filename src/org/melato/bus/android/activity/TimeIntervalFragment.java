@@ -33,6 +33,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+/** Dialog for selecting a wait time for a leg in a sequence. */
 public class TimeIntervalFragment extends DialogFragment implements Dialog.OnShowListener, View.OnClickListener {
   private IntAccessor accessor;
   private EditText textView;
