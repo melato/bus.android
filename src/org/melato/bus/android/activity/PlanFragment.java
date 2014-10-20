@@ -20,6 +20,8 @@
  */
 package org.melato.bus.android.activity;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -45,6 +47,7 @@ import org.melato.bus.plan.PlanEndpoints;
 import org.melato.client.Bookmark;
 import org.melato.client.Serialization;
 import org.melato.gps.Point2D;
+import org.melato.log.Log;
 import org.melato.util.DateId;
 
 import android.app.Activity;
@@ -60,16 +63,17 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -92,6 +96,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   private int contextViewId;
   private int REQUEST_MAP = 1;
   private int REQUEST_BOOKMARK = 2;
+  private DateFormat dayFormat = new SimpleDateFormat("EEEE");
   
   /** A mode of transport. */
   static class Mode {
@@ -166,11 +171,20 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   }
 
   @Override
-  public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-    timeInMinutes = hourOfDay * 60 + minute;
-    timeView.setText(Schedule.formatTime(timeInMinutes));
+  public void onTimeSet(TimePicker view, boolean arrive, Integer timeInMinutes) {
+    Log.info("onTimeSet: arrive=" + arrive + " time=" + timeInMinutes);
+    PlanFragment.timeInMinutes = timeInMinutes;
+    PlanFragment.arriveAt = arrive;
+    int drawableId = arrive ? R.drawable.finish : R.drawable.start;
+    timeView.setCompoundDrawablesWithIntrinsicBounds(drawableId, 0, 0, 0);    
+    if ( timeInMinutes != null ) {
+      timeView.setText(Schedule.formatTime(timeInMinutes));
+    } else {
+      timeView.setText(R.string.timeNow);
+    }
   }
-    
+  
+
   @Override
   public void onDateSet(DatePicker view, int year, int monthOfYear,
       int dayOfMonth) {
@@ -236,12 +250,11 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       dateView = (TextView)view.findViewById(R.id.date);
       ((TextView)view.findViewById(R.id.from)).setOnClickListener(this);
       ((TextView)view.findViewById(R.id.to)).setOnClickListener(this);
-      ((TextView)view.findViewById(R.id.timeType)).setOnClickListener(this);
       timeView.setOnClickListener(this);
       dateView.setOnClickListener(this);
-      registerForContextMenu(view.findViewById(R.id.timeType));
       registerForContextMenu(view.findViewById(R.id.from));
       registerForContextMenu(view.findViewById(R.id.to));
+      registerForContextMenu(dateView);
       Context context = getActivity();
       modes = new Mode[] {
           new Mode(context, OTPRequest.BUS, R.string.mode_bus),
@@ -268,15 +281,8 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       }
       break;
     case R.id.date:
-    {
-      DateFragment fragment = new DateFragment();
-      FragmentActivity activity = (FragmentActivity) getActivity();
-      fragment.show(activity.getSupportFragmentManager(), "datePicker");      
-    }
-    break;
     case R.id.from:
     case R.id.to:
-    case R.id.timeType:
       contextViewId = v.getId();
       getActivity().openContextMenu(v);
       break;
@@ -298,21 +304,66 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     }
   }
   
+  class DayListener implements OnMenuItemClickListener {
+    int dayIndex;
+    String name;
+
+    
+    public DayListener(int dayIndex, String name) {
+      super();
+      this.dayIndex = dayIndex;
+      this.name = name;
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+      Date date = new Date(System.currentTimeMillis() + dayIndex * 3600 * 24 * 1000L);
+      dateId = DateId.dateId(date);
+      Log.info("dateId=" + dateId);
+      if ( name == null ) {
+        dateView.setText(R.string.today);
+      } else {
+        dateView.setText(name);
+      }
+      return false;
+    }
+    
+  }
+  void createDateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+    int[] ids = new int[] {
+        R.id.day0,
+        R.id.day1,
+        R.id.day2,
+        R.id.day3, 
+        R.id.day4, 
+        R.id.day5, 
+        R.id.day6, 
+    };
+    MenuItem item = menu.add(Menu.NONE, ids[0], 0, R.string.today);
+    item.setOnMenuItemClickListener(new DayListener(0, null));
+    long time = System.currentTimeMillis();
+    for(int i = 1; i < 7; i++ ) {
+      Date date = new Date(time + i * 3600 * 24 * 1000L);
+      String weekday = dayFormat.format(date);
+      item = menu.add(Menu.NONE, ids[i], i, weekday);
+      item.setOnMenuItemClickListener(new DayListener(i, weekday));
+    }
+  }
   @Override
   public void onCreateContextMenu(ContextMenu menu, View v,
       ContextMenuInfo menuInfo) {
     super.onCreateContextMenu(menu, v, menuInfo);
     MenuInflater inflater = getActivity().getMenuInflater();
     switch(v.getId()) {
-      case R.id.timeType:
-        inflater.inflate(R.menu.plan_time_menu, menu);
-        break;
       case R.id.from:
         inflater.inflate(R.menu.plan_location_menu, menu);
         inflater.inflate(R.menu.plan_here_menu, menu);
         break;
       case R.id.to:
         inflater.inflate(R.menu.plan_location_menu, menu);
+        break;
+      case R.id.date:
+        createDateContextMenu(menu, v, menuInfo);
         break;
       default:
         break;
@@ -328,24 +379,8 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
 
   @Override
   public boolean onContextItemSelected(MenuItem item) {
+    Log.info("contextItemSelected id=" + item.getItemId());
     switch(item.getItemId()) {
-    case R.id.now:
-      timeInMinutes = null;
-      arriveAt = false;
-      ((TextView)view.findViewById(R.id.timeType)).setText(R.string.timeDepart);
-      timeView.setText(R.string.timeNow);
-      break;
-    case R.id.leaveAt:
-      arriveAt = false;
-      if ( timeInMinutes == null) {
-        timeInMinutes = Schedule.getTime(new Date()); 
-      }      
-      ((TextView)view.findViewById(R.id.timeType)).setText(R.string.timeDepart);
-      break;
-    case R.id.arriveAt:
-      arriveAt = true;
-      ((TextView)view.findViewById(R.id.timeType)).setText(R.string.timeArrive);
-      break;
     case R.id.bookmark:
       selectBookmark();
       break;
@@ -355,6 +390,8 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     case R.id.here:
       origin = null;
       showParameters();
+      break;
+    default:
       break;
     }
     return super.onContextItemSelected(item);
@@ -422,7 +459,6 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       cal.set(Calendar.MILLISECOND, 0);
     }
     Date date = cal.getTime();
-    Log.i("aa", date.toString());
     request.setDate(date);
     request.setArriveBy(arriveAt);
     List<String> modeList = new ArrayList<String>();

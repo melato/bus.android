@@ -20,6 +20,7 @@
                 android:layout_span="2"
                 android:layout_weight="1.0"
                 android:drawableLeft="@drawable/start"
+                android:drawableStart="@drawable/start"
                 android:hint="@string/useCurrentLocation"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
@@ -35,6 +36,7 @@
                 android:layout_span="2"
                 android:layout_weight="1.0"
                 android:drawableLeft="@drawable/finish"
+                android:drawableStart="@drawable/finish"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:hint="@string/selectDestination"
@@ -47,15 +49,6 @@
             android:layout_height="wrap_content" >
 
             <Button
-                android:id="@+id/timeType"
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/label_margin"
-                android:layout_weight="1.0"
-                android:drawableLeft="@drawable/schedule"
-                android:text="@string/timeDepart" />
-
-            <Button
                 android:id="@+id/date"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
@@ -64,6 +57,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <Button
+                android:drawableLeft="@drawable/start"
+                android:drawableStart="@drawable/start"
                 android:id="@+id/time"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"

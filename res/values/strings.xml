@@ -140,6 +140,8 @@
     <string name="recent_changes">Recent Changes</string>
     <string name="mapsforge_not_available">The preferred map application not available.</string>
     
-    <string name="date_time_set">Set</string>
-    
+    <string name="time_set">Set</string>
+    <string name="time_dialog_title">Trip Time</string>    
+    <string name="time_depart">Depart</string>    
+    <string name="time_arrive">Arrive</string>    
 </resources>

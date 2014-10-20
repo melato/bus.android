@@ -17,9 +17,31 @@
 */
 -->
 
-<TimePicker xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/timePicker"
-    android:layout_gravity="center_horizontal"
-    android:layout_width="wrap_content"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parentPanel"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    />
+    android:orientation="vertical"
+    android:paddingTop="9dip"
+    android:paddingBottom="3dip"
+    android:paddingLeft="3dip"
+    android:paddingRight="1dip"
+    android:paddingStart="3dip"
+    android:paddingEnd="1dip">
+
+
+	<ToggleButton android:id="@+id/arriveButton"
+	     android:layout_width="match_parent"
+	     android:textOff="@string/time_depart"
+	     android:textOn="@string/time_arrive"
+	     android:layout_height="wrap_content"/>
+
+
+	<TimePicker
+	    android:id="@+id/timePicker"
+	    android:layout_gravity="center_horizontal"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content"
+	    />
+</LinearLayout>
