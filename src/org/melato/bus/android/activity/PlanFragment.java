@@ -47,7 +47,6 @@ import org.melato.bus.plan.PlanEndpoints;
 import org.melato.client.Bookmark;
 import org.melato.client.Serialization;
 import org.melato.gps.Point2D;
-import org.melato.log.Log;
 import org.melato.util.DateId;
 
 import android.app.Activity;
@@ -73,7 +72,6 @@ import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -137,14 +135,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   class TimeFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-      int time = 0;
-      if ( timeInMinutes != null) {
-        time = timeInMinutes;
-      } else {
-        time = Schedule.getTime(new Date());
-      }
-      TimeDialog dialog = new TimeDialog(getActivity(), PlanFragment.this, time / 60, time % 60, true);
-      return dialog;
+      return new TimeDialog(getActivity(), PlanFragment.this, arriveAt, timeInMinutes);
     }    
   }
 
@@ -170,11 +161,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     }    
   }
 
-  @Override
-  public void onTimeSet(TimePicker view, boolean arrive, Integer timeInMinutes) {
-    Log.info("onTimeSet: arrive=" + arrive + " time=" + timeInMinutes);
-    PlanFragment.timeInMinutes = timeInMinutes;
-    PlanFragment.arriveAt = arrive;
+  void showTime(boolean arrive, Integer timeInMinutes) {    
     int drawableId = arrive ? R.drawable.finish : R.drawable.start;
     timeView.setCompoundDrawablesWithIntrinsicBounds(drawableId, 0, 0, 0);    
     if ( timeInMinutes != null ) {
@@ -182,6 +169,13 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     } else {
       timeView.setText(R.string.timeNow);
     }
+  }
+  
+  @Override
+  public void onTimeSet(TimePicker view, boolean arrive, Integer timeInMinutes) {
+    PlanFragment.timeInMinutes = timeInMinutes;
+    PlanFragment.arriveAt = arrive;
+    showTime(arrive, timeInMinutes);
   }
   
 
@@ -205,11 +199,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     } else {
       v.setText(R.string.selectDestination);
     }
-    if ( timeInMinutes != null) {
-      timeView.setText(Schedule.formatTime(timeInMinutes));      
-    } else {
-      timeView.setText(R.string.timeNow);
-    }
+    showTime(arriveAt, timeInMinutes);
   }
   
   public void swap() {
@@ -304,30 +294,31 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     }
   }
   
+  void setDate(int dateId, String name) {
+    PlanFragment.dateId = dateId;
+    if ( name == null ) {
+      dateView.setText(R.string.today);
+    } else {
+      dateView.setText(name);
+    }    
+  }
+  
   class DayListener implements OnMenuItemClickListener {
-    int dayIndex;
+    int dateId;
     String name;
 
     
-    public DayListener(int dayIndex, String name) {
+    public DayListener(int dateId, String name) {
       super();
-      this.dayIndex = dayIndex;
+      this.dateId = dateId;
       this.name = name;
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-      Date date = new Date(System.currentTimeMillis() + dayIndex * 3600 * 24 * 1000L);
-      dateId = DateId.dateId(date);
-      Log.info("dateId=" + dateId);
-      if ( name == null ) {
-        dateView.setText(R.string.today);
-      } else {
-        dateView.setText(name);
-      }
-      return false;
-    }
-    
+      setDate(dateId, name);
+      return true;
+    }    
   }
   void createDateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
     int[] ids = new int[] {
@@ -344,9 +335,10 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     long time = System.currentTimeMillis();
     for(int i = 1; i < 7; i++ ) {
       Date date = new Date(time + i * 3600 * 24 * 1000L);
+      int dateId = DateId.dateId(date); 
       String weekday = dayFormat.format(date);
       item = menu.add(Menu.NONE, ids[i], i, weekday);
-      item.setOnMenuItemClickListener(new DayListener(i, weekday));
+      item.setOnMenuItemClickListener(new DayListener(dateId, weekday));
     }
   }
   @Override
@@ -379,7 +371,6 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
 
   @Override
   public boolean onContextItemSelected(MenuItem item) {
-    Log.info("contextItemSelected id=" + item.getItemId());
     switch(item.getItemId()) {
     case R.id.bookmark:
       selectBookmark();

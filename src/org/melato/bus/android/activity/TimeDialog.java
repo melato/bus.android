@@ -18,7 +18,10 @@
 
 package org.melato.bus.android.activity;
 
+import java.util.Date;
+
 import org.melato.bus.android.R;
+import org.melato.bus.model.Schedule;
 import org.melato.log.Log;
 
 import android.app.AlertDialog;
@@ -76,8 +79,8 @@ public class TimeDialog extends AlertDialog
      */
     public TimeDialog(Context context,
             OnTimeSetListener callBack,
-            int hourOfDay, int minute, boolean is24HourView) {
-        this(context, 0, callBack, hourOfDay, minute, is24HourView);
+            boolean arrive, Integer timeMinutes) {
+        this(context, 0, callBack, arrive, timeMinutes);
     }
 
     /**
@@ -91,12 +94,16 @@ public class TimeDialog extends AlertDialog
     public TimeDialog(Context context,
             int theme,
             OnTimeSetListener callBack,
-            int hourOfDay, int minute, boolean is24HourView) {
+            boolean arrive,
+            Integer timeMinutes) {
         super(context, theme);
         mCallback = callBack;
-        mInitialHourOfDay = hourOfDay;
-        mInitialMinute = minute;
-        mIs24HourView = is24HourView;
+        if ( timeMinutes == null ) {
+          timeMinutes = Schedule.getTime(new Date());
+        }
+        mInitialHourOfDay = timeMinutes / 60;
+        mInitialMinute = timeMinutes % 60;
+        mIs24HourView = true;
 
         setIcon(0);
         setTitle(R.string.time_dialog_title);
@@ -111,6 +118,7 @@ public class TimeDialog extends AlertDialog
         setView(view);
         mTimePicker = (TimePicker) view.findViewById(R.id.timePicker);
         mArriveButton = (ToggleButton) view.findViewById(R.id.arriveButton);
+        mArriveButton.setChecked(arrive);
 
         // initialize state
         mTimePicker.setIs24HourView(mIs24HourView);
@@ -123,7 +131,6 @@ public class TimeDialog extends AlertDialog
       if ( mCallback != null ) {
         boolean arrive = mArriveButton.isChecked();
         mTimePicker.clearFocus();
-        Log.info("onClick checked=" + arrive + " which=" + which + " pos=" + BUTTON_POSITIVE + " neg=" + BUTTON_NEGATIVE);
         switch(which) {
         case BUTTON_POSITIVE:
           mCallback.onTimeSet(mTimePicker, arrive, mTimePicker.getCurrentHour() * 60 + 

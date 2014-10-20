@@ -57,8 +57,6 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
             
             <Button
-                android:drawableLeft="@drawable/start"
-                android:drawableStart="@drawable/start"
                 android:id="@+id/time"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
