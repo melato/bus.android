@@ -50,8 +50,6 @@ import org.melato.gps.Point2D;
 import org.melato.util.DateId;
 
 import android.app.Activity;
-import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -73,14 +71,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 /** Computes and displays a list of plans for going to a destination.
  **/
-public class PlanFragment extends Fragment implements OnClickListener, OnTimeSetListener, OnDateSetListener {
+public class PlanFragment extends Fragment implements OnClickListener, OnTimeSetListener {
   public static NamedPoint origin;
   public static NamedPoint destination;
   public static OTP.Plan plan;
@@ -89,7 +86,8 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   private TextView timeView;
   private TextView dateView;
   private static Integer timeInMinutes;
-  private static Integer dateId;
+  /** The date id for the search.  Use 0 for today. */
+  private static int dateId;
   private static boolean arriveAt;
   private int contextViewId;
   private int REQUEST_MAP = 1;
@@ -139,28 +137,6 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     }    
   }
 
-  /** Fragment for displaying the date picker dialog */
-  class DateFragment extends DialogFragment {
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-      int year = 0;
-      int month = 0;
-      int day = 0;
-      if ( dateId != null) {
-        year = DateId.getYear(dateId);
-        month = DateId.getMonth(dateId) - 1;
-        day = DateId.getDay(dateId);
-      } else {
-        Calendar cal = new GregorianCalendar();
-        year = cal.get(Calendar.YEAR);
-        month = cal.get(Calendar.MONTH);
-        day = cal.get(Calendar.DAY_OF_MONTH);
-      }
-      DatePickerDialog dialog = new DatePickerDialog(getActivity(), PlanFragment.this, year, month, day); 
-      return dialog;
-    }    
-  }
-
   void showTime(boolean arrive, Integer timeInMinutes) {    
     int drawableId = arrive ? R.drawable.finish : R.drawable.start;
     timeView.setCompoundDrawablesWithIntrinsicBounds(drawableId, 0, 0, 0);    
@@ -179,13 +155,6 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   }
   
 
-  @Override
-  public void onDateSet(DatePicker view, int year, int monthOfYear,
-      int dayOfMonth) {
-    dateId = DateId.dateId(year, monthOfYear + 1, dayOfMonth);
-    dateView.setText(String.valueOf(dateId));
-  }
-
   void showParameters() {
     TextView v = (TextView) view.findViewById(R.id.from);
     if ( origin != null ) {
@@ -200,6 +169,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
       v.setText(R.string.selectDestination);
     }
     showTime(arriveAt, timeInMinutes);
+    showDate(dateId);
   }
   
   public void swap() {
@@ -294,29 +264,28 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     }
   }
   
-  void setDate(int dateId, String name) {
-    PlanFragment.dateId = dateId;
-    if ( name == null ) {
+  void showDate(int dateId) {
+    if ( dateId == 0 ) {
       dateView.setText(R.string.today);
     } else {
+      Date date = DateId.getDate(dateId);
+      String name = dayFormat.format(date);
       dateView.setText(name);
     }    
   }
   
   class DayListener implements OnMenuItemClickListener {
     int dateId;
-    String name;
-
     
-    public DayListener(int dateId, String name) {
+    public DayListener(int dateId) {
       super();
       this.dateId = dateId;
-      this.name = name;
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-      setDate(dateId, name);
+      PlanFragment.dateId = dateId;
+      showDate(dateId);
       return true;
     }    
   }
@@ -331,14 +300,14 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
         R.id.day6, 
     };
     MenuItem item = menu.add(Menu.NONE, ids[0], 0, R.string.today);
-    item.setOnMenuItemClickListener(new DayListener(0, null));
+    item.setOnMenuItemClickListener(new DayListener(0));
     long time = System.currentTimeMillis();
     for(int i = 1; i < 7; i++ ) {
       Date date = new Date(time + i * 3600 * 24 * 1000L);
       int dateId = DateId.dateId(date); 
       String weekday = dayFormat.format(date);
       item = menu.add(Menu.NONE, ids[i], i, weekday);
-      item.setOnMenuItemClickListener(new DayListener(dateId, weekday));
+      item.setOnMenuItemClickListener(new DayListener(dateId));
     }
   }
   @Override
@@ -440,7 +409,7 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
     request.setFromPlace(from);
     request.setToPlace(destination);
     Calendar cal = new GregorianCalendar();
-    if ( dateId != null) {
+    if ( dateId != 0) {
       DateId.setCalendar(dateId, cal);
     }
     if ( timeInMinutes != null) {
