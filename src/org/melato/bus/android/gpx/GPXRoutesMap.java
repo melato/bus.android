@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import org.melato.bus.android.Info;
 import org.melato.bus.android.R;
 import org.melato.bus.android.RoutesMap;
 import org.melato.bus.android.activity.LocationEndpoints;
@@ -30,6 +31,7 @@ public class GPXRoutesMap implements RoutesMap {
   private Context context;
   private RouteManager routeManager;
   private String packageName;
+  private static GPX defaultGPX;
 
 
   public GPXRoutesMap(Context context, RouteManager routeManager) {
@@ -102,10 +104,22 @@ public class GPXRoutesMap implements RoutesMap {
     viewGPX(context, gpx);
   }
 
+  GPX createPrimaryRoutesGPX() {
+    GPXMaker gpxMaker = new GPXMaker();
+    RouteManager routeManager = Info.routeManager(context);
+    List<Route> routes = routeManager.getPrimaryRoutes();
+    for(Route route: routes) {
+      gpxMaker.addRoute(route, routeManager.getStops(route));      
+    }
+    return gpxMaker.getGpx();
+  }
+  
   @Override
   public void showMap() {
-    GPX gpx = new GPX();
-    viewGPX(context, gpx);
+    if ( defaultGPX == null ) {
+      defaultGPX = createPrimaryRoutesGPX();
+    }
+    viewGPX(context, defaultGPX);
   }
   
   @Override
