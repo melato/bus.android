@@ -109,8 +109,12 @@ public class NearbyContext extends LocationContext {
       if ( times == null)
         times = new int[0];
       stop.setNearestTimes(times);
+      sort();
     }
-    
+
+    public void sort() {
+      Arrays.sort(stops, new NearbyStop.Comparer());
+    }
   }
   class NearbyAdapter extends BackgroundAdapter<NearbyStop> {
     public NearbyAdapter() {
