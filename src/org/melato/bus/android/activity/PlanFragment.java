@@ -469,10 +469,10 @@ public class PlanFragment extends Fragment implements OnClickListener, OnTimeSet
   }
 
   void showMap() {
-    Intent intent = new Intent(getActivity(), SelectionMapActivity.class);
-    intent.putExtra(Keys.LOCATION_ENDPOINTS, new LocationEndpoints(PlanFragment.origin, PlanFragment.destination));
-    startActivityForResult(intent, REQUEST_MAP);    
+    LocationEndpoints endpoints = new LocationEndpoints(PlanFragment.origin, PlanFragment.destination);
+    Info.routesMap(getActivity()).startActivityForEndpoints(endpoints, this, REQUEST_MAP);
   }
+  
   void selectBookmark() {
     Intent intent = new Intent(getActivity(), LocationBookmarkActivity.class);
     startActivityForResult(intent, REQUEST_BOOKMARK);    
